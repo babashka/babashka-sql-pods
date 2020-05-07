@@ -2,10 +2,6 @@
 
 A [babashka](https://github.com/borkdude/babashka) pod for [HSQLDB](http://www.hsqldb.org/).
 
-## Build
-
-Run `script/compile`
-
 ## Install
 
 The following installation methods are available:
@@ -47,6 +43,10 @@ Running this pod requires babashka v0.0.92 or later.
 
 Right now this pod exposes only one function: `pod.babashka.hsqldb/execute!` but
 more can be easily added. PR welcome!
+
+## Build
+
+Run `script/compile`
 
 ## License
 
