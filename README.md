@@ -8,16 +8,20 @@ Run `script/compile`
 
 ## Install
 
-TODO: brew
-TODO: Github releases
+The following installation methods are available:
+
+- Download a binary from Github releases
+- With [brew](https://brew.sh/): `brew install borkdude/brew/pod-babashka-hsqldb`
 
 ## Run
 
 ``` clojure
 (require '[babashka.pods :as pods])
 
-(pods/load-pod "./pod-babashka-hsqldb")
+(pods/load-pod "pod-babashka-hsqldb")
 ;; or in development:
+;; (pods/load-pod "./pod-babashka-hsqldb")
+;; or via the JVM:
 ;; (pods/load-pod ["lein" "run" "-m" "pod.babashka.hsqldb"])
 
 (require '[pod.babashka.hsqldb :as sql])
