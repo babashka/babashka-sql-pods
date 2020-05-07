@@ -41,7 +41,8 @@
             :describe (do (write {"format" "edn"
                                   "namespaces" [{"name" "pod.babashka.hsqldb"
                                                  "vars" [{"name" "execute!"}]}]
-                                  "id" id})
+                                  "id" id
+                                  "ops" {"shutdown" {}}})
                           (recur))
             :invoke (do (try
                           (let [var (-> (get message "var")
