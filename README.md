@@ -1,6 +1,6 @@
 # pod-babashka-hsqldb
 
-A babashka pod for [HSQLDB](http://www.hsqldb.org/).
+A [babashka](https://github.com/borkdude/babashka) pod for [HSQLDB](http://www.hsqldb.org/).
 
 ## Build
 
@@ -12,6 +12,10 @@ The following installation methods are available:
 
 - Download a binary from Github releases
 - With [brew](https://brew.sh/): `brew install borkdude/brew/pod-babashka-hsqldb`
+
+## Compatibility
+
+Running this pod requires babashka v0.0.92 or later.
 
 ## Run
 
