@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+rm -rf /tmp/release
+mkdir -p /tmp/release
+cp bb /tmp/release
+# cp src-bash/bbk /tmp/release
+
+VERSION=$(cat resources/POD_BABASHKA_HSQLDB_VERSION)
+
+cd /tmp/release
+
+## release binary as zip archive
+
+zip "pod-babashka-hsqldb-$VERSION-$BABASHKA_PLATFORM-amd64.zip" pod-babashka-hsqldb
+
+## cleanup
+
+rm pod-babashka-hsqldb

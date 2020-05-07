@@ -37,6 +37,9 @@ TODO: Github releases
 ;;=> [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3}]
 ```
 
+Right now this pod exposes only one function: `pod.babashka.hsqldb/execute!` but
+more can be easily added. PR welcome!
+
 ## License
 
 Copyright © 2020 Michiel Borkent
