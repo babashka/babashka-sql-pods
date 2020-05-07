@@ -70,4 +70,5 @@
                                          "status" ["done" "error"]}]
                               (write reply))))
                         (recur))
+            :shutdown (System/exit 0)
             (recur)))))))
