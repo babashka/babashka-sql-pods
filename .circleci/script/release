@@ -2,8 +2,7 @@
 
 rm -rf /tmp/release
 mkdir -p /tmp/release
-cp bb /tmp/release
-# cp src-bash/bbk /tmp/release
+cp pod-babashka-hsqldb /tmp/release
 
 VERSION=$(cat resources/POD_BABASHKA_HSQLDB_VERSION)
 
