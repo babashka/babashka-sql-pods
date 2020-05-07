@@ -1,4 +1,6 @@
-(defproject babashka/pod-babashka-hsqldb "0.0.1-SNAPSHOT"
+(defproject babashka/pod-babashka-hsqldb
+  #=(clojure.string/trim
+     #=(slurp "resources/POD_BABASHKA_HSQLDB_VERSION"))
   :description "babashka pod for HSQLDB"
   :url "https://github.com/borkdude/pod-babashka-hsqldb"
   :scm {:name "git"
