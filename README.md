@@ -13,6 +13,18 @@ The following installation methods are available:
 
 Running this pod requires babashka v0.0.92 or later.
 
+## Available vars
+
+Right now this pod exposes these namespaces with vars:
+
+- `pod.babashka.hsqldb`: `execute!`
+- `pod.babashka.hsqldb.sql`: `insert-multi!`
+
+More can be easily added. PRs welcome.
+
+The vars correspond to their
+[next.jdbc](https://github.com/seancorfield/next-jdbc) counterparts.
+
 ## Run
 
 ``` clojure
@@ -40,9 +52,6 @@ Running this pod requires babashka v0.0.92 or later.
 (sql/execute! db ["select * from foo;"])
 ;;=> [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3}]
 ```
-
-Right now this pod exposes only one function: `pod.babashka.hsqldb/execute!` but
-more can be easily added. PR welcome!
 
 ## Build
 
