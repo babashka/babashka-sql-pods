@@ -2,8 +2,9 @@
   (:refer-clojure :exclude [read read-string])
   (:require [bencode.core :as bencode]
             [clojure.edn :as edn]
+            [clojure.java.io :as io]
             [next.jdbc :as jdbc]
-            [clojure.java.io :as io])
+            [next.jdbc.sql :as sql])
   (:import [java.io PushbackInputStream])
   (:gen-class))
 
@@ -25,6 +26,10 @@
 (defn read []
   (bencode/read-bencode stdin))
 
+(def lookup
+  {'pod.babashka.hsqldb/execute! jdbc/execute!
+   'pod.babashka.hsqldb.sql/insert-multi! sql/insert-multi!})
+
 (defn -main [& _args]
   (loop []
     (let [message (try (read)
@@ -40,7 +45,9 @@
           (case op
             :describe (do (write {"format" "edn"
                                   "namespaces" [{"name" "pod.babashka.hsqldb"
-                                                 "vars" [{"name" "execute!"}]}]
+                                                 "vars" [{"name" "execute!"}]}
+                                                {"name" "pod.babashka.hsqldb.sql"
+                                                 "vars" [{"name" "insert-multi!"}]}]
                                   "id" id
                                   "ops" {"shutdown" {}}})
                           (recur))
@@ -50,16 +57,14 @@
                                         symbol)
                                 args (get message "args")
                                 args (read-string args)
-                                args (edn/read-string args)
-                                ]
-                            (case var
-                              pod.babashka.hsqldb/execute!
-                              (let [value (pr-str (apply jdbc/execute! args))
-
+                                args (edn/read-string args)]
+                            (if-let [f (lookup var)]
+                              (let [value (pr-str (apply f args))
                                     reply {"value" value
                                            "id" id
                                            "status" ["done"]}]
-                                (write reply))))
+                                (write reply))
+                              (throw (ex-info (str "Var not found: " var) {}))))
                           (catch Throwable e
                             (binding [*out* *err*]
                               (println e))
