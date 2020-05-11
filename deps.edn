@@ -1,0 +1,14 @@
+{:deps {org.hsqldb/hsqldb {:mvn/version "2.4.0"}
+        seancorfield/next.jdbc {:mvn/version "1.0.424"}
+        nrepl/bencode {:mvn/version "1.1.0"}}
+ :aliases
+ {:test
+  {:extra-deps
+   {test-runner
+    {:git/url "https://github.com/cognitect-labs/test-runner"
+     :sha "cb96e80f6f3d3b307c59cbeb49bb0dcb3a2a780b"}
+    babashka.pods
+    {:git/url "https://github.com/babashka/babashka.pods"
+     :sha "f5652b97494fbbb468cca9d0a5f5d4c4fc359f3b"}}
+   :extra-paths ["test"]
+   :main-opts ["-m" "cognitect.test-runner"]}}}

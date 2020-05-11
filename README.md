@@ -57,6 +57,10 @@ The vars correspond to their
 
 Run `script/compile`
 
+## Test
+
+Run `script/test`.
+
 ## License
 
 Copyright © 2020 Michiel Borkent

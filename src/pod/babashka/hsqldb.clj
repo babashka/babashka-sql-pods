@@ -77,4 +77,10 @@
                               (write reply))))
                         (recur))
             :shutdown (System/exit 0)
-            (recur)))))))
+            (do
+              (let [reply {"ex-message" "Unknown op"
+                           "ex-data" (pr-str {:op op})
+                           "id" id
+                           "status" ["done" "error"]}]
+                (write reply))
+              (recur))))))))

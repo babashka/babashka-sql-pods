@@ -1,2 +1,3 @@
 /target
 /pod-babashka-hsqldb
+/.cpcache
