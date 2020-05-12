@@ -53,6 +53,9 @@ The vars correspond to their
 ;;=> [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3}]
 ```
 
+A more elaborate example can be found
+[here](https://github.com/borkdude/babashka/blob/ac24abbbfbccce7b9ea38c750c1185b15136b65d/examples/hsqldb_unused_vars.clj).
+
 ## Build
 
 Run `script/compile`
