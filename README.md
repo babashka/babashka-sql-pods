@@ -54,7 +54,7 @@ The vars correspond to their
 ```
 
 A more elaborate example can be found
-[here](https://github.com/borkdude/babashka/blob/ac24abbbfbccce7b9ea38c750c1185b15136b65d/examples/hsqldb_unused_vars.clj).
+[here](https://github.com/borkdude/babashka/blob/2d12c954a1ef25e6ed83cde3db57be69dbb0c906/examples/hsqldb_unused_vars.clj).
 
 ## Build
 
