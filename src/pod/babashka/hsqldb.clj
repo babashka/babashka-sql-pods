@@ -4,7 +4,8 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [next.jdbc :as jdbc]
-            [next.jdbc.sql :as sql])
+            [next.jdbc.sql :as sql]
+            [clojure.walk :as walk])
   (:import [java.io PushbackInputStream])
   (:gen-class))
 
@@ -26,9 +27,46 @@
 (defn read []
   (bencode/read-bencode stdin))
 
+(def conns (atom {}))
+
+(defn get-connection [db-spec]
+  (let [conn (jdbc/get-connection db-spec)
+        conn-id (str (java.util.UUID/randomUUID))]
+    (swap! conns assoc conn-id conn)
+    {::connection conn-id}))
+
+(defn execute! [db-spec & args]
+  (if (map? db-spec)
+    (if-let [conn-id (::connection db-spec)]
+      (let [connection (get @conns conn-id)]
+        (apply jdbc/execute! connection args))
+      (apply jdbc/execute! db-spec args))
+    (apply jdbc/execute! db-spec args)))
+
+(defn close-connection [{:keys [::connection]}]
+  (let [[old _new] (swap-vals! conns dissoc connection)]
+    (when-let [conn (get old connection)]
+      (.close conn))))
+
 (def lookup
-  {'pod.babashka.hsqldb/execute! jdbc/execute!
+  {'pod.babashka.hsqldb/execute! execute!
+   'pod.babashka.hsqldb/get-connection get-connection
+   'pod.babashka.hsqldb/close-connection close-connection
    'pod.babashka.hsqldb.sql/insert-multi! sql/insert-multi!})
+
+(def describe-map
+  (walk/postwalk
+   (fn [v]
+     (if (ident? v) (name v)
+         v))
+   '{:format :edn
+     :namespaces [{:name pod.babashka.hsqldb
+                   :vars [{:name execute!}
+                          {:name get-connection}
+                          {:name close-connection}]}
+                  {:name pod.babashka.hsqldb.sql
+                   :vars [{:name insert-multi!}]}]
+     :opts {:shutdown {}}}))
 
 (defn -main [& _args]
   (loop []
@@ -43,13 +81,7 @@
                          read-string)
               id (or id "unknown")]
           (case op
-            :describe (do (write {"format" "edn"
-                                  "namespaces" [{"name" "pod.babashka.hsqldb"
-                                                 "vars" [{"name" "execute!"}]}
-                                                {"name" "pod.babashka.hsqldb.sql"
-                                                 "vars" [{"name" "insert-multi!"}]}]
-                                  "id" id
-                                  "ops" {"shutdown" {}}})
+            :describe (do (write describe-map)
                           (recur))
             :invoke (do (try
                           (let [var (-> (get message "var")
