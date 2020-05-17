@@ -48,6 +48,6 @@
           (is (thrown-with-msg?
                Exception #"read-only SQL-transaction"
                (db/with-transaction [x db {:read-only true}]
-                 (db/execute! x ["insert into foo values (5);"]))))
+                 (db/execute! x ["insert into foo values (6);"]))))
           (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3} #:FOO{:FOO 4} #:FOO{:FOO 5}]
                  (db/execute! db  ["select * from foo;"]))))))))
