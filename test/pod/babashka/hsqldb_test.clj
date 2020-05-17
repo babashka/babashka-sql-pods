@@ -25,7 +25,7 @@
 (deftest hsqldb-test
   (let [db "jdbc:hsqldb:mem:testdb;sql.syntax_mys=true"]
     (is (db/execute! db ["create table foo ( foo int );"]))
-    #_(is (thrown-with-msg? Exception #"exists"
+    (is (thrown-with-msg? Exception #"exists"
                           (db/execute! db ["create table foo ( foo int );"])))
     (is (db/execute! db ["insert into foo values (1, 2, 3);"]))
     (let [query-result (db/execute! db ["select * from foo;"])]
