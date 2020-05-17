@@ -17,13 +17,20 @@ Running this pod requires babashka v0.0.92 or later.
 
 Right now this pod exposes these namespaces with vars:
 
-- `pod.babashka.hsqldb`: `execute!`
-- `pod.babashka.hsqldb.sql`: `insert-multi!`
+- `pod.babashka.hsqldb`:
+  - `execute!`: similar to `next.jdbc/execute!`
+  - `get-connection`: returns connection serialized using maps with a unique identifier key
+  - `close-connection`: closes a connection returned from `get-connection`
+  - `with-transaction`: similar to `next.jdbc/with-transaction`
+- `pod.babashka.hsqldb.sql`:
+  - `insert-multi!`: similar to `next.jdbc.sql/insert-multi!`
+- `pod.babashka.hsqldb.transaction`:
+  - `begin`: marks the begin of a transaction, expects connection returned from `get-connection`
+  - `rollback`: rolls back transaction, expects connection returned from `get-connection`
+  - `commit`: commits transaction, expects connection returned from `get-connection`
 
-More can be easily added. PRs welcome.
-
-The vars correspond to their
-[next.jdbc](https://github.com/seancorfield/next-jdbc) counterparts.
+More functions from [next.jdbc](https://github.com/seancorfield/next-jdbc) can
+be added. PRs welcome.
 
 ## Run
 
@@ -36,20 +43,20 @@ The vars correspond to their
 ;; or via the JVM:
 ;; (pods/load-pod ["lein" "run" "-m" "pod.babashka.hsqldb"])
 
-(require '[pod.babashka.hsqldb :as sql])
+(require '[pod.babashka.hsqldb :as db])
 
 (def db "jdbc:hsqldb:mem:testdb;sql.syntax_mys=true")
-(sql/execute! db ["create table foo ( foo int );"])
+(db/execute! db ["create table foo ( foo int );"])
 ;;=> [#:next.jdbc{:update-count 0}]
 
-(sql/execute! db ["create table foo ( foo int );"])
+(db/execute! db ["create table foo ( foo int );"])
 ;;=> ... error output from pod omitted
 ;;=> clojure.lang.ExceptionInfo: object name already exists: FOO in statement [create table foo ( foo int )] [at line 6, column 1]
 
-(sql/execute! db ["insert into foo values (1, 2, 3);"])
+(db/execute! db ["insert into foo values (1, 2, 3);"])
 ;;=> [#:next.jdbc{:update-count 3}]
 
-(sql/execute! db ["select * from foo;"])
+(db/execute! db ["select * from foo;"])
 ;;=> [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3}]
 ```
 
