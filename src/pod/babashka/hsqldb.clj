@@ -30,10 +30,12 @@
 (def transactions (atom {}))
 
 (defn get-connection [db-spec]
-  (let [conn (jdbc/get-connection db-spec)
-        conn-id (str (java.util.UUID/randomUUID))]
-    (swap! conns assoc conn-id conn)
-    {::connection conn-id}))
+  (if (and (map? db-spec) (::connection db-spec))
+    db-spec
+    (let [conn (jdbc/get-connection db-spec)
+          conn-id (str (java.util.UUID/randomUUID))]
+      (swap! conns assoc conn-id conn)
+      {::connection conn-id})))
 
 (defn ->connectable [db-spec]
   (if-let [conn-id (and (map? db-spec)

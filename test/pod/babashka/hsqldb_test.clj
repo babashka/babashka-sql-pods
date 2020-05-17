@@ -1,4 +1,6 @@
 (ns pod.babashka.hsqldb-test
+  {:clj-kondo/config
+   '{:lint-as {pod.babashka.hsqldb-test/with-transaction next.jdbc/with-transaction}}}
   (:require [babashka.pods :as pods]
             [clojure.test :refer [deftest is testing]]))
 
@@ -8,6 +10,17 @@
 
 (require '[pod.babashka.hsqldb :as db])
 (require '[pod.babashka.hsqldb.transaction :as transaction])
+
+(defmacro with-transaction
+  [[sym transactable opts] & body]
+  `(let [~sym (db/get-connection ~transactable)]
+    (try
+      (transaction/begin ~sym ~opts)
+      ~@body
+      (transaction/commit ~sym)
+      (catch Exception e#
+        (transaction/rollback ~sym)
+        (throw e#)))))
 
 (deftest hsqldb-test
   (let [db "jdbc:hsqldb:mem:testdb;sql.syntax_mys=true"]
@@ -36,4 +49,17 @@
           (transaction/rollback conn)
           (db/close-connection conn)
           (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3} #:FOO{:FOO 4}]
+                 (db/execute! db  ["select * from foo;"])))))
+      (testing "with-transaction"
+        (with-transaction [x db]
+          (db/execute! x ["insert into foo values (5);"]))
+        (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3} #:FOO{:FOO 4} #:FOO{:FOO 5}]
+               (db/execute! db  ["select * from foo;"])))
+        (testing "failing transaction"
+          (try
+            (with-transaction [x db]
+              (db/execute! x ["insert into foo values (5);"])
+              (throw (ex-info "o noes" {})))
+            (catch Exception _ nil))
+          (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3} #:FOO{:FOO 4} #:FOO{:FOO 5}]
                  (db/execute! db  ["select * from foo;"]))))))))
