@@ -11,7 +11,7 @@ The following installation methods are available:
 
 ## Compatibility
 
-Running this pod requires babashka v0.0.92 or later.
+Running this pod requires babashka v0.0.96 or later.
 
 ## Available vars
 
