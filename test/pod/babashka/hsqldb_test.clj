@@ -56,10 +56,9 @@
         (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3} #:FOO{:FOO 4} #:FOO{:FOO 5}]
                (db/execute! db  ["select * from foo;"])))
         (testing "failing transaction"
-          (try
-            (with-transaction [x db]
-              (db/execute! x ["insert into foo values (5);"])
-              (throw (ex-info "o noes" {})))
-            (catch Exception _ nil))
+          (is (thrown-with-msg?
+               Exception #"read-only SQL-transaction"
+               (with-transaction [x db {:read-only true}]
+                 (db/execute! x ["insert into foo values (5);"]))))
           (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3} #:FOO{:FOO 4} #:FOO{:FOO 5}]
                  (db/execute! db  ["select * from foo;"]))))))))
