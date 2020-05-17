@@ -22,9 +22,12 @@
 (defn read []
   (bencode/read-bencode stdin))
 
+(def debug? false)
+
 (defn debug [& strs]
-  (binding [*out* (io/writer System/err)]
-    (apply println strs)))
+  (when debug?
+    (binding [*out* (io/writer System/err)]
+      (apply println strs))))
 
 (def conns (atom {}))
 (def transactions (atom {}))
@@ -95,12 +98,15 @@
    'pod.babashka.hsqldb.transaction/commit transaction-commit
    'pod.babashka.hsqldb.sql/insert-multi! sql/insert-multi!})
 
+(def with-transaction
+  (slurp (io/file "resources" "with_transaction.clj")))
+
 (def describe-map
   (walk/postwalk
    (fn [v]
      (if (ident? v) (name v)
          v))
-   '{:format :edn
+   `{:format :edn
      :namespaces [{:name pod.babashka.hsqldb
                    :vars [{:name execute!}
                           {:name get-connection}
@@ -108,7 +114,8 @@
                           {:name start-transaction}
                           {:name rollback-transaction}
                           {:name end-transaction}
-                          {:name with-db-transaction}]}
+                          {:name with-transaction
+                           :code ~with-transaction}]}
                   {:name pod.babashka.hsqldb.transaction
                    :vars [{:name begin}
                           {:name rollback}
@@ -116,6 +123,8 @@
                   {:name pod.babashka.hsqldb.sql
                    :vars [{:name insert-multi!}]}]
      :opts {:shutdown {}}}))
+
+(debug describe-map)
 
 (defn -main [& _args]
   (loop []
@@ -147,8 +156,7 @@
                                 (write reply))
                               (throw (ex-info (str "Var not found: " var) {}))))
                           (catch Throwable e
-                            (binding [*out* *err*]
-                              (println e))
+                            (debug e)
                             (let [reply {"ex-message" (ex-message e)
                                          "ex-data" (pr-str
                                                     (assoc (ex-data e)

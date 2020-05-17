@@ -9,6 +9,6 @@
      :sha "cb96e80f6f3d3b307c59cbeb49bb0dcb3a2a780b"}
     babashka.pods
     {:git/url "https://github.com/babashka/babashka.pods"
-     :sha "016e20dc52d553049694d7496602dbbccbd6a949"}}
+     :sha "8f16139ab6e73a91aeb5fe97b398b30670e3fc9b"}}
    :extra-paths ["test"]
    :main-opts ["-m" "cognitect.test-runner"]}}}
