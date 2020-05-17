@@ -111,9 +111,6 @@
                    :vars [{:name execute!}
                           {:name get-connection}
                           {:name close-connection}
-                          {:name start-transaction}
-                          {:name rollback-transaction}
-                          {:name end-transaction}
                           {:name with-transaction
                            :code ~with-transaction}]}
                   {:name pod.babashka.hsqldb.transaction
