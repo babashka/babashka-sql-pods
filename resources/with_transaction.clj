@@ -3,7 +3,7 @@
   `(let [~sym (pod.babashka.hsqldb/get-connection ~transactable)]
      (try
        (pod.babashka.hsqldb.transaction/begin ~sym ~opts)
-       (let [res# ~@body]
+       (let [res# (do ~@body)]
          (pod.babashka.hsqldb.transaction/commit ~sym)
          res#)
        (catch Exception e#

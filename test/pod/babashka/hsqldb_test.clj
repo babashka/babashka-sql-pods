@@ -40,15 +40,20 @@
           (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3} #:FOO{:FOO 4}]
                  (db/execute! db  ["select * from foo;"])))))
       (testing "with-transaction"
-        (is (= [#:next.jdbc{:update-count 1}]
+        (is (= [#:next.jdbc{:update-count 2}]
                (db/with-transaction [x db]
-                 (db/execute! x ["insert into foo values (5);"]))))
-        (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3} #:FOO{:FOO 4} #:FOO{:FOO 5}]
+                 (db/execute! x ["insert into foo values (5);"])
+                 (db/execute! x ["insert into foo values (6, 7);"]))))
+        (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3}
+                #:FOO{:FOO 4} #:FOO{:FOO 5} #:FOO{:FOO 6}
+                #:FOO{:FOO 7}]
                (db/execute! db  ["select * from foo;"])))
         (testing "failing transaction"
           (is (thrown-with-msg?
                Exception #"read-only SQL-transaction"
                (db/with-transaction [x db {:read-only true}]
-                 (db/execute! x ["insert into foo values (6);"]))))
-          (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3} #:FOO{:FOO 4} #:FOO{:FOO 5}]
+                 (db/execute! x ["insert into foo values (8);"]))))
+          (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3}
+                  #:FOO{:FOO 4} #:FOO{:FOO 5} #:FOO{:FOO 6}
+                  #:FOO{:FOO 7}]
                  (db/execute! db  ["select * from foo;"]))))))))
