@@ -11,17 +11,17 @@ fi
 export PATH=$GRAALVM_HOME/bin:$PATH
 
 POD_LEIN_PROFILES="+uberjar"
-POD_NAME="pod-babashka-$POD_DB_NAME"
-POD_REFLECTION_CONFIG="reflection-$POD_DB_NAME.json"
+POD_NAME="pod-babashka-$POD_DB_TYPE"
+POD_REFLECTION_CONFIG="reflection-$POD_DB_TYPE.json"
 
-if [ "$POD_DB_NAME" = "postgresql" ]
+if [ "$POD_DB_TYPE" = "postgresql" ]
 then
     POD_LEIN_PROFILES+=",+feature/postgresql"
 else
     POD_LEIN_PROFILES+=",-feature/postgresql"
 fi
 
-if [ "$POD_DB_NAME" = "hsqldb" ]
+if [ "$POD_DB_TYPE" = "hsqldb" ]
 then
     POD_LEIN_PROFILES+=",+feature/hsqldb"
 else

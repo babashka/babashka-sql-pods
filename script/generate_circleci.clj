@@ -87,10 +87,10 @@ fi"}}
   (ordered-map
    :version 2.1,
    :jobs (ordered-map
-          :hsqldb-linux (assoc-in linux [:environment :POD_DB_NAME] "hsqldb")
-          :hsqldb-mac  (assoc-in mac [:environment :POD_DB_NAME] "hsqldb")
-          :postgresql-linux (assoc-in linux [:environment :POD_DB_NAME] "postgresql")
-          :postgresql-mac  (assoc-in mac [:environment :POD_DB_NAME] "postgresql")),
+          :hsqldb-linux (assoc-in linux [:environment :POD_DB_TYPE] "hsqldb")
+          :hsqldb-mac  (assoc-in mac [:environment :POD_DB_TYPE] "hsqldb")
+          :postgresql-linux (assoc-in linux [:environment :POD_DB_TYPE] "postgresql")
+          :postgresql-mac  (assoc-in mac [:environment :POD_DB_TYPE] "postgresql")),
    :workflows (ordered-map
                :version 2
                :ci {:jobs ["hsqldb-linux"
