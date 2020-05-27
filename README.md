@@ -26,8 +26,8 @@ Pods from this repo require babashka v0.0.96 or later.
 
 ## Available vars
 
-Right the pods expose these namespaces with vars, where `<db>` must be substited
-with the database type, either `hsqldb` or `postgresql`:
+The pods expose these namespaces with vars, where `<db>` must be substited with
+the database type, either `hsqldb` or `postgresql`:
 
 - `pod.babashka.<db>`:
   - `execute!`: similar to `next.jdbc/execute!`
