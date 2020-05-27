@@ -1,1 +1,2 @@
-[]
+[{"name": "org.postgresql.jdbc.PgConnection",
+  "methods" : [{"name":"close"}]}]
