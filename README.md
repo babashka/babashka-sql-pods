@@ -16,9 +16,10 @@ PRs for other SQL databases are welcome.
 The following installation methods are available:
 
 - Download a binary from Github releases
+
 - With [brew](https://brew.sh/): `brew install borkdude/brew/pod-babashka-<db>`
-  where `<db>` must be substited with the database type, either `hsqldb` or
-  `postgresql`.
+where `<db>` must be substited with the database type, either `hsqldb` or
+`postgresql`.
 
 ## Compatibility
 
