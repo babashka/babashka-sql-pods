@@ -1,4 +1,4 @@
-(ns pod.babashka.hsqldb
+(ns pod.babashka.sql
   (:refer-clojure :exclude [read read-string])
   (:require [bencode.core :as bencode]
             [clojure.edn :as edn]

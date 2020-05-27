@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -xeo pipefail
+set -eo pipefail
 
 if [ -z "$GRAALVM_HOME" ]; then
     echo "Please set GRAALVM_HOME"
@@ -10,24 +10,50 @@ fi
 "$GRAALVM_HOME/bin/gu" install native-image || true
 export PATH=$GRAALVM_HOME/bin:$PATH
 
-JAR=target/pod-babashka-hsqldb-0.0.1-SNAPSHOT-standalone.jar
+POD_LEIN_PROFILES="+uberjar"
+POD_NAME=""
+POD_REFLECTION_CONFIG=""
 
-lein do clean, uberjar
+if [ "$POD_FEATURE_POSTGRESQL" = "true" ]
+then
+    POD_LEIN_PROFILES+=",+feature/postgresql"
+    POD_NAME="pod-babashka-postgresql"
+    POD_REFLECTION_CONFIG=reflection-postgresql.json
+else
+    POD_LEIN_PROFILES+=",-feature/postgresql"
+fi
+
+if [ "$POD_FEATURE_HSQLDB" = "true" ]
+then
+    POD_LEIN_PROFILES+=",+feature/hsqldb"
+    POD_NAME="pod-babashka-hsqldb"
+    POD_REFLECTION_CONFIG=reflection-hsqldb.json
+else
+    POD_LEIN_PROFILES+=",-feature/hsqldb"
+fi
+
+JAR="target/pod-babashka-sql-0.0.1-SNAPSHOT-standalone.jar"
+
+echo "$POD_LEIN_PROFILES"
+echo "$POD_REFLECTION_CONFIG"
+
+java -version
+lein with-profiles "$POD_LEIN_PROFILES" "do" clean, uberjar
 
 $GRAALVM_HOME/bin/native-image \
-  -jar $JAR \
-  -H:Name=pod-babashka-hsqldb \
-  -H:+ReportExceptionStackTraces \
-  -J-Dclojure.spec.skip-macros=true \
-  -J-Dclojure.compiler.direct-linking=true \
-  "-H:IncludeResources=POD_BABASHKA_HSQLDB_VERSION" \
-  -H:ReflectionConfigurationFiles=reflection.json \
-  --initialize-at-run-time=java.lang.Math\$RandomNumberGeneratorHolder \
-  --initialize-at-build-time  \
-  -H:Log=registerResource: \
-  --verbose \
-  --no-fallback \
-  --no-server \
-  --report-unsupported-elements-at-runtime \
-  "-H:IncludeResources=org/hsqldb/.*\.properties" "-H:IncludeResources=org/hsqldb/.*\.sql" \
-  "-J-Xmx4500m"
+    -jar "$JAR" \
+    -H:Name="$POD_NAME" \
+    -H:+ReportExceptionStackTraces \
+    -J-Dclojure.spec.skip-macros=true \
+    -J-Dclojure.compiler.direct-linking=true \
+    "-H:IncludeResources=POD_BABASHKA_SQL_VERSION" \
+    -H:ReflectionConfigurationFiles="$POD_REFLECTION_CONFIG" \
+    --initialize-at-run-time=java.lang.Math\$RandomNumberGeneratorHolder \
+    --initialize-at-build-time  \
+    -H:Log=registerResource: \
+    --verbose \
+    --no-fallback \
+    --no-server \
+    --report-unsupported-elements-at-runtime \
+    "-H:IncludeResources=org/hsqldb/.*\.properties" "-H:IncludeResources=org/hsqldb/.*\.sql" \
+    "-J-Xmx4500m"
