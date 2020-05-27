@@ -1,6 +1,7 @@
 [ {
   "name" : "org.hsqldb.jdbcDriver"
-},{"name": "org.hsqldb.jdbc.JDBCConnection",
+},
+  {"name": "org.hsqldb.jdbc.JDBCConnection",
    "methods" : [{"name":"close"}]},
   {
     "methods" : [{"name":"<init>", "parameterTypes":[ "org.hsqldb.Database"]} ],
