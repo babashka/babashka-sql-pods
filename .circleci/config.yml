@@ -2,9 +2,10 @@
 version: 2.1
 jobs:
   hsqldb-linux:
-    resource_class: large
     docker:
     - {image: 'circleci/clojure:lein-2.8.1'}
+    working_directory: ~/repo
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-19.3.1, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, resource_class: large, POD_DB_NAME: hsqldb}
     steps:
     - checkout
     - run:
@@ -57,10 +58,9 @@ jobs:
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
         paths: [~/.m2, ~/graalvm-ce-java8-19.3.1]
     - store_artifacts: {path: /tmp/release, destination: release}
-    working_directory: ~/repo
-    environment: {GRAALVM_HOME: /home/circleci/graalvm-ce-java8-19.3.1, POD_TEST_ENV: native, BABASHKA_PLATFORM: linux, BABASHKA_XMX: -J-Xmx7g, LEIN_ROOT: 'true', POD_FEATURE_HSQLDB: 'true', BABASHKA_TEST_ENV: native}
   hsqldb-mac:
     macos: {xcode: '9.0'}
+    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java8-19.3.1/Contents/Home, BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_NAME: hsqldb}
     resource_class: large
     steps:
     - checkout
@@ -107,11 +107,11 @@ jobs:
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
         paths: [~/.m2, ~/graalvm-ce-java8-19.3.1]
     - store_artifacts: {path: /tmp/release, destination: release}
-    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java8-19.3.1/Contents/Home, POD_TEST_ENV: native, BABASHKA_PLATFORM: macos, BABASHKA_XMX: -J-Xmx7g, POD_FEATURE_HSQLDB: 'true', BABASHKA_TEST_ENV: native}
   postgresql-linux:
-    resource_class: large
     docker:
     - {image: 'circleci/clojure:lein-2.8.1'}
+    working_directory: ~/repo
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-19.3.1, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, resource_class: large, POD_DB_NAME: postgresql}
     steps:
     - checkout
     - run:
@@ -164,11 +164,11 @@ jobs:
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
         paths: [~/.m2, ~/graalvm-ce-java8-19.3.1]
     - store_artifacts: {path: /tmp/release, destination: release}
-    working_directory: ~/repo
-    environment: {POD_FEATURE_POSTGRESQL: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-19.3.1, POD_TEST_ENV: native, BABASHKA_PLATFORM: linux, BABASHKA_XMX: -J-Xmx7g, LEIN_ROOT: 'true', BABASHKA_TEST_ENV: native}
   postgresql-mac:
-    macos: {xcode: '9.0'}
-    resource_class: large
+    docker:
+    - {image: 'circleci/clojure:lein-2.8.1'}
+    working_directory: ~/repo
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-19.3.1, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, resource_class: large, POD_DB_NAME: postgresql}
     steps:
     - checkout
     - run:
@@ -177,24 +177,31 @@ jobs:
           git submodule init
           git submodule update
     - restore_cache:
-        keys: ['mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}']
+        keys: ['linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}']
     - run:
         name: Install Clojure
-        command: |
-          script/install-clojure /usr/local
+        command: |2-
+
+          wget https://download.clojure.org/install/linux-install-1.10.1.447.sh
+          chmod +x linux-install-1.10.1.447.sh
+          sudo ./linux-install-1.10.1.447.sh
     - run:
-        name: Install Leiningen
+        name: Install lsof
         command: |
-          script/install-leiningen
+          sudo apt-get install lsof
+    - run:
+        name: Install native dev tools
+        command: |
+          sudo apt-get update
+          sudo apt-get -y install gcc g++ zlib1g-dev
     - run:
         name: Download GraalVM
         command: |2-
 
           cd ~
-          ls -la
           if ! [ -d graalvm-ce-java8-19.3.1 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.1/graalvm-ce-java8-darwin-amd64-19.3.1.tar.gz
-            tar xzf graalvm-ce-java8-darwin-amd64-19.3.1.tar.gz
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.1/graalvm-ce-java8-linux-amd64-19.3.1.tar.gz
+            tar xzf graalvm-ce-java8-linux-amd64-19.3.1.tar.gz
           fi
     - run:
         name: Build binary
@@ -211,10 +218,9 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
         paths: [~/.m2, ~/graalvm-ce-java8-19.3.1]
     - store_artifacts: {path: /tmp/release, destination: release}
-    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java8-19.3.1/Contents/Home, POD_TEST_ENV: native, BABASHKA_PLATFORM: macos, BABASHKA_XMX: -J-Xmx7g, POD_FEATURE_HSQLDB: 'true', BABASHKA_TEST_ENV: native}
 workflows:
   version: 2
   ci:

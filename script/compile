@@ -14,7 +14,7 @@ POD_LEIN_PROFILES="+uberjar"
 POD_NAME="pod-babashka-$POD_DB_NAME"
 POD_REFLECTION_CONFIG="reflection-$POD_DB_NAME.json"
 
-if [ "$POD_DB_NAME" = "postgresq" ]
+if [ "$POD_DB_NAME" = "postgresql" ]
 then
     POD_LEIN_PROFILES+=",+feature/postgresql"
 else
