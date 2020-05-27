@@ -9,7 +9,8 @@
                   :GRAALVM_HOME "/home/circleci/graalvm-ce-java8-19.3.1",
                   :BABASHKA_PLATFORM "linux",
                   :BABASHKA_TEST_ENV "native",
-                  :BABASHKA_XMX "-J-Xmx7g"},
+                  :BABASHKA_XMX "-J-Xmx7g"
+                  :POD_TEST_ENV "native"},
     :resource_class "large",
     :steps ("checkout"
             {:run {:name "Pull Submodules",
@@ -49,7 +50,8 @@ fi"}}
     :environment {:GRAALVM_HOME "/Users/distiller/graalvm-ce-java8-19.3.1/Contents/Home",
                   :BABASHKA_PLATFORM "macos",
                   :BABASHKA_TEST_ENV "native",
-                  :BABASHKA_XMX "-J-Xmx7g"},
+                  :BABASHKA_XMX "-J-Xmx7g"
+                  :POD_TEST_ENV "native"},
     :resource_class "large",
     :steps ("checkout"
             {:run {:name "Pull Submodules",

@@ -60,7 +60,7 @@ jobs:
         paths: [~/.m2, ~/graalvm-ce-java8-19.3.1]
     - store_artifacts: {path: /tmp/release, destination: release}
     working_directory: ~/repo
-    environment: {GRAALVM_HOME: /home/circleci/graalvm-ce-java8-19.3.1, BABASHKA_PLATFORM: linux, BABASHKA_XMX: -J-Xmx7g, LEIN_ROOT: 'true', POD_FEATURE_HSQLDB: 'true', BABASHKA_TEST_ENV: native}
+    environment: {GRAALVM_HOME: /home/circleci/graalvm-ce-java8-19.3.1, POD_TEST_ENV: native, BABASHKA_PLATFORM: linux, BABASHKA_XMX: -J-Xmx7g, LEIN_ROOT: 'true', POD_FEATURE_HSQLDB: 'true', BABASHKA_TEST_ENV: native}
   mac-hsqldb:
     macos: {xcode: '9.0'}
     resource_class: large
@@ -109,5 +109,5 @@ jobs:
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
         paths: [~/.m2, ~/graalvm-ce-java8-19.3.1]
     - store_artifacts: {path: /tmp/release, destination: release}
-    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java8-19.3.1/Contents/Home, BABASHKA_PLATFORM: macos, BABASHKA_XMX: -J-Xmx7g, POD_FEATURE_HSQLDB: 'true', BABASHKA_TEST_ENV: native}
+    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java8-19.3.1/Contents/Home, POD_TEST_ENV: native, BABASHKA_PLATFORM: macos, BABASHKA_XMX: -J-Xmx7g, POD_FEATURE_HSQLDB: 'true', BABASHKA_TEST_ENV: native}
 version: 2.1

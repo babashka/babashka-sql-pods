@@ -6,7 +6,7 @@
 
 (pods/load-pod (if (= "native" (System/getenv "POD_TEST_ENV"))
                  "./pod-babashka-hsqldb"
-                 ["lein" "run" "-m" "pod.babashka.hsqldb"]))
+                 ["lein" "run" "-m" "pod.babashka.sql"]))
 
 (require '[pod.babashka.hsqldb :as db])
 (require '[pod.babashka.hsqldb.transaction :as transaction])
