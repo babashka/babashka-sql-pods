@@ -90,7 +90,7 @@ fi"}}
           :hsqldb-linux (assoc-in linux [:environment :POD_DB_NAME] "hsqldb")
           :hsqldb-mac  (assoc-in mac [:environment :POD_DB_NAME] "hsqldb")
           :postgresql-linux (assoc-in linux [:environment :POD_DB_NAME] "postgresql")
-          :postgresql-mac  (assoc-in linux [:environment :POD_DB_NAME] "postgresql")),
+          :postgresql-mac  (assoc-in mac [:environment :POD_DB_NAME] "postgresql")),
    :workflows (ordered-map
                :version 2
                :ci {:jobs ["hsqldb-linux"
