@@ -16,13 +16,21 @@
                    :command "git submodule init\ngit submodule update\n"}}
             {:restore_cache {:keys ("linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}")}}
             {:run {:name "Install Clojure",
-                   :command "wget https://download.clojure.org/install/linux-install-1.10.1.447.sh\nchmod +x linux-install-1.10.1.447.sh\nsudo ./linux-install-1.10.1.447.sh\n"}}
+                   :command "
+wget https://download.clojure.org/install/linux-install-1.10.1.447.sh
+chmod +x linux-install-1.10.1.447.sh
+sudo ./linux-install-1.10.1.447.sh"}}
             {:run {:name "Install lsof",
                    :command "sudo apt-get install lsof\n"}}
             {:run {:name "Install native dev tools",
                    :command "sudo apt-get update\nsudo apt-get -y install gcc g++ zlib1g-dev\n"}}
             {:run {:name "Download GraalVM",
-                   :command "cd ~\nif ! [ -d graalvm-ce-java8-19.3.1 ]; then\n  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.1/graalvm-ce-java8-linux-amd64-19.3.1.tar.gz\n  tar xzf graalvm-ce-java8-linux-amd64-19.3.1.tar.gz\nfi\n"}}
+                   :command "
+cd ~
+if ! [ -d graalvm-ce-java8-19.3.1 ]; then
+  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.1/graalvm-ce-java8-linux-amd64-19.3.1.tar.gz
+  tar xzf graalvm-ce-java8-linux-amd64-19.3.1.tar.gz
+fi"}}
             {:run {:name "Build binary",
                    :command "# script/uberjar\nscript/compile\n",
                    :no_output_timeout "30m"}}
@@ -52,7 +60,13 @@
             {:run {:name "Install Leiningen",
                    :command "script/install-leiningen\n"}}
             {:run {:name "Download GraalVM",
-                   :command "cd ~\nls -la\nif ! [ -d graalvm-ce-java8-19.3.1 ]; then\n  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.1/graalvm-ce-java8-darwin-amd64-19.3.1.tar.gz\n  tar xzf graalvm-ce-java8-darwin-amd64-19.3.1.tar.gz\nfi\n"}}
+                   :command "
+cd ~
+ls -la
+if ! [ -d graalvm-ce-java8-19.3.1 ]; then
+  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-19.3.1/graalvm-ce-java8-darwin-amd64-19.3.1.tar.gz
+  tar xzf graalvm-ce-java8-darwin-amd64-19.3.1.tar.gz
+fi"}}
             {:run {:name "Build binary",
                    :command "# script/uberjar\nscript/compile\n",
                    :no_output_timeout "30m"}}
@@ -68,9 +82,11 @@
 
 (def config
   {:version 2.1,
-   :jobs {:linux linux,
-          :mac mac},
-   :workflows {:version 2, :ci {:jobs ["linux" "mac"]}}})
+   :jobs {:linux-hsqldb (assoc-in linux [:environment :POD_FEATURE_HSQLDB] "true")
+          :mac-hsqldb  (assoc-in mac [:environment :POD_FEATURE_HSQLDB] "true")},
+   :workflows {:version 2
+               :ci {:jobs ["linux-hsqldb"
+                           "mac-hsqldb"]}}})
 
 (require '[clj-yaml.core :as yaml])
 (spit ".circleci/config.yml" (yaml/generate-string config))
