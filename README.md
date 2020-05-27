@@ -1,11 +1,15 @@
 # Babashka sql pods
 
-A [babashka](https://github.com/borkdude/babashka) pods for interacting with SQL databases.
+[Babashka](https://github.com/borkdude/babashka) pods for interacting with SQL
+databases.
 
 Supported databases:
 
 - [HSQLDB](http://www.hsqldb.org/)
 - [PostgresQL](https://www.postgresql.org/)
+
+
+PRs for other SQL databases are welcome.
 
 ## Install
 
