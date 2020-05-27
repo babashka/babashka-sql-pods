@@ -7,6 +7,7 @@
    {test-runner
     {:git/url "https://github.com/cognitect-labs/test-runner"
      :sha "cb96e80f6f3d3b307c59cbeb49bb0dcb3a2a780b"}
+    com.opentable.components/otj-pg-embedded {:mvn/version "0.13.3"}
     babashka.pods
     {:git/url "https://github.com/babashka/babashka.pods"
      :sha "8f16139ab6e73a91aeb5fe97b398b30670e3fc9b"}}

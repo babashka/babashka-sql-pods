@@ -1,3 +1,11 @@
 #!/usr/bin/env bash
 
-clojure -Sforce -A:test
+if [ "$POD_FEATURE_POSTGRESQL" = "true" ]
+then
+    clojure -A:test -n pod.babashka.postgresql-test
+fi
+
+if [ "$POD_FEATURE_HSQLDB" = "true" ]
+then
+    clojure -A:test -n pod.babashka.hsqldb-test
+fi

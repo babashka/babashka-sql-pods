@@ -17,8 +17,8 @@
                                   "-Dclojure.spec.skip-macros=true"]
                        :aot :all
                        :main pod.babashka.sql}
-             :feature/postgresql [:feature/jdbc {:dependencies [[org.postgresql/postgresql "42.2.12"]]}]
-             :feature/hsqldb [:feature/jdbc {:dependencies [[org.hsqldb/hsqldb "2.4.0"]]}]}
+             :feature/postgresql {:dependencies [[org.postgresql/postgresql "42.2.12"]]}
+             :feature/hsqldb {:dependencies [[org.hsqldb/hsqldb "2.4.0"]]}}
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
                                     :username :env/clojars_user
                                     :password :env/clojars_pass

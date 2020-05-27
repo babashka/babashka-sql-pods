@@ -2,11 +2,13 @@
   (:refer-clojure :exclude [read read-string])
   (:require [bencode.core :as bencode]
             [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clojure.walk :as walk]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
-            [clojure.walk :as walk]
-            [clojure.java.io :as io])
+            [pod.babashka.sql.features :as features]
+            [clojure.string :as str])
   (:import [java.io PushbackInputStream])
   (:gen-class))
 
@@ -89,17 +91,29 @@
     (deliver prom :ok)
     nil))
 
+(def sql-ns (cond features/postgresql? "pod.babashka.postgresql"
+                  features/hsqldb? "pod.babashka.hsqldb"
+                  :else (throw (Exception. "Feature flag expected."))))
+
 (def lookup
-  {'pod.babashka.hsqldb/execute! execute!
-   'pod.babashka.hsqldb/get-connection get-connection
-   'pod.babashka.hsqldb/close-connection close-connection
-   'pod.babashka.hsqldb.transaction/begin transaction-begin
-   'pod.babashka.hsqldb.transaction/rollback transaction-rollback
-   'pod.babashka.hsqldb.transaction/commit transaction-commit
-   'pod.babashka.hsqldb.sql/insert-multi! sql/insert-multi!})
+  (let [m {'execute! execute!
+           'get-connection get-connection
+           'close-connection close-connection
+           'transaction/begin transaction-begin
+           'transaction/rollback transaction-rollback
+           'transaction/commit transaction-commit
+           'sql/insert-multi! sql/insert-multi!}]
+    (zipmap (map (fn [sym]
+                   (if-let [ns (namespace sym)]
+                     (symbol (str sql-ns "." ns) (name sym))
+                     (symbol sql-ns (name sym))))
+                 (keys m))
+            (vals m))))
 
 (def with-transaction
-  (slurp (io/file "resources" "with_transaction.clj")))
+  (-> (io/file "resources" "with_transaction.clj")
+      slurp
+      (str/replace "pod.babashka.sql" sql-ns)))
 
 (def describe-map
   (walk/postwalk
@@ -107,17 +121,17 @@
      (if (ident? v) (name v)
          v))
    `{:format :edn
-     :namespaces [{:name pod.babashka.hsqldb
+     :namespaces [{:name ~(symbol sql-ns)
                    :vars [{:name execute!}
                           {:name get-connection}
                           {:name close-connection}
                           {:name with-transaction
                            :code ~with-transaction}]}
-                  {:name pod.babashka.hsqldb.transaction
+                  {:name ~(symbol (str sql-ns ".transaction"))
                    :vars [{:name begin}
                           {:name rollback}
                           {:name commit}]}
-                  {:name pod.babashka.hsqldb.sql
+                  {:name ~(symbol (str sql-ns ".sql"))
                    :vars [{:name insert-multi!}]}]
      :opts {:shutdown {}}}))
 
