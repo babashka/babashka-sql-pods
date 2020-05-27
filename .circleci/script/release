@@ -2,7 +2,7 @@
 
 rm -rf /tmp/release
 mkdir -p /tmp/release
-cp "pod-babashka-$POD_DB_NAME" /tmp/release
+cp "pod-babashka-$POD_DB_TYPE" /tmp/release
 
 VERSION=$(cat resources/POD_BABASHKA_SQL_VERSION)
 
@@ -10,8 +10,8 @@ cd /tmp/release
 
 ## release binary as zip archive
 
-zip "pod-babashka-$POD_DB_NAME-$VERSION-$BABASHKA_PLATFORM-amd64.zip" "pod-babashka-$POD_DB_NAME"
+zip "pod-babashka-$POD_DB_TYPE-$VERSION-$BABASHKA_PLATFORM-amd64.zip" "pod-babashka-$POD_DB_TYPE"
 
 ## cleanup
 
-rm "pod-babashka-$POD_DB_NAME"
+rm "pod-babashka-$POD_DB_TYPE"
