@@ -1,11 +1,11 @@
 (defmacro with-transaction
   [[sym transactable opts] & body]
-  `(let [~sym (pod.babashka.hsqldb/get-connection ~transactable)]
+  `(let [~sym (pod.babashka.sql/get-connection ~transactable)]
      (try
-       (pod.babashka.hsqldb.transaction/begin ~sym ~opts)
+       (pod.babashka.sql.transaction/begin ~sym ~opts)
        (let [res# (do ~@body)]
-         (pod.babashka.hsqldb.transaction/commit ~sym)
+         (pod.babashka.sql.transaction/commit ~sym)
          res#)
        (catch Exception e#
-         (pod.babashka.hsqldb.transaction/rollback ~sym)
+         (pod.babashka.sql.transaction/rollback ~sym)
          (throw e#)))))
