@@ -2,16 +2,16 @@
 
 rm -rf /tmp/release
 mkdir -p /tmp/release
-cp pod-babashka-hsqldb /tmp/release
+cp "pod-babashka-$POD_DB_NAME" /tmp/release
 
-VERSION=$(cat resources/POD_BABASHKA_HSQLDB_VERSION)
+VERSION=$(cat resources/POD_BABASHKA_SQL_VERSION)
 
 cd /tmp/release
 
 ## release binary as zip archive
 
-zip "pod-babashka-hsqldb-$VERSION-$BABASHKA_PLATFORM-amd64.zip" pod-babashka-hsqldb
+zip "pod-babashka-$POD_DB_NAME-$VERSION-$BABASHKA_PLATFORM-amd64.zip" "pod-babashka-$POD_DB_NAME"
 
 ## cleanup
 
-rm pod-babashka-hsqldb
+rm "pod-babashka-$POD_DB_NAME"

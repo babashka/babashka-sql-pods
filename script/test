@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-if [ "$POD_FEATURE_POSTGRESQL" = "true" ]
+if [ "$POD_DB_NAME" = "postgresql" ]
 then
     clojure -A:test -n pod.babashka.postgresql-test
 fi
 
-if [ "$POD_FEATURE_HSQLDB" = "true" ]
+if [ "$POD_DB_NAME" = "hsqldb" ]
 then
     clojure -A:test -n pod.babashka.hsqldb-test
 fi
