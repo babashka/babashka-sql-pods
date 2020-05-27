@@ -1,30 +1,38 @@
-# pod-babashka-hsqldb
+# Babashka sql pods
 
-A [babashka](https://github.com/borkdude/babashka) pod for [HSQLDB](http://www.hsqldb.org/).
+A [babashka](https://github.com/borkdude/babashka) pods for interacting with SQL databases.
+
+Supported databases:
+
+- [HSQLDB](http://www.hsqldb.org/)
+- [PostgresQL](https://www.postgresql.org/)
 
 ## Install
 
 The following installation methods are available:
 
 - Download a binary from Github releases
-- With [brew](https://brew.sh/): `brew install borkdude/brew/pod-babashka-hsqldb`
+- With [brew](https://brew.sh/): `brew install borkdude/brew/pod-babashka-<db>`
+  where `<db>` must be substited with the database type, either `hsqldb` or
+  `postgresql`.
 
 ## Compatibility
 
-Running this pod requires babashka v0.0.96 or later.
+Pods from this repo require babashka v0.0.96 or later.
 
 ## Available vars
 
-Right now this pod exposes these namespaces with vars:
+Right the pods expose these namespaces with vars, where `<db>` must be substited
+with the database type, either `hsqldb` or `postgresql`:
 
-- `pod.babashka.hsqldb`:
+- `pod.babashka.<db>`:
   - `execute!`: similar to `next.jdbc/execute!`
   - `get-connection`: returns connection serialized using maps with a unique identifier key
   - `close-connection`: closes a connection returned from `get-connection`
   - `with-transaction`: similar to `next.jdbc/with-transaction`
-- `pod.babashka.hsqldb.sql`:
+- `pod.babashka.<db>.sql`:
   - `insert-multi!`: similar to `next.jdbc.sql/insert-multi!`
-- `pod.babashka.hsqldb.transaction`:
+- `pod.babashka.<db>.transaction`:
   - `begin`: marks the begin of a transaction, expects connection returned from `get-connection`
   - `rollback`: rolls back transaction, expects connection returned from `get-connection`
   - `commit`: commits transaction, expects connection returned from `get-connection`
@@ -33,6 +41,8 @@ More functions from [next.jdbc](https://github.com/seancorfield/next-jdbc) can
 be added. PRs welcome.
 
 ## Run
+
+An example using `pod-babashka-hsqldb`:
 
 ``` clojure
 (require '[babashka.pods :as pods])
