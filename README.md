@@ -77,11 +77,16 @@ An example using `pod-babashka-hsqldb`:
 A more elaborate example can be found
 [here](https://github.com/borkdude/babashka/blob/2d12c954a1ef25e6ed83cde3db57be69dbb0c906/examples/hsqldb_unused_vars.clj).
 
-## Build
+
+## Dev
+
+Set `POD_DB_TYPE` to either `hsqldb` or `postgresql`.
+
+### Build
 
 Run `script/compile`
 
-## Test
+### Test
 
 Run `script/test`.
 
