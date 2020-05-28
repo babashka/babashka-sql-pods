@@ -46,16 +46,31 @@ be added. PRs welcome.
 
 ## Run
 
+An example using `pod-babashka-postgresql`:
+
+``` clojure
+(require '[babashka.pods :as pods])
+
+(pods/load-pod "pod-babashka-postgresql")
+
+(require '[pod.babashka.postgresql :as pg])
+
+(def db {:dbtype "postgres"
+         :dbname "medline"
+         :user "develop"
+         :password "develop"
+         :port 5555})
+
+(pg/execute! db ["select version()"])
+;;=> [{:version "PostgreSQL 9.5.18 on x86_64-pc-linux-gnu (Debian 9.5.18-1.pgdg90+1), compiled by gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516, 64-bit"}]
+```
+
 An example using `pod-babashka-hsqldb`:
 
 ``` clojure
 (require '[babashka.pods :as pods])
 
 (pods/load-pod "pod-babashka-hsqldb")
-;; or in development:
-;; (pods/load-pod "./pod-babashka-hsqldb")
-;; or via the JVM:
-;; (pods/load-pod ["lein" "run" "-m" "pod.babashka.hsqldb"])
 
 (require '[pod.babashka.hsqldb :as db])
 
