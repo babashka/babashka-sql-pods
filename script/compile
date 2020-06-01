@@ -56,4 +56,4 @@ $GRAALVM_HOME/bin/native-image \
     --report-unsupported-elements-at-runtime \
     "-H:IncludeResources=org/hsqldb/.*\.properties" "-H:IncludeResources=org/hsqldb/.*\.sql" \
     "--initialize-at-run-time=org.postgresql.sspi.SSPIClient" \
-    "-J-Xmx5000m"
+    "-J-Xmx4500m"
