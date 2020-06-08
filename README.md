@@ -8,7 +8,6 @@ Supported databases:
 - [HSQLDB](http://www.hsqldb.org/)
 - [PostgresQL](https://www.postgresql.org/)
 
-
 PRs for other SQL databases are welcome.
 
 ## Install
@@ -55,11 +54,12 @@ An example using `pod-babashka-postgresql`:
 
 (require '[pod.babashka.postgresql :as pg])
 
-(def db {:dbtype "postgres"
-         :dbname "medline"
-         :user "develop"
+(def db {:dbtype   "postgresql"
+         :host     "your-db-host-name"
+         :dbname   "medline"
+         :user     "develop"
          :password "develop"
-         :port 5555})
+         :port     5432})
 
 (pg/execute! db ["select version()"])
 ;;=> [{:version "PostgreSQL 9.5.18 on x86_64-pc-linux-gnu (Debian 9.5.18-1.pgdg90+1), compiled by gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516, 64-bit"}]
