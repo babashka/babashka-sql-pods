@@ -56,7 +56,7 @@ An example using `pod-babashka-postgresql`:
 
 (def db {:dbtype   "postgresql"
          :host     "your-db-host-name"
-         :dbname   "medline"
+         :dbname   "your-db"
          :user     "develop"
          :password "develop"
          :port     5432})
