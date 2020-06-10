@@ -4,7 +4,8 @@
   (:require [babashka.pods :as pods]
             [pod.babashka.sql.features :as features]
             [clojure.test :refer [deftest is testing]])
-  (:import [com.opentable.db.postgres.embedded EmbeddedPostgres]))
+  (:import [com.opentable.db.postgres.embedded EmbeddedPostgres]
+           [java.util Date]))
 
 (pods/load-pod (if (= "native" (System/getenv "POD_TEST_ENV"))
                  "./pod-babashka-postgresql"
@@ -37,6 +38,14 @@
         (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3}]
                (db/execute! conn  ["select * from foo;"])))
         (db/close-connection conn)))
+    (testing "input parameters"
+      (let [conn (db/get-connection db)
+            start-date (Date. 158178094000)]
+        (db/with-transaction [x conn]
+          (db/execute! x ["create table foo_timed (foo int, created timestamp with time zone)"])
+          (db/execute! x ["insert into foo_timed values (?, ?)" 1 start-date])
+          (let [result (db/execute! x ["select foo from foo_timed where created <= ?" start-date])]
+            (is (= result [{:foo_timed/foo 1}]))))))
     (testing "transaction"
       (let [conn (db/get-connection db)]
         (transaction/begin conn)
