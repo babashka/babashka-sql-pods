@@ -7,6 +7,7 @@
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
+            [next.jdbc.date-time]
             [pod.babashka.sql.features :as features]
             [clojure.string :as str])
   (:import [java.io PushbackInputStream])
