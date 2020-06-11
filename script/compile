@@ -28,7 +28,9 @@ else
     POD_LEIN_PROFILES+=",-feature/hsqldb"
 fi
 
-JAR="target/pod-babashka-sql-0.0.1-SNAPSHOT-standalone.jar"
+VERSION=$(cat resources/POD_BABASHKA_SQL_VERSION)
+
+JAR="target/pod-babashka-sql-$VERSION-standalone.jar"
 
 echo "$POD_LEIN_PROFILES"
 echo "$POD_REFLECTION_CONFIG"
