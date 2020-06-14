@@ -92,6 +92,24 @@ An example using `pod-babashka-hsqldb`:
 A more elaborate example can be found
 [here](https://github.com/borkdude/babashka/blob/2d12c954a1ef25e6ed83cde3db57be69dbb0c906/examples/hsqldb_unused_vars.clj).
 
+## Libraries
+
+In addition to this pod, the following babashka-compatible libraries might be
+helpful:
+
+### [honeysql](https://github.com/seancorfield/honeysql)
+
+Example:
+
+``` clojure
+$ export BABASHKA_CLASSPATH=$(clojure -Sdeps '{:deps {honeysql {:mvn/version "RELEASE"}}}' -Spath)
+$ rlwrap bb
+
+user=> (require '[honeysql.core :as hsql])
+nil
+user=> (hsql/format {:select [:a :b :c] :from [:foo] :where [:= :a 1]})
+["SELECT a, b, c FROM foo WHERE a = ?" 1]
+```
 
 ## Dev
 
