@@ -94,7 +94,7 @@ A more elaborate example can be found
 
 ## Libraries
 
-In addition to this pod, the following babashka-compatible libraries might be
+In addition to using a sql pod, the following babashka-compatible libraries might be
 helpful:
 
 ### [honeysql](https://github.com/seancorfield/honeysql)
