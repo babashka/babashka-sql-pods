@@ -99,6 +99,8 @@ helpful:
 
 ### [honeysql](https://github.com/seancorfield/honeysql)
 
+Turn Clojure data structures into SQL.
+
 Example:
 
 ``` clojure
