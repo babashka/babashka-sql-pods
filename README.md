@@ -101,6 +101,8 @@ helpful:
 
 Turn Clojure data structures into SQL.
 
+Needs babashka >= 0.1.2.
+
 Example:
 
 ``` clojure
