@@ -2,7 +2,6 @@
   {:clj-kondo/config
    '{:lint-as {pod.babashka.postgresql/with-transaction next.jdbc/with-transaction}}}
   (:require [babashka.pods :as pods]
-            [pod.babashka.sql.features :as features]
             [clojure.test :refer [deftest is testing]])
   (:import [com.opentable.db.postgres.embedded EmbeddedPostgres]
            [java.util Date]))

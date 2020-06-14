@@ -9,8 +9,6 @@
                  ["lein" "with-profiles" "+feature/postgresql"
                   "run" "-m" "pod.babashka.sql"]))
 
-(require '[pod.babashka.postgresql :as db])
-(require '[pod.babashka.postgresql.transaction :as transaction])
 (require '[pod.babashka.postgresql.honeysql :as hsql])
 
 (def port 54322)

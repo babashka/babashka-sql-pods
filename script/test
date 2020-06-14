@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu
+
 if [ "$POD_DB_TYPE" = "postgresql" ]
 then
     clojure -A:test -n pod.babashka.postgresql-test
