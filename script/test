@@ -3,6 +3,7 @@
 if [ "$POD_DB_TYPE" = "postgresql" ]
 then
     clojure -A:test -n pod.babashka.postgresql-test
+    clojure -A:test -n pod.babashka.honeysql-test
 fi
 
 if [ "$POD_DB_TYPE" = "hsqldb" ]

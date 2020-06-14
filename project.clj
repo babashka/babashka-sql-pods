@@ -11,6 +11,7 @@
   :resource-paths ["resources"]
   :dependencies [[org.clojure/clojure "1.10.2-alpha1"]
                  [seancorfield/next.jdbc "1.0.424"]
+                 [honeysql "1.0.444"]
                  [nrepl/bencode "1.1.0"]]
   :profiles {:uberjar {:global-vars {*assert* false}
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"

@@ -4,6 +4,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.walk :as walk]
+            [honeysql.core :as hsql]
             [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
@@ -103,7 +104,8 @@
            'transaction/begin transaction-begin
            'transaction/rollback transaction-rollback
            'transaction/commit transaction-commit
-           'sql/insert-multi! sql/insert-multi!}]
+           'sql/insert-multi! sql/insert-multi!
+           'honeysql/format hsql/format}]
     (zipmap (map (fn [sym]
                    (if-let [ns (namespace sym)]
                      (symbol (str sql-ns "." ns) (name sym))
@@ -133,7 +135,9 @@
                           {:name rollback}
                           {:name commit}]}
                   {:name ~(symbol (str sql-ns ".sql"))
-                   :vars [{:name insert-multi!}]}]
+                   :vars [{:name insert-multi!}]}
+                  {:name ~(symbol (str sql-ns ".honeysql"))
+                   :vars [{:name format}]}]
      :opts {:shutdown {}}}))
 
 (debug describe-map)
