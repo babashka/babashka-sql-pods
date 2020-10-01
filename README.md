@@ -50,7 +50,11 @@ An example using `pod-babashka-postgresql`:
 ``` clojure
 (require '[babashka.pods :as pods])
 
-(pods/load-pod "./pod-babashka-postgresql")
+(pods/load-pod "pod-babashka-postgresql")
+;; note: if the pod is downloaded directly to your file system, `load-pod`
+;; needs to be told explicitly where to find it. The form below assumes
+;; that the pod was downloaded and lives in the same directory as your script.
+;; (pods/load-pod "./pod-babashka-postgresql")
 
 (require '[pod.babashka.postgresql :as pg])
 
@@ -70,7 +74,11 @@ An example using `pod-babashka-hsqldb`:
 ``` clojure
 (require '[babashka.pods :as pods])
 
-(pods/load-pod "./pod-babashka-hsqldb")
+(pods/load-pod "pod-babashka-hsqldb")
+;; note: if the pod is downloaded directly to your file system, `load-pod`
+;; needs to be told explicitly where to find it. The form below assumes
+;; that the pod was downloaded and lives in the same directory as your script.
+;; (pods/load-pod "./pod-babashka-hsqldb")
 
 (require '[pod.babashka.hsqldb :as db])
 
