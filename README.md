@@ -50,7 +50,7 @@ An example using `pod-babashka-postgresql`:
 ``` clojure
 (require '[babashka.pods :as pods])
 
-(pods/load-pod "pod-babashka-postgresql")
+(pods/load-pod "./pod-babashka-postgresql")
 
 (require '[pod.babashka.postgresql :as pg])
 
@@ -70,7 +70,7 @@ An example using `pod-babashka-hsqldb`:
 ``` clojure
 (require '[babashka.pods :as pods])
 
-(pods/load-pod "pod-babashka-hsqldb")
+(pods/load-pod "./pod-babashka-hsqldb")
 
 (require '[pod.babashka.hsqldb :as db])
 
