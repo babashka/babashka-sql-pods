@@ -109,12 +109,12 @@ helpful:
 
 Turn Clojure data structures into SQL.
 
-Needs babashka >= 0.1.2.
+Needs babashka >= 0.1.2. Babashka is tested against HoneySQL version `1.0.444` in CI.
 
 Example:
 
 ``` clojure
-$ export BABASHKA_CLASSPATH=$(clojure -Sdeps '{:deps {honeysql {:mvn/version "RELEASE"}}}' -Spath)
+$ export BABASHKA_CLASSPATH=$(clojure -Sdeps '{:deps {honeysql {:mvn/version "1.0.444"}}}' -Spath)
 $ rlwrap bb
 
 user=> (require '[honeysql.core :as hsql])
