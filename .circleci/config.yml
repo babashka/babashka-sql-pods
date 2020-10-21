@@ -5,7 +5,8 @@ jobs:
     docker:
     - {image: 'circleci/clojure:lein-2.8.1'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-20.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, resource_class: large, POD_DB_TYPE: hsqldb}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-20.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: hsqldb}
+    resource_class: large
     steps:
     - checkout
     - run:
@@ -111,7 +112,8 @@ jobs:
     docker:
     - {image: 'circleci/clojure:lein-2.8.1'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-20.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, resource_class: large, POD_DB_TYPE: postgresql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-20.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: postgresql}
+    resource_class: large
     steps:
     - checkout
     - run:

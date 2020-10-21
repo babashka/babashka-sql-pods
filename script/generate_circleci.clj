@@ -11,8 +11,8 @@
                                          :BABASHKA_PLATFORM "linux"
                                          :BABASHKA_TEST_ENV "native"
                                          :BABASHKA_XMX "-J-Xmx7g"
-                                         :POD_TEST_ENV "native"
-                                         :resource_class "large")
+                                         :POD_TEST_ENV "native")
+               :resource_class "large"
                :steps ["checkout"
                        {:run {:name "Pull Submodules",
                               :command "git submodule init\ngit submodule update\n"}}
