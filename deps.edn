@@ -10,6 +10,6 @@
     com.opentable.components/otj-pg-embedded {:mvn/version "0.13.3"}
     babashka.pods
     {:git/url "https://github.com/babashka/babashka.pods"
-     :sha "8f16139ab6e73a91aeb5fe97b398b30670e3fc9b"}}
+     :sha "a033bccaf0024b279480f2a7ac4b446621629b73"}}
    :extra-paths ["test"]
    :main-opts ["-m" "cognitect.test-runner"]}}}
