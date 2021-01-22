@@ -7,7 +7,7 @@
   (ordered-map :docker [{:image "circleci/clojure:lein-2.8.1"}]
                :working_directory "~/repo"
                :environment (ordered-map :LEIN_ROOT "true"
-                                         :GRAALVM_HOME "/home/circleci/graalvm-ce-java8-20.1.0"
+                                         :GRAALVM_HOME "/home/circleci/graalvm-ce-java8-20.3.0"
                                          :BABASHKA_PLATFORM "linux"
                                          :BABASHKA_TEST_ENV "native"
                                          :BABASHKA_XMX "-J-Xmx7g"
@@ -29,9 +29,9 @@ sudo ./linux-install-1.10.1.447.sh"}}
                        {:run {:name "Download GraalVM",
                               :command "
 cd ~
-if ! [ -d graalvm-ce-java8-20.1.0 ]; then
-  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.1.0/graalvm-ce-java8-linux-amd64-20.1.0.tar.gz
-  tar xzf graalvm-ce-java8-linux-amd64-20.1.0.tar.gz
+if ! [ -d graalvm-ce-java8-20.3.0 ]; then
+  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.3.0/graalvm-ce-java8-linux-amd64-20.3.0.tar.gz
+  tar xzf graalvm-ce-java8-linux-amd64-20.3.0.tar.gz
 fi"}}
                        {:run {:name "Build binary",
                               :command "# script/uberjar\nscript/compile\n",
@@ -41,14 +41,14 @@ fi"}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"
-                                             "~/graalvm-ce-java8-20.1.0"],
+                                             "~/graalvm-ce-java8-20.3.0"],
                                      :key "linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
                        {:store_artifacts {:path "/tmp/release",
                                           :destination "release"}}]))
 
 (def mac
   (ordered-map :macos {:xcode "9.0"},
-               :environment (ordered-map :GRAALVM_HOME "/Users/distiller/graalvm-ce-java8-20.1.0/Contents/Home",
+               :environment (ordered-map :GRAALVM_HOME "/Users/distiller/graalvm-ce-java8-20.3.0/Contents/Home",
                                          :BABASHKA_PLATFORM "macos",
                                          :BABASHKA_TEST_ENV "native",
                                          :BABASHKA_XMX "-J-Xmx7g"
@@ -66,9 +66,9 @@ fi"}}
                               :command "
 cd ~
 ls -la
-if ! [ -d graalvm-ce-java8-20.1.0 ]; then
-  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.1.0/graalvm-ce-java8-darwin-amd64-20.1.0.tar.gz
-  tar xzf graalvm-ce-java8-darwin-amd64-20.1.0.tar.gz
+if ! [ -d graalvm-ce-java8-20.3.0 ]; then
+  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.3.0/graalvm-ce-java8-darwin-amd64-20.3.0.tar.gz
+  tar xzf graalvm-ce-java8-darwin-amd64-20.3.0.tar.gz
 fi"}}
                        {:run {:name "Build binary",
                               :command "# script/uberjar\nscript/compile\n",
@@ -78,7 +78,7 @@ fi"}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"
-                                             "~/graalvm-ce-java8-20.1.0"],
+                                             "~/graalvm-ce-java8-20.3.0"],
                                      :key "mac-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
                        {:store_artifacts {:path "/tmp/release",
                                           :destination "release"}}]))
