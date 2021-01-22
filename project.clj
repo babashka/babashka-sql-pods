@@ -9,8 +9,8 @@
             :url "http://opensource.org/licenses/eclipse-1.0.php"}
   :source-paths ["src"]
   :resource-paths ["resources"]
-  :dependencies [[org.clojure/clojure "1.10.2-alpha2"]
-                 [seancorfield/next.jdbc "1.1.610"]
+  :dependencies [[org.clojure/clojure "1.10.2-rc3"]
+                 [seancorfield/next.jdbc "1.1.613"]
                  [nrepl/bencode "1.1.0"]]
   :profiles {:uberjar {:global-vars {*assert* false}
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"
