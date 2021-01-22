@@ -3,13 +3,13 @@
   (:require [bencode.core :as bencode]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [clojure.string :as str]
             [clojure.walk :as walk]
             [next.jdbc :as jdbc]
+            [next.jdbc.date-time]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
-            [next.jdbc.date-time]
-            [pod.babashka.sql.features :as features]
-            [clojure.string :as str])
+            [pod.babashka.sql.features :as features])
   (:import [java.io PushbackInputStream])
   (:gen-class))
 
@@ -52,6 +52,10 @@
 (defn execute! [db-spec & args]
   (let [conn (->connectable db-spec)]
     (apply jdbc/execute! conn args)))
+
+(defn execute-one! [db-spec & args]
+  (let [conn (->connectable db-spec)]
+    (apply jdbc/execute-one! conn args)))
 
 (defn close-connection [{:keys [::connection]}]
   (let [[old _new] (swap-vals! conns dissoc connection)]
@@ -98,6 +102,7 @@
 
 (def lookup
   (let [m {'execute! execute!
+           'execute-one! execute-one!
            'get-connection get-connection
            'close-connection close-connection
            'transaction/begin transaction-begin
