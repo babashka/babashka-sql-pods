@@ -46,7 +46,6 @@ $GRAALVM_HOME/bin/native-image \
     -J-Dclojure.compiler.direct-linking=true \
     "-H:IncludeResources=POD_BABASHKA_SQL_VERSION" \
     -H:ReflectionConfigurationFiles="$POD_REFLECTION_CONFIG" \
-    --initialize-at-run-time=java.lang.Math\$RandomNumberGeneratorHolder \
     --initialize-at-build-time  \
     -H:Log=registerResource: \
     "-H:EnableURLProtocols=http,https" \
