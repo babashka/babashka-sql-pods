@@ -60,7 +60,7 @@ jobs:
         paths: [~/.m2, ~/graalvm-ce-java8-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-mac:
-    macos: {xcode: '9.0'}
+    macos: {xcode: '12.0.0'}
     environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java8-20.3.0/Contents/Home, BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: hsqldb}
     resource_class: large
     steps:
@@ -167,7 +167,7 @@ jobs:
         paths: [~/.m2, ~/graalvm-ce-java8-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-mac:
-    macos: {xcode: '9.0'}
+    macos: {xcode: '12.0.0'}
     environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java8-20.3.0/Contents/Home, BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: postgresql}
     resource_class: large
     steps:
