@@ -18,7 +18,8 @@
                        :aot :all
                        :main pod.babashka.sql}
              :feature/postgresql {:dependencies [[org.postgresql/postgresql "42.2.18"]]}
-             :feature/hsqldb {:dependencies [[org.hsqldb/hsqldb "2.5.1"]]}}
+             :feature/hsqldb {:dependencies [[org.hsqldb/hsqldb "2.5.1"]]}
+             :feature/oracle {:dependencies [[io.helidon.integrations.db/ojdbc "2.2.0"]]}} ; ojdbc10 + GraalVM config, by Oracle
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
                                     :username :env/clojars_user
                                     :password :env/clojars_pass
