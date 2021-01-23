@@ -325,4 +325,4 @@ jobs:
 workflows:
   version: 2
   ci:
-    jobs: [hsqldb-linux, hsqldb-mac, postgresql-linux, postgresql-mac]
+    jobs: [hsqldb-linux, hsqldb-mac, postgresql-linux, postgresql-mac, oracle-linux, oracle-mac]
