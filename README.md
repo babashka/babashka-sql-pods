@@ -6,9 +6,10 @@ databases.
 Supported databases:
 
 - [HSQLDB](http://www.hsqldb.org/)
+- [Oracle](https://www.oracle.com/database/)
 - [PostgresQL](https://www.postgresql.org/)
 
-PRs for other SQL databases are welcome.
+PRs for other SQL databases are welcome. (Look at #15 + #20 for an example of adding a new DB.)
 
 ## Install
 
@@ -25,8 +26,8 @@ Pods from this repo require babashka v0.0.96 or later.
 
 ## Available vars
 
-The pods expose these namespaces with vars, where `<db>` must be substited with
-the database type, either `hsqldb` or `postgresql`:
+The pods expose these namespaces with vars, where `<db>` must be substituted with
+the database type, either `hsqldb`, `postgresql`, or `oracle`:
 
 - `pod.babashka.<db>`:
   - `execute!`: similar to `next.jdbc/execute!`
@@ -125,7 +126,7 @@ user=> (hsql/format {:select [:a :b :c] :from [:foo] :where [:= :a 1]})
 
 ## Dev
 
-Set `POD_DB_TYPE` to either `hsqldb` or `postgresql`.
+Set `POD_DB_TYPE` to either `hsqldb`, `postgresql`, or `oracle`.
 
 ### Build
 
