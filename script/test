@@ -9,3 +9,8 @@ if [ "$POD_DB_TYPE" = "hsqldb" ]
 then
     clojure -A:test -n pod.babashka.hsqldb-test
 fi
+
+if [ "$POD_DB_TYPE" = "oracle" ]
+then
+    clojure -A:test -n pod.babashka.oracle-test
+fi

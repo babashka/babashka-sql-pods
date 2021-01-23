@@ -95,7 +95,9 @@ fi" java java java)}}
           :hsqldb-mac  (assoc-in (mac :java 8)
                                  [:environment :POD_DB_TYPE] "hsqldb")
           :postgresql-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "postgresql")
-          :postgresql-mac  (assoc-in (mac) [:environment :POD_DB_TYPE] "postgresql")),
+          :postgresql-mac  (assoc-in (mac) [:environment :POD_DB_TYPE] "postgresql")
+          :oracle-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "oracle")
+          :oracle-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "oracle")),
    :workflows (ordered-map
                :version 2
                :ci {:jobs ["hsqldb-linux"
