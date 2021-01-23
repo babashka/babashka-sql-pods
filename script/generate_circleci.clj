@@ -103,7 +103,9 @@ fi" java java java)}}
                :ci {:jobs ["hsqldb-linux"
                            "hsqldb-mac"
                            "postgresql-linux"
-                           "postgresql-mac"]})))
+                           "postgresql-mac"
+                           "oracle-linux"
+                           "oracle-mac"]})))
 
 (require '[clj-yaml.core :as yaml])
 (spit ".circleci/config.yml"
