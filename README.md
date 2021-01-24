@@ -87,10 +87,11 @@ An example using `pod-babashka-hsqldb`:
 ``` clojure
 (require '[babashka.pods :as pods])
 
-(pods/load-pod "pod-babashka-hsqldb")
-;; note: if the pod is downloaded directly to your file system, `load-pod`
-;; needs to be told explicitly where to find it. The form below assumes
-;; that the pod was downloaded and lives in the same directory as your script.
+;; load from pod registry:
+(pods/load-pod 'org.babashka/hsqldb "0.0.1")
+;; or load from system path:
+;; (pods/load-pod "pod-babashka-hsqldb")
+;; or load from a relative or absolute path:
 ;; (pods/load-pod "./pod-babashka-hsqldb")
 
 (require '[pod.babashka.hsqldb :as db])
