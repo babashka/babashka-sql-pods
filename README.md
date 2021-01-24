@@ -19,7 +19,7 @@ The following installation methods are available:
   [pod-registry](https://github.com/babashka/pod-registry). This is done by
   calling `load-pod` with a qualified keyword:
 
-  ```
+  ``` clojure
   (require '[babashka.pods :as pods])
   (pods/load-pod 'org.babashka/postgresql "0.0.1")
   ```
