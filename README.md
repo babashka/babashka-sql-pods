@@ -15,6 +15,17 @@ PRs for other SQL databases are welcome. (Look at #15 + #20 for an example of ad
 
 The following installation methods are available:
 
+- Use the latest version from the
+  [pod-registry](https://github.com/babashka/pod-registry). This is done by
+  calling `load-pod` with a qualified keyword:
+
+  ```
+  (require '[babashka.pods :as pods])
+  (pods/load-pod 'org.babashka/postgresql "0.0.1")
+  ```
+
+  Babashka will automatically download the pod if it is not available on your system yet.
+
 - Download a binary from Github releases
 - With [brew](https://brew.sh/): `brew install borkdude/brew/pod-babashka-<db>`
 where `<db>` must be substited with the database type, either `hsqldb` or
@@ -51,10 +62,11 @@ An example using `pod-babashka-postgresql`:
 ``` clojure
 (require '[babashka.pods :as pods])
 
-(pods/load-pod "pod-babashka-postgresql")
-;; note: if the pod is downloaded directly to your file system, `load-pod`
-;; needs to be told explicitly where to find it. The form below assumes
-;; that the pod was downloaded and lives in the same directory as your script.
+;; load from pod registry:
+(pods/load-pod 'org.babashka/postgresql "0.0.1")
+;; or load from system path:
+;; (pods/load-pod "pod-babashka-postgresql")
+;; or load from a relative or absolute path:
 ;; (pods/load-pod "./pod-babashka-postgresql")
 
 (require '[pod.babashka.postgresql :as pg])
