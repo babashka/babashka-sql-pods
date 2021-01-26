@@ -138,7 +138,7 @@ Example:
 (require '[honeysql.core :as hsql])
 
 (hsql/format {:select [:a :b :c] :from [:foo] :where [:= :a 1]})
-["SELECT a, b, c FROM foo WHERE a = ?" 1]
+;;=> ["SELECT a, b, c FROM foo WHERE a = ?" 1]
 ```
 
 ## Dev
