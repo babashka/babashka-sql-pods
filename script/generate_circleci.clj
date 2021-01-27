@@ -5,59 +5,17 @@
 
 (def java-default-version 11)
 
-(defn linux [& {:keys [java] :or {java java-default-version}}]
+(defn linux [& {:keys [java static] :or {java java-default-version
+                                         static false}}]
   (ordered-map :docker [{:image "circleci/clojure:lein-2.8.1"}]
                :working_directory "~/repo"
-               :environment (ordered-map :LEIN_ROOT "true"
-                                         :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-20.3.0" java)
-                                         :BABASHKA_PLATFORM "linux"
-                                         :BABASHKA_TEST_ENV "native"
-                                         :BABASHKA_XMX "-J-Xmx7g"
-                                         :POD_TEST_ENV "native")
-               :resource_class "large"
-               :steps ["checkout"
-                       {:run {:name "Pull Submodules",
-                              :command "git submodule init\ngit submodule update\n"}}
-                       {:restore_cache {:keys ["linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
-                       {:run {:name "Install Clojure",
-                              :command "
-wget https://download.clojure.org/install/linux-install-1.10.1.447.sh
-chmod +x linux-install-1.10.1.447.sh
-sudo ./linux-install-1.10.1.447.sh"}}
-                       {:run {:name "Install lsof",
-                              :command "sudo apt-get install lsof\n"}}
-                       {:run {:name "Install native dev tools",
-                              :command "sudo apt-get update\nsudo apt-get -y install gcc g++ zlib1g-dev\n"}}
-                       {:run {:name    "Download GraalVM",
-                              :command (format "
-cd ~
-if ! [ -d graalvm-ce-java%s-20.3.0 ]; then
-  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.3.0/graalvm-ce-java%s-linux-amd64-20.3.0.tar.gz
-  tar xzf graalvm-ce-java%s-linux-amd64-20.3.0.tar.gz
-fi" java java java)}}
-                       {:run {:name "Build binary",
-                              :command "# script/uberjar\nscript/compile\n",
-                              :no_output_timeout "30m"}}
-                       {:run {:name "Run tests",
-                              :command "script/test\n"}}
-                       {:run {:name "Release",
-                              :command ".circleci/script/release\n"}}
-                       {:save_cache {:paths ["~/.m2"
-                                             (format "~/graalvm-ce-java%s-20.3.0" java)],
-                                     :key   "linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
-                       {:store_artifacts {:path "/tmp/release",
-                                          :destination "release"}}]))
-
-(defn linux-static [& {:keys [java] :or {java java-default-version}}]
-  (ordered-map :docker [{:image "circleci/clojure:lein-2.8.1"}]
-               :working_directory "~/repo"
-               :environment (ordered-map :LEIN_ROOT "true"
-                                         :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-20.3.0" java)
-                                         :BABASHKA_PLATFORM "linux-static"
-                                         :BABASHKA_TEST_ENV "native"
-                                         :BABASHKA_STATIC "true"
-                                         :BABASHKA_XMX "-J-Xmx7g"
-                                         :POD_TEST_ENV "native")
+               :environment (cond-> (ordered-map :LEIN_ROOT "true"
+                                                 :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-20.3.0" java)
+                                                 :BABASHKA_PLATFORM "linux"
+                                                 :BABASHKA_TEST_ENV "native"
+                                                 :BABASHKA_XMX "-J-Xmx7g"
+                                                 :POD_TEST_ENV "native")
+                              static (assoc :BABASHKA_STATIC "true"))
                :resource_class "large"
                :steps ["checkout"
                        {:run {:name "Pull Submodules",
@@ -133,19 +91,19 @@ fi" java java java)}}
   (ordered-map
    :version 2.1,
    :jobs (ordered-map
-           ;; NOTE: hsqldb tests on java11 fail with a weird NullPointerException (1/2021)
+          ;; NOTE: hsqldb tests on java11 fail with a weird NullPointerException (1/2021)
           :hsqldb-linux (assoc-in (linux :java 8)
                                   [:environment :POD_DB_TYPE] "hsqldb")
-          :hsqldb-linux-static (assoc-in (linux-static :java 8)
+          :hsqldb-linux-static (assoc-in (linux :java 8 :static true)
                                          [:environment :POD_DB_TYPE] "hsqldb")
           :hsqldb-mac  (assoc-in (mac :java 8)
                                  [:environment :POD_DB_TYPE] "hsqldb")
           :postgresql-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "postgresql")
-          :postgresql-linux-static (assoc-in (linux-static)
+          :postgresql-linux-static (assoc-in (linux :static true)
                                              [:environment :POD_DB_TYPE] "postgresql")
           :postgresql-mac  (assoc-in (mac) [:environment :POD_DB_TYPE] "postgresql")
           :oracle-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "oracle")
-          :oracle-linux-static (assoc-in (linux-static)
+          :oracle-linux-static (assoc-in (linux :static true)
                                          [:environment :POD_DB_TYPE] "oracle")
           :oracle-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "oracle")),
    :workflows (ordered-map
