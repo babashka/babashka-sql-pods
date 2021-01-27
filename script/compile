@@ -45,23 +45,31 @@ echo "$POD_REFLECTION_CONFIG"
 java -version
 lein with-profiles "$POD_LEIN_PROFILES" "do" clean, uberjar
 
-$GRAALVM_HOME/bin/native-image \
-    -jar "$JAR" \
-    -H:Name="$POD_NAME" \
-    -H:+ReportExceptionStackTraces \
-    -J-Dclojure.spec.skip-macros=true \
-    -J-Dclojure.compiler.direct-linking=true \
-    "-H:IncludeResources=POD_BABASHKA_SQL_VERSION" \
-    -H:ReflectionConfigurationFiles="$POD_REFLECTION_CONFIG" \
-    --initialize-at-build-time  \
-    -H:Log=registerResource: \
-    "-H:EnableURLProtocols=http,https" \
-    "--enable-all-security-services" \
-    "-H:+JNI" \
-    --verbose \
-    --no-fallback \
-    --no-server \
-    --report-unsupported-elements-at-runtime \
-    "-H:IncludeResources=org/hsqldb/.*\.properties" "-H:IncludeResources=org/hsqldb/.*\.sql" \
-    "--initialize-at-run-time=org.postgresql.sspi.SSPIClient" \
-    "-J-Xmx4500m"
+
+BABASHKA_XMX=${BABASHKA_XMX:-"-J-Xmx4500m"}
+
+args=( "-jar" "$JAR"
+       "-H:Name=$POD_NAME"
+       "-H:+ReportExceptionStackTraces"
+       "-J-Dclojure.spec.skip-macros=true"
+       "-J-Dclojure.compiler.direct-linking=true"
+       "-H:IncludeResources=POD_BABASHKA_SQL_VERSION"
+       "-H:ReflectionConfigurationFiles=$POD_REFLECTION_CONFIG"
+       "--initialize-at-build-time"
+       "-H:Log=registerResource:"
+       "-H:EnableURLProtocols=http,https"
+       "--enable-all-security-services"
+       "-H:+JNI"
+       "--verbose"
+       "--no-fallback"
+       "--no-server"
+       "--report-unsupported-elements-at-runtime"
+       "-H:IncludeResources=org/hsqldb/.*\.properties" "-H:IncludeResources=org/hsqldb/.*\.sql"
+       "--initialize-at-run-time=org.postgresql.sspi.SSPIClient"
+       "$BABASHKA_XMX" )
+
+if [ "$BABASHKA_STATIC" = "true" ]; then
+    args+=("--static")
+fi
+
+"$GRAALVM_HOME/bin/native-image" "${args[@]}"
