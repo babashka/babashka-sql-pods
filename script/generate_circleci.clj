@@ -48,6 +48,50 @@ fi" java java java)}}
                        {:store_artifacts {:path "/tmp/release",
                                           :destination "release"}}]))
 
+(defn linux-static [& {:keys [java] :or {java java-default-version}}]
+  (ordered-map :docker [{:image "circleci/clojure:lein-2.8.1"}]
+               :working_directory "~/repo"
+               :environment (ordered-map :LEIN_ROOT "true"
+                                         :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-20.3.0" java)
+                                         :BABASHKA_PLATFORM "linux-static"
+                                         :BABASHKA_TEST_ENV "native"
+                                         :BABASHKA_STATIC "true"
+                                         :BABASHKA_XMX "-J-Xmx7g"
+                                         :POD_TEST_ENV "native")
+               :resource_class "large"
+               :steps ["checkout"
+                       {:run {:name "Pull Submodules",
+                              :command "git submodule init\ngit submodule update\n"}}
+                       {:restore_cache {:keys ["linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
+                       {:run {:name "Install Clojure",
+                              :command "
+wget https://download.clojure.org/install/linux-install-1.10.1.447.sh
+chmod +x linux-install-1.10.1.447.sh
+sudo ./linux-install-1.10.1.447.sh"}}
+                       {:run {:name "Install lsof",
+                              :command "sudo apt-get install lsof\n"}}
+                       {:run {:name "Install native dev tools",
+                              :command "sudo apt-get update\nsudo apt-get -y install gcc g++ zlib1g-dev\n"}}
+                       {:run {:name    "Download GraalVM",
+                              :command (format "
+cd ~
+if ! [ -d graalvm-ce-java%s-20.3.0 ]; then
+  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.3.0/graalvm-ce-java%s-linux-amd64-20.3.0.tar.gz
+  tar xzf graalvm-ce-java%s-linux-amd64-20.3.0.tar.gz
+fi" java java java)}}
+                       {:run {:name "Build binary",
+                              :command "# script/uberjar\nscript/compile\n",
+                              :no_output_timeout "30m"}}
+                       {:run {:name "Run tests",
+                              :command "script/test\n"}}
+                       {:run {:name "Release",
+                              :command ".circleci/script/release\n"}}
+                       {:save_cache {:paths ["~/.m2"
+                                             (format "~/graalvm-ce-java%s-20.3.0" java)],
+                                     :key   "linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
+                       {:store_artifacts {:path "/tmp/release",
+                                          :destination "release"}}]))
+
 (defn mac [& {:keys [java] :or {java java-default-version}}]
   (ordered-map :macos {:xcode "12.0.0"},
                :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-ce-java%s-20.3.0/Contents/Home" java),
@@ -92,19 +136,28 @@ fi" java java java)}}
            ;; NOTE: hsqldb tests on java11 fail with a weird NullPointerException (1/2021)
           :hsqldb-linux (assoc-in (linux :java 8)
                                   [:environment :POD_DB_TYPE] "hsqldb")
+          :hsqldb-linux-static (assoc-in (linux-static :java 8)
+                                         [:environment :POD_DB_TYPE] "hsqldb")
           :hsqldb-mac  (assoc-in (mac :java 8)
                                  [:environment :POD_DB_TYPE] "hsqldb")
           :postgresql-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "postgresql")
+          :postgresql-linux-static (assoc-in (linux-static)
+                                             [:environment :POD_DB_TYPE] "postgresql")
           :postgresql-mac  (assoc-in (mac) [:environment :POD_DB_TYPE] "postgresql")
           :oracle-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "oracle")
+          :oracle-linux-static (assoc-in (linux-static)
+                                         [:environment :POD_DB_TYPE] "oracle")
           :oracle-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "oracle")),
    :workflows (ordered-map
                :version 2
                :ci {:jobs ["hsqldb-linux"
+                           "hsqldb-linux-static"
                            "hsqldb-mac"
                            "postgresql-linux"
+                           "postgresql-linux-static"
                            "postgresql-mac"
                            "oracle-linux"
+                           "oracle-linux-static"
                            "oracle-mac"]})))
 
 (require '[clj-yaml.core :as yaml])
