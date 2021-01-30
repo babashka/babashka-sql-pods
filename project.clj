@@ -7,7 +7,7 @@
         :url "https://github.com/borkdude/pod-babashka-hsqldb"}
   :license {:name "Eclipse Public License 1.0"
             :url "http://opensource.org/licenses/eclipse-1.0.php"}
-  :source-paths ["src"]
+  :source-paths ["src" "next-jdbc/src"]
   :resource-paths ["resources"]
   :dependencies [[org.clojure/clojure "1.10.2-rc3"]
                  [seancorfield/next.jdbc "1.1.613"]
