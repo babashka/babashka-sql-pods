@@ -77,5 +77,7 @@
                   #:foo{:foo 5} #:foo{:foo 6} #:foo{:foo 7}]
                  (db/execute! db  ["select * from foo;"]))))))
     (testing "prepared statement"
-      (is (doto (db/prepare db ["select * from foo;"])
+      (is (doto
+              (let [conn (db/get-connection db)]
+                (db/prepare conn ["select * from foo;"]))
             (prn))))))

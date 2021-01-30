@@ -140,6 +140,7 @@
                    :vars [{:name execute!}
                           {:name get-connection}
                           {:name close-connection}
+                          {:name prepare}
                           {:name with-transaction
                            :code ~with-transaction}]}
                   {:name ~(symbol (str sql-ns ".transaction"))
