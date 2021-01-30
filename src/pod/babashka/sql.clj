@@ -113,6 +113,7 @@
            'execute-one! execute-one!
            'get-connection get-connection
            'close-connection close-connection
+           'prepare prepare
            'transaction/begin transaction-begin
            'transaction/rollback transaction-rollback
            'transaction/commit transaction-commit
