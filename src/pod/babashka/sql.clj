@@ -7,6 +7,7 @@
             [clojure.walk :as walk]
             [next.jdbc :as jdbc]
             [next.jdbc.date-time]
+            [next.jdbc.prepare :as prepare]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
             [pod.babashka.sql.features :as features])
@@ -95,6 +96,13 @@
         prom (get old connection)]
     (deliver prom :ok)
     nil))
+
+(defn prepare [db-spec sql-vec]
+  (let [conn (->connectable db-spec)
+        prepared (prepare/prepare conn sql-vec)]
+    (binding [*out* *err*]
+      (prn :prepared prepared))
+    {:prepared :yes}))
 
 (def sql-ns (cond features/postgresql? "pod.babashka.postgresql"
                   features/hsqldb? "pod.babashka.hsqldb"
