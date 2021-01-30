@@ -1,2 +1,4 @@
-[{"name": "org.postgresql.jdbc.PgConnection",
+[{"name": "java.lang.reflect.AccessibleObject",
+  "methods" : [{"name":"canAccess"}]},
+ {"name": "org.postgresql.jdbc.PgConnection",
   "methods" : [{"name":"close"}]}]
