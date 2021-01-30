@@ -7,7 +7,6 @@
             [clojure.walk :as walk]
             [next.jdbc :as jdbc]
             [next.jdbc.date-time]
-            [next.jdbc.prepare :as prepare]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
             [pod.babashka.sql.features :as features])
@@ -99,7 +98,7 @@
 
 (defn prepare [db-spec sql-vec]
   (let [conn (->connectable db-spec)
-        prepared (prepare/prepare conn sql-vec)]
+        prepared (jdbc/prepare conn sql-vec)]
     (binding [*out* *err*]
       (prn :prepared prepared))
     {:prepared :yes}))
