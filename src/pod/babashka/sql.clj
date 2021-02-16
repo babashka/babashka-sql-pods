@@ -99,6 +99,7 @@
 (def sql-ns (cond features/postgresql? "pod.babashka.postgresql"
                   features/hsqldb? "pod.babashka.hsqldb"
                   features/oracle? "pod.babashka.oracle"
+                  features/mssql? "pod.babashka.mssql"
                   :else (throw (Exception. "Feature flag expected."))))
 
 (def lookup
