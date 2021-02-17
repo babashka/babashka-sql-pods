@@ -75,13 +75,17 @@ args=( "-jar" "$JAR"
        "-H:+AddAllCharsets"
        "-H:IncludeResources=org/hsqldb/.*\.properties"
        "-H:IncludeResources=org/hsqldb/.*\.sql"
-       "-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource"
        "--initialize-at-run-time=org.postgresql.sspi.SSPIClient"
        "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerColumnEncryptionAzureKeyVaultProvider"
        "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerFMTQuery"
        "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerBouncyCastleLoader"
        "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerMSAL4JUtils"
        "$BABASHKA_XMX" )
+
+if [ "$POD_DB_TYPE" = "mssql" ]
+then
+    args+=("-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource")
+fi
 
 if [ "$BABASHKA_STATIC" = "true" ]; then
     args+=("--static")
