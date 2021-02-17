@@ -14,3 +14,8 @@ if [ "$POD_DB_TYPE" = "oracle" ]
 then
     clojure -A:test -n pod.babashka.oracle-test
 fi
+
+if [ "$POD_DB_TYPE" = "mssql" ]
+then
+    clojure -A:test -n pod.babashka.mssql-test
+fi

@@ -35,6 +35,13 @@ else
     POD_LEIN_PROFILES+=",-feature/oracle"
 fi
 
+if [ "$POD_DB_TYPE" = "mssql" ]
+then
+    POD_LEIN_PROFILES+=",+feature/mssql"
+else
+    POD_LEIN_PROFILES+=",-feature/mssql"
+fi
+
 VERSION=$(cat resources/POD_BABASHKA_SQL_VERSION)
 
 JAR="target/pod-babashka-sql-$VERSION-standalone.jar"
@@ -59,13 +66,21 @@ args=( "-jar" "$JAR"
        "-H:Log=registerResource:"
        "-H:EnableURLProtocols=http,https"
        "--enable-all-security-services"
+       "--allow-incomplete-classpath"
        "-H:+JNI"
        "--verbose"
        "--no-fallback"
        "--no-server"
        "--report-unsupported-elements-at-runtime"
-       "-H:IncludeResources=org/hsqldb/.*\.properties" "-H:IncludeResources=org/hsqldb/.*\.sql"
+       "-H:+AddAllCharsets"
+       "-H:IncludeResources=org/hsqldb/.*\.properties"
+       "-H:IncludeResources=org/hsqldb/.*\.sql"
+       "-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource"
        "--initialize-at-run-time=org.postgresql.sspi.SSPIClient"
+       "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerColumnEncryptionAzureKeyVaultProvider"
+       "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerFMTQuery"
+       "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerBouncyCastleLoader"
+       "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerMSAL4JUtils"
        "$BABASHKA_XMX" )
 
 if [ "$BABASHKA_STATIC" = "true" ]; then
