@@ -11,7 +11,7 @@
                :working_directory "~/repo"
                :environment (cond-> (ordered-map :LEIN_ROOT "true"
                                                  :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-20.3.0" java)
-                                                 :BABASHKA_PLATFORM "linux"
+                                                 :BABASHKA_PLATFORM (str "linux" (when static "-static"))
                                                  :BABASHKA_TEST_ENV "native"
                                                  :BABASHKA_XMX "-J-Xmx7g"
                                                  :POD_TEST_ENV "native")
