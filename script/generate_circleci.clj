@@ -105,7 +105,11 @@ fi" java java java)}}
           :oracle-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "oracle")
           :oracle-linux-static (assoc-in (linux :static true)
                                          [:environment :POD_DB_TYPE] "oracle")
-          :oracle-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "oracle")),
+          :oracle-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "oracle")
+          :mssql-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "mssql")
+          :mssql-linux-static (assoc-in (linux :static true)
+                                        [:environment :POD_DB_TYPE] "mssql")
+          :mssql-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "mssql")),
    :workflows (ordered-map
                :version 2
                :ci {:jobs ["hsqldb-linux"
@@ -116,7 +120,10 @@ fi" java java java)}}
                            "postgresql-mac"
                            "oracle-linux"
                            "oracle-linux-static"
-                           "oracle-mac"]})))
+                           "oracle-mac"
+                           "mssql-linux"
+                           "mssql-linux-static"
+                           "mssql-mac"]})))
 
 (require '[clj-yaml.core :as yaml])
 (spit ".circleci/config.yml"
