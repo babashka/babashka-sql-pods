@@ -56,8 +56,8 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java8-20.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        paths: [~/.m2, ~/graalvm-ce-java8-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-linux-static:
     docker:
@@ -114,8 +114,8 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java8-20.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        paths: [~/.m2, ~/graalvm-ce-java8-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-mac:
     macos: {xcode: 12.0.0}
@@ -163,8 +163,8 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java8-20.3.0]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        paths: [~/.m2, ~/graalvm-ce-java8-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-linux:
     docker:
@@ -221,8 +221,8 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-linux-static:
     docker:
@@ -279,8 +279,8 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-mac:
     macos: {xcode: 12.0.0}
@@ -328,8 +328,8 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-linux:
     docker:
@@ -386,8 +386,8 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-linux-static:
     docker:
@@ -444,8 +444,8 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-mac:
     macos: {xcode: 12.0.0}
@@ -493,8 +493,8 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
+        paths: [~/.m2, ~/graalvm-ce-java11-20.3.0]
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-linux:
     docker:
@@ -558,7 +558,7 @@ jobs:
     docker:
     - {image: 'circleci/clojure:lein-2.8.1'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-20.3.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', POD_DB_TYPE: mssql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-20.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', POD_DB_TYPE: mssql}
     resource_class: large
     steps:
     - checkout
