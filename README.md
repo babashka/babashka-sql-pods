@@ -6,6 +6,7 @@ databases.
 Supported databases:
 
 - [HSQLDB](http://www.hsqldb.org/)
+- [Microsoft SQL Server](https://www.microsoft.com/nl-nl/sql-server)
 - [Oracle](https://www.oracle.com/database/)
 - [PostgresQL](https://www.postgresql.org/)
 
@@ -27,9 +28,9 @@ The following installation methods are available:
   Babashka will automatically download the pod if it is not available on your system yet.
 
 - Download a binary from Github releases
-- With [brew](https://brew.sh/): `brew install borkdude/brew/pod-babashka-<db>`
-where `<db>` must be substited with the database type, either `hsqldb` or
-`postgresql`.
+<!-- - With [brew](https://brew.sh/): `brew install borkdude/brew/pod-babashka-<db>` -->
+<!-- where `<db>` must be substited with the database type, either `hsqldb` or -->
+<!-- `postgresql`. -->
 
 ## Compatibility
 
@@ -155,7 +156,7 @@ Run `script/test`.
 
 ## License
 
-Copyright © 2020 Michiel Borkent
+Copyright © 2020-2021 Michiel Borkent
 
 Distributed under the EPL License. See LICENSE.
 
