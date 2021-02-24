@@ -142,6 +142,20 @@ Example:
 ;;=> ["SELECT a, b, c FROM foo WHERE a = ?" 1]
 ```
 
+## Troubleshooting
+
+### JSON
+
+When selecting `json` or `jsonb` fields from a PostgreSQL table, you will see:
+
+``` clojure
+Cannot read EDN: ... #object[org.postgresql.util.PGobject .... :cause "No reader function for tag object"
+```
+
+The reason is that `PGobject` values are not automatically converted into
+Clojure values before serialization. A workaround is to select the values as
+text (using `::text`) and then deserialize the JSON yourself.
+
 ## Dev
 
 Set `POD_DB_TYPE` to either `hsqldb`, `postgresql`, or `oracle`.
