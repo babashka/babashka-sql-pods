@@ -156,6 +156,28 @@ The reason is that `PGobject` values are not automatically converted into
 Clojure values before serialization. A workaround is to select the values as
 text (using `::text`) and then deserialize the JSON yourself.
 
+### MS SQL Server support
+
+If you are connecting to SQL Server, you may try connecting like this:
+
+```clojure
+(require '[pod.babashka.mssql :as sql])
+(def db {:dbtype "mssql" :host "my-dbhost" :dbname "my_db" :integratedSecurity true})
+(sql/execute! db ...)
+```
+
+Using integrated security like this will not work (yet?) - you will get an error:
+
+```
+----- Error --------------------------------------------------------------------
+Type:     clojure.lang.ExceptionInfo
+Message:  This driver is not configured for integrated authentication. ClientConnectionId:889ad681-4fdf-409c-b12c-9eef93129023
+```
+
+As a workaround, you can use [this pod](https://github.com/xledger/pod_sql_server), which connects via a .NET library.
+
+If you are using SQL Server, you may also be interested in [this pod](https://github.com/xledger/pod_tsql_scriptdom), which has a function to reformat/indent your SQL.
+
 ## Dev
 
 Set `POD_DB_TYPE` to either `hsqldb`, `postgresql`, or `oracle`.
