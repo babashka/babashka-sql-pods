@@ -1,10 +1,10 @@
 (ns pod.babashka.sql
   (:refer-clojure :exclude [read read-string])
   (:require [bencode.core :as bencode]
-            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.walk :as walk]
+            [cognitect.transit :as transit]
             [next.jdbc :as jdbc]
             [next.jdbc.date-time]
             [next.jdbc.sql :as sql]
@@ -128,7 +128,7 @@
    (fn [v]
      (if (ident? v) (name v)
          v))
-   `{:format :edn
+   `{:format :transit+json
      :namespaces [{:name ~(symbol sql-ns)
                    :vars [{:name execute!}
                           {:name get-connection}
@@ -144,6 +144,17 @@
      :opts {:shutdown {}}}))
 
 (debug describe-map)
+
+(defn read-transit [^String v]
+  (transit/read
+   (transit/reader
+    (java.io.ByteArrayInputStream. (.getBytes v "utf-8"))
+    :json)))
+
+(defn write-transit [v]
+  (let [baos (java.io.ByteArrayOutputStream.)]
+    (transit/write (transit/writer baos :json) v)
+    (.toString baos "utf-8")))
 
 (defn -main [& _args]
   (loop []
@@ -166,9 +177,9 @@
                                         symbol)
                                 args (get message "args")
                                 args (read-string args)
-                                args (edn/read-string args)]
+                                args (read-transit args)]
                             (if-let [f (lookup var)]
-                              (let [value (pr-str (apply f args))
+                              (let [value (write-transit (apply f args))
                                     reply {"value" value
                                            "id" id
                                            "status" ["done"]}]
@@ -177,9 +188,9 @@
                           (catch Throwable e
                             (debug e)
                             (let [reply {"ex-message" (ex-message e)
-                                         "ex-data" (pr-str
+                                         "ex-data" (write-transit
                                                     (assoc (ex-data e)
-                                                           :type (class e)))
+                                                           :type (str (class e))))
                                          "id" id
                                          "status" ["done" "error"]}]
                               (write reply))))
