@@ -68,8 +68,9 @@
         conn (->connectable db-spec)]
     (apply jdbc/execute! conn args)))
 
-(defn execute-one! [db-spec & args]
-  (let [conn (->connectable db-spec)]
+(defn -execute-one! [db-spec & args]
+  (let [args (walk/postwalk deserialize args)
+        conn (->connectable db-spec)]
     (apply jdbc/execute-one! conn args)))
 
 (defn close-connection [{:keys [::connection]}]
@@ -119,7 +120,7 @@
 
 (def lookup
   (let [m {'-execute! -execute!
-           'execute-one! execute-one!
+           '-execute-one! -execute-one!
            'get-connection get-connection
            'close-connection close-connection
            'transaction/begin transaction-begin
@@ -143,7 +144,11 @@
 
 (def execute-str
   (replace-sql-ns (str '(defn execute! [db-spec & args]
-                       (apply sqlns/-execute! db-spec (sqlns/-serialize args))))))
+                          (apply sqlns/-execute! db-spec (sqlns/-serialize args))))))
+
+(def execute-one-str
+  (replace-sql-ns (str '(defn execute-one! [db-spec & args]
+                          (apply sqlns/-execute-one! db-spec (sqlns/-serialize args))))))
 
 (def -wrap-array-str
   (pr-str '(defn -wrap-array [x]
@@ -167,12 +172,15 @@
    `{:format :transit+json
      :namespaces [{:name ~(symbol sql-ns)
                    :vars [{:name -execute!}
+                          {:name -execute-one!}
                           {:name -wrap-array
                            :code ~-wrap-array-str}
                           {:name -serialize
                            :code ~-serialize-str}
                           {:name execute!
                            :code ~execute-str}
+                          {:name execute-one!
+                           :code ~execute-one-str}
                           {:name get-connection}
                           {:name close-connection}
                           {:name with-transaction

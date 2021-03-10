@@ -63,4 +63,6 @@
     (is (db/execute! db ["create table foo ( foo integer array );"]))
     (is (db/execute! db ["insert into foo (foo) values (?);" (into-array [1 2 3])]))
     (is (= [#:FOO{:FOO [1 2 3]}]
-           (db/execute! db ["select * from foo"])))))
+           (db/execute! db ["select * from foo"])))
+    (is (= #:FOO{:FOO [1 2 3]}
+           (db/execute-one! db ["select * from foo"])))))

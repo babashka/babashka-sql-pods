@@ -82,4 +82,5 @@
       (is (= [#:bar{:bar [1 2 3]}] (db/execute! db ["select * from bar"])))
       (is (db/execute! db ["create table baz ( baz text[] );"]))
       (is (db/execute! db ["insert into baz values (?);" (into-array ["foo" "bar"])]))
-      (is (= [#:baz{:baz ["foo" "bar"]}] (db/execute! db ["select * from baz"]))))))
+      (is (= [#:baz{:baz ["foo" "bar"]}] (db/execute! db ["select * from baz"])))
+      (is (= #:baz{:baz ["foo" "bar"]} (db/execute-one! db ["select * from baz"]))))))
