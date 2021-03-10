@@ -12,6 +12,7 @@
                   "run" "-m" "pod.babashka.sql"]))
 
 (require '[pod.babashka.postgresql :as db])
+(require '[pod.babashka.postgresql.sql :as sql])
 (require '[pod.babashka.postgresql.transaction :as transaction])
 
 (def port 54322)
@@ -83,4 +84,7 @@
       (is (db/execute! db ["create table baz ( baz text[] );"]))
       (is (db/execute! db ["insert into baz values (?);" (into-array ["foo" "bar"])]))
       (is (= [#:baz{:baz ["foo" "bar"]}] (db/execute! db ["select * from baz"])))
-      (is (= #:baz{:baz ["foo" "bar"]} (db/execute-one! db ["select * from baz"]))))))
+      (is (= #:baz{:baz ["foo" "bar"]} (db/execute-one! db ["select * from baz"])))
+      (is (= [#:baz{:baz ["a" "b"]} #:baz{:baz ["x" "y"]}]
+             (sql/insert-multi! db :baz [:baz] [[(into-array ["a" "b"])]
+                                                [(into-array ["x" "y"])]]))))))

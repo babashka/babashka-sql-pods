@@ -73,6 +73,11 @@
         conn (->connectable db-spec)]
     (apply jdbc/execute-one! conn args)))
 
+(defn -insert-multi! [db-spec table cols rows]
+  (let [rows (walk/postwalk deserialize rows)
+        conn (->connectable db-spec)]
+    (sql/insert-multi! conn table cols rows)))
+
 (defn close-connection [{:keys [::connection]}]
   (let [[old _new] (swap-vals! conns dissoc connection)]
     (when-let [conn (get old connection)]
@@ -118,6 +123,12 @@
                   features/mssql? "pod.babashka.mssql"
                   :else (throw (Exception. "Feature flag expected."))))
 
+(def sql-sql-ns (cond features/postgresql? "pod.babashka.postgresql.sql"
+                      features/hsqldb? "pod.babashka.hsqldb.sql"
+                      features/oracle? "pod.babashka.oracle.sql"
+                      features/mssql? "pod.babashka.mssql.sql"
+                      :else (throw (Exception. "Feature flag expected."))))
+
 (def lookup
   (let [m {'-execute! -execute!
            '-execute-one! -execute-one!
@@ -126,7 +137,7 @@
            'transaction/begin transaction-begin
            'transaction/rollback transaction-rollback
            'transaction/commit transaction-commit
-           'sql/insert-multi! sql/insert-multi!}]
+           'sql/-insert-multi! -insert-multi!}]
     (zipmap (map (fn [sym]
                    (if-let [ns (namespace sym)]
                      (symbol (str sql-ns "." ns) (name sym))
@@ -140,7 +151,9 @@
       (str/replace "pod.babashka.sql" sql-ns)))
 
 (defn replace-sql-ns [s]
-  (str/replace s "sqlns" sql-ns))
+  (-> s
+      (str/replace "sqlns" sql-ns)
+      (str/replace "sql-sql-ns" sql-sql-ns)))
 
 (def execute-str
   (replace-sql-ns (str '(defn execute! [db-spec & args]
@@ -149,6 +162,11 @@
 (def execute-one-str
   (replace-sql-ns (str '(defn execute-one! [db-spec & args]
                           (apply sqlns/-execute-one! db-spec (sqlns/-serialize args))))))
+
+(def insert-multi-str
+  (-> (str '(defn insert-multi! [db-spec table cols rows]
+              (sql-sql-ns/-insert-multi! db-spec table cols (sqlns/-serialize rows))))
+      replace-sql-ns))
 
 (def -wrap-array-str
   (pr-str '(defn -wrap-array [x]
@@ -190,7 +208,9 @@
                           {:name rollback}
                           {:name commit}]}
                   {:name ~(symbol (str sql-ns ".sql"))
-                   :vars [{:name insert-multi!}]}]
+                   :vars [{:name -insert-multi!}
+                          {:name insert-multi!
+                           :code ~insert-multi-str}]}]
      :opts {:shutdown {}}}))
 
 (debug describe-map)
