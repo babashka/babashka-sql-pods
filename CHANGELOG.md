@@ -6,8 +6,9 @@ For a list of breaking changes, check [here](#breaking-changes)
 
 - Add `insert-multi!`
 - Support MS SQL support ([@jvtrigueros](https://github.com/jvtrigueros)))
-- Support inserting Java arrays
+- Support inserting Java arrays [#7](https://github.com/babashka/babashka-sql-pods/issues/7)
 - Support querying rows with array results (behavior: automatic conversion to Clojure vectors)
+- Switch to transit as payload format [#27](https://github.com/babashka/babashka-sql-pods/issues/27)
 
 ## v0.0.2
 
