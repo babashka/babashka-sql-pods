@@ -49,9 +49,17 @@
     (get @conns conn-id)
     db-spec))
 
-(defn execute! [db-spec & args]
+(defn deserialize [xs]
+  (prn :de xs)
+  (if (map? xs)
+    (if-let [arr (::array xs)]
+      (into-array arr)
+      xs)
+    xs))
+
+(defn -execute! [db-spec & args]
   (let [conn (->connectable db-spec)]
-    (apply jdbc/execute! conn args)))
+    (apply jdbc/execute! conn (walk/postwalk deserialize args))))
 
 (defn execute-one! [db-spec & args]
   (let [conn (->connectable db-spec)]
@@ -103,7 +111,7 @@
                   :else (throw (Exception. "Feature flag expected."))))
 
 (def lookup
-  (let [m {'execute! execute!
+  (let [m {'-execute! -execute!
            'execute-one! execute-one!
            'get-connection get-connection
            'close-connection close-connection
@@ -123,6 +131,22 @@
       slurp
       (str/replace "pod.babashka.sql" sql-ns)))
 
+(def execute-str
+  (str/replace (str '(defn execute! [db-spec & args]
+                       (apply sqlns/-execute! db-spec (sqlns/-serialize args))))
+               "sqlns" sql-ns))
+
+(def -serialize-str
+  (pr-str '(do (require 'clojure.walk)
+               (defn -wrap-array [x]
+                 (if-let [c (class x)]
+                   (if (.isArray c)
+                     {::array (vec x)}
+                     x)
+                   x))
+               (defn -serialize [obj]
+                 (clojure.walk/postwalk -wrap-array obj)))))
+
 (def describe-map
   (walk/postwalk
    (fn [v]
@@ -130,7 +154,11 @@
          v))
    `{:format :transit+json
      :namespaces [{:name ~(symbol sql-ns)
-                   :vars [{:name execute!}
+                   :vars [{:name -execute!}
+                          {:name -serialize
+                           :code ~-serialize-str}
+                          {:name execute!
+                           :code ~execute-str}
                           {:name get-connection}
                           {:name close-connection}
                           {:name with-transaction

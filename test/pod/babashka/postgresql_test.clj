@@ -76,4 +76,8 @@
                  (db/execute! x ["insert into foo values (8);"]))))
           (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}
                   #:foo{:foo 5} #:foo{:foo 6} #:foo{:foo 7}]
-                 (db/execute! db  ["select * from foo;"]))))))))
+                 (db/execute! db  ["select * from foo;"]))))))
+    (testing "inserting an array"
+      (is (db/execute! db ["create table bar ( bar integer[] );"]))
+      (is (db/execute! db ["insert into bar values ('{1,2,3}');"]))
+      (is (db/execute! db ["insert into bar values (?);" [1 2 3]])))))

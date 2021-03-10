@@ -2,20 +2,20 @@
 
 if [ "$POD_DB_TYPE" = "postgresql" ]
 then
-    clojure -A:test -n pod.babashka.postgresql-test
+    clojure -M:test -n pod.babashka.postgresql-test
 fi
 
 if [ "$POD_DB_TYPE" = "hsqldb" ]
 then
-    clojure -A:test -n pod.babashka.hsqldb-test
+    clojure -M:test -n pod.babashka.hsqldb-test
 fi
 
 if [ "$POD_DB_TYPE" = "oracle" ]
 then
-    clojure -A:test -n pod.babashka.oracle-test
+    clojure -M:test -n pod.babashka.oracle-test
 fi
 
 if [ "$POD_DB_TYPE" = "mssql" ]
 then
-    clojure -A:test -n pod.babashka.mssql-test
+    clojure -M:test -n pod.babashka.mssql-test
 fi
