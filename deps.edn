@@ -10,6 +10,7 @@
      :sha "cb96e80f6f3d3b307c59cbeb49bb0dcb3a2a780b"}
     com.opentable.components/otj-pg-embedded {:mvn/version "0.13.3"}
     babashka/babashka.pods
+    #_{:local/root "../pods"}
     {:git/url "https://github.com/babashka/babashka.pods"
      :sha "a033bccaf0024b279480f2a7ac4b446621629b73"}}
    :extra-paths ["test"]

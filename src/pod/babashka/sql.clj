@@ -50,7 +50,6 @@
     db-spec))
 
 (defn deserialize [xs]
-  (prn :de xs)
   (if (map? xs)
     (if-let [arr (::array xs)]
       (into-array arr)
@@ -131,21 +130,26 @@
       slurp
       (str/replace "pod.babashka.sql" sql-ns)))
 
+(defn replace-sql-ns [s]
+  (str/replace s "sqlns" sql-ns))
+
 (def execute-str
-  (str/replace (str '(defn execute! [db-spec & args]
-                       (apply sqlns/-execute! db-spec (sqlns/-serialize args))))
-               "sqlns" sql-ns))
+  (replace-sql-ns (str '(defn execute! [db-spec & args]
+                       (apply sqlns/-execute! db-spec (sqlns/-serialize args))))))
+
+(def -wrap-array-str
+  (pr-str '(defn -wrap-array [x]
+             (if-let [c (class x)]
+               (if (.isArray c)
+                 {::array (vec x)}
+                 x)
+               x))))
 
 (def -serialize-str
-  (pr-str '(do (require 'clojure.walk)
-               (defn -wrap-array [x]
-                 (if-let [c (class x)]
-                   (if (.isArray c)
-                     {::array (vec x)}
-                     x)
-                   x))
-               (defn -serialize [obj]
-                 (clojure.walk/postwalk -wrap-array obj)))))
+  (replace-sql-ns
+   (pr-str '(do (require 'clojure.walk)
+                (defn -serialize [obj]
+                  (clojure.walk/postwalk sqlns/-wrap-array obj))))))
 
 (def describe-map
   (walk/postwalk
@@ -155,6 +159,8 @@
    `{:format :transit+json
      :namespaces [{:name ~(symbol sql-ns)
                    :vars [{:name -execute!}
+                          {:name -wrap-array
+                           :code ~-wrap-array-str}
                           {:name -serialize
                            :code ~-serialize-str}
                           {:name execute!
