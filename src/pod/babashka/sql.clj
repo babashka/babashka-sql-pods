@@ -7,11 +7,18 @@
             [cognitect.transit :as transit]
             [next.jdbc :as jdbc]
             [next.jdbc.date-time]
+            [next.jdbc.result-set :as rs]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
             [pod.babashka.sql.features :as features])
-  (:import [java.io PushbackInputStream])
+  (:import [java.io PushbackInputStream]
+           [java.sql Array])
   (:gen-class))
+
+(extend-protocol rs/ReadableColumn
+  Array
+  (read-column-by-label [^Array v _]    (vec (.getArray v)))
+  (read-column-by-index [^Array v _ _]  (vec (.getArray v))))
 
 (def stdin (PushbackInputStream. System/in))
 
@@ -49,13 +56,27 @@
     (get @conns conn-id)
     db-spec))
 
-(defn execute! [db-spec & args]
-  (let [conn (->connectable db-spec)]
+(defn deserialize [xs]
+  (if (map? xs)
+    (if-let [arr (:pod.babashka.sql/array xs)]
+      (into-array arr)
+      xs)
+    xs))
+
+(defn -execute! [db-spec & args]
+  (let [args (walk/postwalk deserialize args)
+        conn (->connectable db-spec)]
     (apply jdbc/execute! conn args)))
 
-(defn execute-one! [db-spec & args]
-  (let [conn (->connectable db-spec)]
+(defn -execute-one! [db-spec & args]
+  (let [args (walk/postwalk deserialize args)
+        conn (->connectable db-spec)]
     (apply jdbc/execute-one! conn args)))
+
+(defn -insert-multi! [db-spec table cols rows]
+  (let [rows (walk/postwalk deserialize rows)
+        conn (->connectable db-spec)]
+    (sql/insert-multi! conn table cols rows)))
 
 (defn close-connection [{:keys [::connection]}]
   (let [[old _new] (swap-vals! conns dissoc connection)]
@@ -102,15 +123,21 @@
                   features/mssql? "pod.babashka.mssql"
                   :else (throw (Exception. "Feature flag expected."))))
 
+(def sql-sql-ns (cond features/postgresql? "pod.babashka.postgresql.sql"
+                      features/hsqldb? "pod.babashka.hsqldb.sql"
+                      features/oracle? "pod.babashka.oracle.sql"
+                      features/mssql? "pod.babashka.mssql.sql"
+                      :else (throw (Exception. "Feature flag expected."))))
+
 (def lookup
-  (let [m {'execute! execute!
-           'execute-one! execute-one!
+  (let [m {'-execute! -execute!
+           '-execute-one! -execute-one!
            'get-connection get-connection
            'close-connection close-connection
            'transaction/begin transaction-begin
            'transaction/rollback transaction-rollback
            'transaction/commit transaction-commit
-           'sql/insert-multi! sql/insert-multi!}]
+           'sql/-insert-multi! -insert-multi!}]
     (zipmap (map (fn [sym]
                    (if-let [ns (namespace sym)]
                      (symbol (str sql-ns "." ns) (name sym))
@@ -123,6 +150,38 @@
       slurp
       (str/replace "pod.babashka.sql" sql-ns)))
 
+(defn replace-sql-ns [s]
+  (-> s
+      (str/replace "sqlns" sql-ns)
+      (str/replace "sql-sql-ns" sql-sql-ns)))
+
+(def execute-str
+  (replace-sql-ns (str '(defn execute! [db-spec & args]
+                          (apply sqlns/-execute! db-spec (sqlns/-serialize args))))))
+
+(def execute-one-str
+  (replace-sql-ns (str '(defn execute-one! [db-spec & args]
+                          (apply sqlns/-execute-one! db-spec (sqlns/-serialize args))))))
+
+(def insert-multi-str
+  (-> (str '(defn insert-multi! [db-spec table cols rows]
+              (sql-sql-ns/-insert-multi! db-spec table cols (sqlns/-serialize rows))))
+      replace-sql-ns))
+
+(def -wrap-array-str
+  (pr-str '(defn -wrap-array [x]
+             (if-let [c (class x)]
+               (if (.isArray c)
+                 {::array (vec x)}
+                 x)
+               x))))
+
+(def -serialize-str
+  (replace-sql-ns
+   (pr-str '(do (require 'clojure.walk)
+                (defn -serialize [obj]
+                  (clojure.walk/postwalk sqlns/-wrap-array obj))))))
+
 (def describe-map
   (walk/postwalk
    (fn [v]
@@ -130,7 +189,16 @@
          v))
    `{:format :transit+json
      :namespaces [{:name ~(symbol sql-ns)
-                   :vars [{:name execute!}
+                   :vars [{:name -execute!}
+                          {:name -execute-one!}
+                          {:name -wrap-array
+                           :code ~-wrap-array-str}
+                          {:name -serialize
+                           :code ~-serialize-str}
+                          {:name execute!
+                           :code ~execute-str}
+                          {:name execute-one!
+                           :code ~execute-one-str}
                           {:name get-connection}
                           {:name close-connection}
                           {:name with-transaction
@@ -140,7 +208,9 @@
                           {:name rollback}
                           {:name commit}]}
                   {:name ~(symbol (str sql-ns ".sql"))
-                   :vars [{:name insert-multi!}]}]
+                   :vars [{:name -insert-multi!}
+                          {:name insert-multi!
+                           :code ~insert-multi-str}]}]
      :opts {:shutdown {}}}))
 
 (debug describe-map)

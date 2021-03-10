@@ -43,6 +43,7 @@ the database type, either `hsqldb`, `postgresql`, or `oracle`:
 
 - `pod.babashka.<db>`:
   - `execute!`: similar to `next.jdbc/execute!`
+  - `execute-one!`: similar to `next.jdbc/execute-one!`
   - `get-connection`: returns connection serialized using maps with a unique identifier key
   - `close-connection`: closes a connection returned from `get-connection`
   - `with-transaction`: similar to `next.jdbc/with-transaction`

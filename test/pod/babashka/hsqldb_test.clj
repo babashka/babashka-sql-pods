@@ -2,7 +2,6 @@
   {:clj-kondo/config
    '{:lint-as {pod.babashka.hsqldb/with-transaction next.jdbc/with-transaction}}}
   (:require [babashka.pods :as pods]
-            [pod.babashka.sql.features :as features]
             [clojure.test :refer [deftest is testing]]))
 
 (pods/load-pod (if (= "native" (System/getenv "POD_TEST_ENV"))
@@ -58,4 +57,12 @@
             (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3}
                     #:FOO{:FOO 4} #:FOO{:FOO 5} #:FOO{:FOO 6}
                     #:FOO{:FOO 7}]
-                   (db/execute! db  ["select * from foo;"]))))))))
+                   (db/execute! db  ["select * from foo;"]))))))
+      (db/execute! db ["drop schema public cascade;"]))
+  (let [db "jdbc:hsqldb:mem:testdb;sql.syntax_mys=true"]
+    (is (db/execute! db ["create table foo ( foo integer array );"]))
+    (is (db/execute! db ["insert into foo (foo) values (?);" (into-array [1 2 3])]))
+    (is (= [#:FOO{:FOO [1 2 3]}]
+           (db/execute! db ["select * from foo"])))
+    (is (= #:FOO{:FOO [1 2 3]}
+           (db/execute-one! db ["select * from foo"])))))
