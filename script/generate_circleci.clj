@@ -23,9 +23,9 @@
                        {:restore_cache {:keys ["linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
                        {:run {:name "Install Clojure",
                               :command "
-wget https://download.clojure.org/install/linux-install-1.10.2.805.sh
-chmod +x linux-install-1.10.2.805.sh
-sudo ./linux-install-1.10.2.805.sh"}}
+wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
+chmod +x linux-install-1.10.2.796.sh
+sudo ./linux-install-1.10.2.796.sh"}}
                        {:run {:name "Install lsof",
                               :command "sudo apt-get install lsof\n"}}
                        {:run {:name "Install native dev tools",
