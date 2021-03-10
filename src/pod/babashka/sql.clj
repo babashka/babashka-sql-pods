@@ -7,11 +7,18 @@
             [cognitect.transit :as transit]
             [next.jdbc :as jdbc]
             [next.jdbc.date-time]
+            [next.jdbc.result-set :as rs]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
             [pod.babashka.sql.features :as features])
-  (:import [java.io PushbackInputStream])
+  (:import [java.io PushbackInputStream]
+           [java.sql Array])
   (:gen-class))
+
+(extend-protocol rs/ReadableColumn
+  Array
+  (read-column-by-label [^Array v _]    (vec (.getArray v)))
+  (read-column-by-index [^Array v _ _]  (vec (.getArray v))))
 
 (def stdin (PushbackInputStream. System/in))
 
@@ -51,14 +58,15 @@
 
 (defn deserialize [xs]
   (if (map? xs)
-    (if-let [arr (::array xs)]
+    (if-let [arr (:pod.babashka.sql/array xs)]
       (into-array arr)
       xs)
     xs))
 
 (defn -execute! [db-spec & args]
-  (let [conn (->connectable db-spec)]
-    (apply jdbc/execute! conn (walk/postwalk deserialize args))))
+  (let [args (walk/postwalk deserialize args)
+        conn (->connectable db-spec)]
+    (apply jdbc/execute! conn args)))
 
 (defn execute-one! [db-spec & args]
   (let [conn (->connectable db-spec)]

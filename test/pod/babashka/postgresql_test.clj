@@ -2,7 +2,6 @@
   {:clj-kondo/config
    '{:lint-as {pod.babashka.postgresql/with-transaction next.jdbc/with-transaction}}}
   (:require [babashka.pods :as pods]
-            [pod.babashka.sql.features :as features]
             [clojure.test :refer [deftest is testing]])
   (:import [com.opentable.db.postgres.embedded EmbeddedPostgres]
            [java.util Date]))
@@ -79,5 +78,8 @@
                  (db/execute! db  ["select * from foo;"]))))))
     (testing "inserting an array"
       (is (db/execute! db ["create table bar ( bar integer[] );"]))
-      (is (db/execute! db ["insert into bar values ('{1,2,3}');"]))
-      (is (db/execute! db ["insert into bar values (?);" [1 2 3]])))))
+      (is (db/execute! db ["insert into bar values (?);" (into-array [1 2 3])]))
+      (is (= [#:bar{:bar [1 2 3]}] (db/execute! db ["select * from bar"])))
+      (is (db/execute! db ["create table baz ( baz text[] );"]))
+      (is (db/execute! db ["insert into baz values (?);" (into-array ["foo" "bar"])]))
+      (is (= [#:baz{:baz ["foo" "bar"]}] (db/execute! db ["select * from baz"]))))))
