@@ -1,6 +1,7 @@
 (ns pod.babashka.sql
   (:refer-clojure :exclude [read read-string])
   (:require [bencode.core :as bencode]
+            [cheshire.core :as json]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.walk :as walk]
@@ -63,10 +64,41 @@
       xs)
     xs))
 
-(defn -execute! [db-spec & args]
-  (let [args (walk/postwalk deserialize args)
-        conn (->connectable db-spec)]
-    (apply jdbc/execute! conn args)))
+(defmacro if-pg [then else]
+  (if features/postgresql?
+    then
+    else))
+
+(if-pg
+    (defn serialize-pg-obj [opts x]
+      (if (instance? org.postgresql.util.PGobject x)
+        (let [t (.getType ^org.postgresql.util.PGobject x)
+              coerce-opts (get opts :pod.babashka.postgresql/read)
+              coerced (case t
+                        ("json" "jsonb")
+                        (case (get coerce-opts (keyword t))
+                          :parse+keywordize
+                          (json/parse-string (.getValue x) true)
+                          :parse
+                          (json/parse-string (.getValue x))
+                          :string
+                          (.getValue x)
+                          ;; default JSON handler
+                          (json/parse-string (.getValue x) true)))]
+          coerced)
+        x))
+  nil)
+
+(defn -execute!
+  ([db-spec sql-params]
+   (-execute! db-spec sql-params nil))
+  ([db-spec sql-params opts]
+   (let [sql-params (walk/postwalk deserialize sql-params)
+         conn (->connectable db-spec)
+         res (jdbc/execute! conn sql-params opts)]
+     (if-pg
+         (walk/postwalk #(serialize-pg-obj opts %) res)
+       res))))
 
 (defn -execute-one! [db-spec & args]
   (let [args (walk/postwalk deserialize args)

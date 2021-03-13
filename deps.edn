@@ -12,6 +12,8 @@
     babashka/babashka.pods
     #_{:local/root "../pods"}
     {:git/url "https://github.com/babashka/babashka.pods"
-     :sha "a033bccaf0024b279480f2a7ac4b446621629b73"}}
+     :sha "a033bccaf0024b279480f2a7ac4b446621629b73"}
+    cheshire/cheshire
+    {:mvn/version "5.10.0"}}
    :extra-paths ["test"]
    :main-opts ["-m" "cognitect.test-runner"]}}}

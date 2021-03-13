@@ -12,7 +12,8 @@
   :dependencies [[org.clojure/clojure "1.10.2"]
                  [seancorfield/next.jdbc "1.1.613"]
                  [nrepl/bencode "1.1.0"]
-                 [com.cognitect/transit-clj "1.0.324"]]
+                 [com.cognitect/transit-clj "1.0.324"]
+                 [cheshire/cheshire "5.10.0"]]
   :profiles {:uberjar {:global-vars {*assert* false}
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"
                                   "-Dclojure.spec.skip-macros=true"]

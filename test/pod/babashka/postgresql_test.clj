@@ -2,6 +2,7 @@
   {:clj-kondo/config
    '{:lint-as {pod.babashka.postgresql/with-transaction next.jdbc/with-transaction}}}
   (:require [babashka.pods :as pods]
+            [cheshire.core :as json]
             [clojure.test :refer [deftest is testing]])
   (:import [com.opentable.db.postgres.embedded EmbeddedPostgres]
            [java.util Date]))
@@ -77,7 +78,7 @@
           (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}
                   #:foo{:foo 5} #:foo{:foo 6} #:foo{:foo 7}]
                  (db/execute! db  ["select * from foo;"]))))))
-    (testing "inserting an array"
+    (testing "arrays"
       (is (db/execute! db ["create table bar ( bar integer[] );"]))
       (is (db/execute! db ["insert into bar values (?);" (into-array [1 2 3])]))
       (is (= [#:bar{:bar [1 2 3]}] (db/execute! db ["select * from bar"])))
@@ -87,4 +88,30 @@
       (is (= #:baz{:baz ["foo" "bar"]} (db/execute-one! db ["select * from baz"])))
       (is (= [#:baz{:baz ["a" "b"]} #:baz{:baz ["x" "y"]}]
              (sql/insert-multi! db :baz [:baz] [[(into-array ["a" "b"])]
-                                                [(into-array ["x" "y"])]]))))))
+                                                [(into-array ["x" "y"])]]))))
+    (testing "json"
+      (is (db/execute! db ["create table json_table ( json_col json );"]))
+      (is (db/execute! db ["insert into json_table values (?::json);" (json/generate-string {:a 1})]))
+      (is (= [#:json_table{:json_col {:a 1}}] (db/execute! db ["select * from json_table values;"])))
+      (is (= [#:json_table{:json_col {:a 1}}]
+             (db/execute! db ["select * from json_table values;"]
+                          {:pod.babashka.postgresql/read {:json :parse+keywordize}})))
+      (is (= [#:json_table{:json_col {"a" 1}}]
+             (db/execute! db ["select * from json_table values;"]
+                          {:pod.babashka.postgresql/read {:json :parse}})))
+      (is (= [#:json_table{:json_col "{\"a\":1}"}]
+             (db/execute! db ["select * from json_table values;"]
+                          {:pod.babashka.postgresql/read {:json :string}}))))
+    (testing "jsonb"
+      (is (db/execute! db ["create table jsonb_table ( jsonb_col jsonb );"]))
+      (is (db/execute! db ["insert into jsonb_table values (?::jsonb);" (json/generate-string {:a 1})]))
+      (is (= [#:jsonb_table{:jsonb_col {:a 1}}] (db/execute! db ["select * from jsonb_table values;"])))
+      (is (= [#:jsonb_table{:jsonb_col {:a 1}}]
+             (db/execute! db ["select * from jsonb_table values;"]
+                          {:pod.babashka.postgresql/read {:jsonb :parse+keywordize}})))
+      (is (= [#:jsonb_table{:jsonb_col {"a" 1}}]
+             (db/execute! db ["select * from jsonb_table values;"]
+                          {:pod.babashka.postgresql/read {:jsonb :parse}})))
+      (is (= [#:jsonb_table{:jsonb_col "{\"a\": 1}"}]
+             (db/execute! db ["select * from jsonb_table values;"]
+                          {:pod.babashka.postgresql/read {:jsonb :string}}))))))
