@@ -2,10 +2,9 @@
   {:clj-kondo/config
    '{:lint-as {pod.babashka.postgresql/with-transaction next.jdbc/with-transaction}}}
   (:require [babashka.pods :as pods]
-            [cheshire.core :as json]
             [clojure.test :refer [deftest is testing]])
   (:import [com.opentable.db.postgres.embedded EmbeddedPostgres]
-           [java.util Date]))
+           [java.util Date Arrays]))
 
 (pods/load-pod (if (= "native" (System/getenv "POD_TEST_ENV"))
                  "./pod-babashka-postgresql"
@@ -79,23 +78,29 @@
                   #:foo{:foo 5} #:foo{:foo 6} #:foo{:foo 7}]
                  (db/execute! db  ["select * from foo;"]))))))
     (testing "arrays"
-      (is (db/execute! db ["create table bar ( bar integer[] );"]))
-      (is (db/execute! db ["insert into bar values (?);" (into-array [1 2 3])]))
-      (is (db/execute! db ["insert into bar values (?);" ^{:pod.babashka.sql/write :array} [4 5 6]]))
-      (is (= [#:bar{:bar [1 2 3]} #:bar{:bar [4 5 6]}] (db/execute! db ["select * from bar"])))
-      (let [arrays (map :bar/bar
-                        (db/execute! db ["select * from bar"]
-                                     {:pod.babashka.sql/read {:array :array}}))
-            vecs (map vec arrays)]
-        (is (every? #(.isArray (class %)) arrays))
-        (is (= [[1 2 3] [4 5 6]] vecs)))
-      (is (db/execute! db ["create table baz ( baz text[] );"]))
-      (is (db/execute! db ["insert into baz values (?);" (into-array ["foo" "bar"])]))
-      (is (= [#:baz{:baz ["foo" "bar"]}] (db/execute! db ["select * from baz"])))
-      (is (= #:baz{:baz ["foo" "bar"]} (db/execute-one! db ["select * from baz"])))
-      (is (= [#:baz{:baz ["a" "b"]} #:baz{:baz ["x" "y"]}]
-             (sql/insert-multi! db :baz [:baz] [[(into-array ["a" "b"])]
-                                                [(into-array ["x" "y"])]]))))
+      (testing "byte arrays"
+        (let [bs (.getBytes "foo")]
+          (is (db/execute! db ["create table bytes ( bs bytea );"]))
+          (is (db/execute! db ["insert into bytes values (?);" bs]))
+          (is (Arrays/equals bs (:bytes/bs (db/execute-one! db ["select * from bytes;"]))))))
+      (testing "non-byte arrays"
+        (is (db/execute! db ["create table bar ( bar integer[] );"]))
+        (is (db/execute! db ["insert into bar values (?);" (into-array [1 2 3])]))
+        (is (db/execute! db ["insert into bar values (?);" ^{:pod.babashka.sql/write :array} [4 5 6]]))
+        (is (= [#:bar{:bar [1 2 3]} #:bar{:bar [4 5 6]}] (db/execute! db ["select * from bar"])))
+        (let [arrays (map :bar/bar
+                          (db/execute! db ["select * from bar"]
+                                       {:pod.babashka.sql/read {:array :array}}))
+              vecs (map vec arrays)]
+          (is (every? #(.isArray (class %)) arrays))
+          (is (= [[1 2 3] [4 5 6]] vecs)))
+        (is (db/execute! db ["create table baz ( baz text[] );"]))
+        (is (db/execute! db ["insert into baz values (?);" (into-array ["foo" "bar"])]))
+        (is (= [#:baz{:baz ["foo" "bar"]}] (db/execute! db ["select * from baz"])))
+        (is (= #:baz{:baz ["foo" "bar"]} (db/execute-one! db ["select * from baz"])))
+        (is (= [#:baz{:baz ["a" "b"]} #:baz{:baz ["x" "y"]}]
+               (sql/insert-multi! db :baz [:baz] [[(into-array ["a" "b"])]
+                                                  [(into-array ["x" "y"])]])))))
     (testing "json"
       (is (db/execute! db ["create table json_table ( json_col json );"]))
       (is (db/execute! db ["insert into json_table values (?);" ^{:pod.babashka.sql/write :json} {:a 1}]))

@@ -86,16 +86,16 @@
 
 ;; Default implementation
 (defn serialize [opts x]
-      (cond
-        #_? (instance? java.sql.Array x)
-        #_=> (let [arr (.getArray ^java.sql.Array x)
-                   coerce-opt (get-in opts [:pod.babashka.sql/read :array])
-                   coerced (case coerce-opt
-                             :array {::val (vec arr)
-                                     ::read :array}
-                             (vec arr))]
-               coerced)
-        :else #_=> x))
+  (cond
+    #_? (instance? java.sql.Array x)
+    #_=> (let [arr (.getArray ^java.sql.Array x)
+               coerce-opt (get-in opts [:pod.babashka.sql/read :array])
+               coerced (case coerce-opt
+                         :array {::val (vec arr)
+                                 ::read :array}
+                         (vec arr))]
+           coerced)
+    :else #_=> x))
 
 (when-pg
     (defn serialize [opts x]
@@ -248,7 +248,10 @@
   (pr-str '(defn -serialize-1 [x]
              (if-let [c (class x)]
                (if
-                 (.isArray c)
+                   (and (.isArray c)
+                        (not (bytes? x)) ;; bytes can he handled by transit
+                                         ;; natively
+                        ,)
                  {::write :array
                   ::val (vec x)}
                  (let [m (meta x)

@@ -2,6 +2,10 @@
 
 For a list of breaking changes, check [here](#breaking-changes)
 
+## v0.0.5
+
+- Fix insertion and retrieving of byte arrays
+
 ## v0.0.4
 
 - Automatically convert json and jsonb into Clojure values (for PostgreSQL only)
