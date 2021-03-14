@@ -83,7 +83,7 @@
   (if (map? xs)
     (if-let [arr (:pod.babashka.sql/array xs)]
       (into-array arr)
-      (if-let [as (:pod.babashka.sql/as xs)]
+      (if-let [as (:pod.babashka.sql/write xs)]
         (let [v (::val xs)]
           (coerce v as))
         xs))
@@ -250,9 +250,9 @@
                  (.isArray c)
                  {::array (vec x)}
                  (let [m (meta x)
-                       t (:pod.babashka.sql/as m)]
+                       t (:pod.babashka.sql/write m)]
                    (if t
-                     {::as t
+                     {::write t
                       ::val x}
                      x)))
                x))))
