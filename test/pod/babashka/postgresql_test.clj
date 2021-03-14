@@ -91,27 +91,27 @@
                                                 [(into-array ["x" "y"])]]))))
     (testing "json"
       (is (db/execute! db ["create table json_table ( json_col json );"]))
-      (is (db/execute! db ["insert into json_table values (?::json);" (json/generate-string {:a 1})]))
+      (is (db/execute! db ["insert into json_table values (?);" ^{:pod.babashka.sql/as :json} {:a 1}]))
       (is (= [#:json_table{:json_col {:a 1}}] (db/execute! db ["select * from json_table values;"])))
       (is (= [#:json_table{:json_col {:a 1}}]
              (db/execute! db ["select * from json_table values;"]
-                          {:pod.babashka.postgresql/read {:json :parse+keywordize}})))
+                          {:pod.babashka.sql/read {:json :parse+keywordize}})))
       (is (= [#:json_table{:json_col {"a" 1}}]
              (db/execute! db ["select * from json_table values;"]
-                          {:pod.babashka.postgresql/read {:json :parse}})))
+                          {:pod.babashka.sql/read {:json :parse}})))
       (is (= [#:json_table{:json_col "{\"a\":1}"}]
              (db/execute! db ["select * from json_table values;"]
-                          {:pod.babashka.postgresql/read {:json :string}}))))
+                          {:pod.babashka.sql/read {:json :string}}))))
     (testing "jsonb"
       (is (db/execute! db ["create table jsonb_table ( jsonb_col jsonb );"]))
-      (is (db/execute! db ["insert into jsonb_table values (?::jsonb);" (json/generate-string {:a 1})]))
+      (is (db/execute! db ["insert into jsonb_table values (?);" ^{:pod.babashka.sql/as :jsonb} {:a 1}]))
       (is (= [#:jsonb_table{:jsonb_col {:a 1}}] (db/execute! db ["select * from jsonb_table values;"])))
       (is (= [#:jsonb_table{:jsonb_col {:a 1}}]
              (db/execute! db ["select * from jsonb_table values;"]
-                          {:pod.babashka.postgresql/read {:jsonb :parse+keywordize}})))
+                          {:pod.babashka.sql/read {:jsonb :parse+keywordize}})))
       (is (= [#:jsonb_table{:jsonb_col {"a" 1}}]
              (db/execute! db ["select * from jsonb_table values;"]
-                          {:pod.babashka.postgresql/read {:jsonb :parse}})))
+                          {:pod.babashka.sql/read {:jsonb :parse}})))
       (is (= [#:jsonb_table{:jsonb_col "{\"a\": 1}"}]
              (db/execute! db ["select * from jsonb_table values;"]
-                          {:pod.babashka.postgresql/read {:jsonb :string}}))))))
+                          {:pod.babashka.sql/read {:jsonb :string}}))))))

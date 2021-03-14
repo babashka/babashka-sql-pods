@@ -8,14 +8,16 @@
             [cognitect.transit :as transit]
             [next.jdbc :as jdbc]
             [next.jdbc.date-time]
+            [next.jdbc.prepare :as prepare]
             [next.jdbc.result-set :as rs]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
             [pod.babashka.sql.features :as features])
   (:import [java.io PushbackInputStream]
-           [java.sql Array])
+           [java.sql Array PreparedStatement])
   (:gen-class))
 
+;; This pod always returns arrays as Clojure vectors.
 (extend-protocol rs/ReadableColumn
   Array
   (read-column-by-label [^Array v _]    (vec (.getArray v)))
@@ -57,23 +59,41 @@
     (get @conns conn-id)
     db-spec))
 
-(defn deserialize [xs]
-  (if (map? xs)
-    (if-let [arr (:pod.babashka.sql/array xs)]
-      (into-array arr)
-      xs)
-    xs))
+;; default implementation
+(defn coerce [v _as]
+  v)
 
 (defmacro if-pg [then else]
   (if features/postgresql?
     then
     else))
 
-(if-pg
+(defmacro when-pg [& body]
+  `(if-pg (do ~@body) nil))
+
+(when-pg
+    (defn coerce [v as]
+      (case as
+        (:json :jsonb)
+        (doto (org.postgresql.util.PGobject.)
+          (.setType (name as))
+          (.setValue (json/generate-string v))))))
+
+(defn deserialize [xs]
+  (if (map? xs)
+    (if-let [arr (:pod.babashka.sql/array xs)]
+      (into-array arr)
+      (if-let [as (:pod.babashka.sql/as xs)]
+        (let [v (::val xs)]
+          (coerce v as))
+        xs))
+    xs))
+
+(when-pg
     (defn serialize-pg-obj [opts x]
       (if (instance? org.postgresql.util.PGobject x)
         (let [t (.getType ^org.postgresql.util.PGobject x)
-              coerce-opts (get opts :pod.babashka.postgresql/read)
+              coerce-opts (get opts :pod.babashka.sql/read)
               coerced (case t
                         ("json" "jsonb")
                         (case (get coerce-opts (keyword t))
@@ -88,6 +108,29 @@
           coerced)
         x))
   nil)
+
+(when-pg
+    (defn ->pgobject
+      "Transforms Clojure data to a PGobject that contains the data as
+  JSON. PGObject type defaults to `jsonb` but can be changed via
+  metadata key `:pgtype`"
+      [x]
+      (binding [*out* *err*]
+        (prn x))
+      (let [pgtype (or (:pgtype (meta x)) "jsonb")]
+        (doto (org.postgresql.util.PGobject.)
+          (.setType pgtype)
+          (.setValue (json/generate-string x))))))
+
+#_(when-pg
+    (extend-protocol prepare/SettableParameter
+      clojure.lang.IPersistentMap
+      (set-parameter [m ^PreparedStatement s i]
+        (.setObject s i (->pgobject m)))
+
+      clojure.lang.IPersistentVector
+      (set-parameter [v ^PreparedStatement s i]
+        (.setObject s i (->pgobject v)))))
 
 (defn -execute!
   ([db-spec sql-params]
@@ -200,19 +243,25 @@
               (sql-sql-ns/-insert-multi! db-spec table cols (sqlns/-serialize rows))))
       replace-sql-ns))
 
-(def -wrap-array-str
-  (pr-str '(defn -wrap-array [x]
+(def -serialize-1-str
+  (pr-str '(defn -serialize-1 [x]
              (if-let [c (class x)]
-               (if (.isArray c)
+               (if
+                 (.isArray c)
                  {::array (vec x)}
-                 x)
+                 (let [m (meta x)
+                       t (:pod.babashka.sql/as m)]
+                   (if t
+                     {::as t
+                      ::val x}
+                     x)))
                x))))
 
 (def -serialize-str
   (replace-sql-ns
    (pr-str '(do (require 'clojure.walk)
                 (defn -serialize [obj]
-                  (clojure.walk/postwalk sqlns/-wrap-array obj))))))
+                  (clojure.walk/postwalk sqlns/-serialize-1 obj))))))
 
 (def describe-map
   (walk/postwalk
@@ -223,8 +272,8 @@
      :namespaces [{:name ~(symbol sql-ns)
                    :vars [{:name -execute!}
                           {:name -execute-one!}
-                          {:name -wrap-array
-                           :code ~-wrap-array-str}
+                          {:name -serialize-1
+                           :code ~-serialize-1-str}
                           {:name -serialize
                            :code ~-serialize-str}
                           {:name execute!
