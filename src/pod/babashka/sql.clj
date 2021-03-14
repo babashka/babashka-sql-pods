@@ -238,7 +238,7 @@
 
 (def insert-multi-str
   (-> (str '(defn insert-multi! [db-spec table cols rows]
-              (sql-sql-ns/-insert-multi! db-spec table cols (sqlns/-serialize rows))))
+              (sqlns/-deserialize (sql-sql-ns/-insert-multi! db-spec table cols (sqlns/-serialize rows)))))
       replace-sql-ns))
 
 (def -serialize-1-str
