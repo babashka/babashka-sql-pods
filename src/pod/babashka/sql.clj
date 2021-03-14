@@ -99,7 +99,8 @@
     (defn serialize [opts x]
       (cond
         #_? (instance? org.postgresql.util.PGobject x)
-        #_=> (let [t (.getType ^org.postgresql.util.PGobject x)
+        #_=> (let [^ org.postgresql.util.PGobject x x
+                   t (.getType x)
                    coerce-opts (get opts :pod.babashka.sql/read)
                    coerced (case t
                              ("json" "jsonb")
