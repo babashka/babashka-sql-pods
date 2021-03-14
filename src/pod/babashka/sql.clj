@@ -14,6 +14,8 @@
   (:import [java.io PushbackInputStream])
   (:gen-class))
 
+(set! *warn-on-reflection* true)
+
 (def stdin (PushbackInputStream. System/in))
 
 (defn write [v]
@@ -155,7 +157,7 @@
 (defn close-connection [{:keys [::connection]}]
   (let [[old _new] (swap-vals! conns dissoc connection)]
     (when-let [conn (get old connection)]
-      (.close conn))))
+      (.close ^java.io.Closeable conn))))
 
 (def transact @#'t/transact*)
 
