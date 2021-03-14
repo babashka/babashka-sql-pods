@@ -116,6 +116,42 @@ An example using `pod-babashka-hsqldb`:
 A more elaborate example can be found
 [here](https://github.com/borkdude/babashka/blob/2d12c954a1ef25e6ed83cde3db57be69dbb0c906/examples/hsqldb_unused_vars.clj).
 
+### JSON
+
+This section only applies to PostgreSQL for now, but can be extended to other databases.
+
+#### Writing JSON
+
+- Convert to a JSON string manually and insert with `?::text`. PostgreSQL will automatically convert the parameter to the right type. Full example:
+
+``` clojure
+(db/execute! db ["insert into json_table values (?::text);" (json/generate-string {:a 1})])
+```
+
+- Use `^{:pod.babashka.sql/write :json}` (or `:jsonb`). Full example:
+
+``` clojure
+(db/execute! db ["insert into json_table values (?);" ^{:pod.babashka.sql/write :json} {:a 1}])
+```
+
+#### Reading JSON
+
+- Both json and jsonb are automatically converted to Clojure values. Keys are keywordized automatically. You can override this behavior by passing a `:pod.babashka.sql/read` option to `execute!`:
+
+``` clojure
+{:pod.babashka.sql/read {:json :parse+keywordize}}
+{:pod.babashka.sql/read {:json :parse}} ;; no keyword keys
+{:pod.babashka.sql/read {:json :string}} ;; json as raw string
+```
+
+Use `:jsonb` to apply these options to jsonb-typed columns.
+
+- Select column as text and deserialize the result manually:
+
+``` clojure
+(db/execute! db ["select json::text from json_table;"])
+```
+
 ## Libraries
 
 In addition to using a sql pod, the following babashka-compatible libraries might be
@@ -144,18 +180,6 @@ Example:
 ```
 
 ## Troubleshooting
-
-### JSON
-
-When selecting `json` or `jsonb` fields from a PostgreSQL table, you will see:
-
-``` clojure
-Cannot read EDN: ... #object[org.postgresql.util.PGobject .... :cause "No reader function for tag object"
-```
-
-The reason is that `PGobject` values are not automatically converted into
-Clojure values before serialization. A workaround is to select the values as
-text (using `::text`) and then deserialize the JSON yourself.
 
 ### MS SQL Server support
 
