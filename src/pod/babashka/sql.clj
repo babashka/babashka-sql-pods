@@ -83,7 +83,7 @@
     xs))
 
 ;; Default implementation
-(defn serialize-pg-obj [opts x]
+(defn serialize [opts x]
       (cond
         #_? (instance? java.sql.Array x)
         #_=> (let [arr (.getArray ^java.sql.Array x)
