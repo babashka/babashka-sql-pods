@@ -8,20 +8,11 @@
             [cognitect.transit :as transit]
             [next.jdbc :as jdbc]
             [next.jdbc.date-time]
-            [next.jdbc.prepare :as prepare]
-            [next.jdbc.result-set :as rs]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
             [pod.babashka.sql.features :as features])
-  (:import [java.io PushbackInputStream]
-           [java.sql Array PreparedStatement])
+  (:import [java.io PushbackInputStream])
   (:gen-class))
-
-;; This pod always returns arrays as Clojure vectors.
-(extend-protocol rs/ReadableColumn
-  Array
-  (read-column-by-label [^Array v _]    (vec (.getArray v)))
-  (read-column-by-index [^Array v _ _]  (vec (.getArray v))))
 
 (def stdin (PushbackInputStream. System/in))
 
@@ -60,8 +51,10 @@
     db-spec))
 
 ;; default implementation
-(defn coerce [v _as]
-  v)
+(defn coerce [v as]
+  (case as
+    :array
+    (into-array v)))
 
 (defmacro if-pg [then else]
   (if features/postgresql?
@@ -77,60 +70,59 @@
         (:json :jsonb)
         (doto (org.postgresql.util.PGobject.)
           (.setType (name as))
-          (.setValue (json/generate-string v))))))
+          (.setValue (json/generate-string v)))
+        :array
+        (into-array v))))
 
 (defn deserialize [xs]
   (if (map? xs)
-    (if-let [arr (:pod.babashka.sql/array xs)]
-      (into-array arr)
-      (if-let [as (:pod.babashka.sql/write xs)]
-        (let [v (::val xs)]
-          (coerce v as))
-        xs))
+    (if-let [as (:pod.babashka.sql/write xs)]
+      (let [v (::val xs)]
+        (coerce v as))
+      xs)
     xs))
 
+;; Default implementation
+(defn serialize-pg-obj [opts x]
+      (cond
+        #_? (instance? java.sql.Array x)
+        #_=> (let [arr (.getArray ^java.sql.Array x)
+                   coerce-opt (get-in opts [:pod.babashka.sql/read :array])
+                   coerced (case coerce-opt
+                             :array {::val (vec arr)
+                                     ::read :array}
+                             (vec arr))]
+               coerced)
+        :else #_=> x))
+
 (when-pg
-    (defn serialize-pg-obj [opts x]
-      (if (instance? org.postgresql.util.PGobject x)
-        (let [t (.getType ^org.postgresql.util.PGobject x)
-              coerce-opts (get opts :pod.babashka.sql/read)
-              coerced (case t
-                        ("json" "jsonb")
-                        (case (get coerce-opts (keyword t))
-                          :parse+keywordize
-                          (json/parse-string (.getValue x) true)
-                          :parse
-                          (json/parse-string (.getValue x))
-                          :string
-                          (.getValue x)
-                          ;; default JSON handler
-                          (json/parse-string (.getValue x) true)))]
-          coerced)
-        x))
+    (defn serialize [opts x]
+      (cond
+        #_? (instance? org.postgresql.util.PGobject x)
+        #_=> (let [t (.getType ^org.postgresql.util.PGobject x)
+                   coerce-opts (get opts :pod.babashka.sql/read)
+                   coerced (case t
+                             ("json" "jsonb")
+                             (case (get coerce-opts (keyword t))
+                               :parse+keywordize
+                               (json/parse-string (.getValue x) true)
+                               :parse
+                               (json/parse-string (.getValue x))
+                               :string
+                               (.getValue x)
+                               ;; default JSON handler
+                               (json/parse-string (.getValue x) true)))]
+               coerced)
+        #_? (instance? java.sql.Array x)
+        #_=> (let [arr (.getArray ^java.sql.Array x)
+                   coerce-opt (get-in opts [:pod.babashka.sql/read :array])
+                   coerced (case coerce-opt
+                             :array {::val (vec arr)
+                                     ::read :array}
+                             (vec arr))]
+               coerced)
+        :else #_=> x))
   nil)
-
-(when-pg
-    (defn ->pgobject
-      "Transforms Clojure data to a PGobject that contains the data as
-  JSON. PGObject type defaults to `jsonb` but can be changed via
-  metadata key `:pgtype`"
-      [x]
-      (binding [*out* *err*]
-        (prn x))
-      (let [pgtype (or (:pgtype (meta x)) "jsonb")]
-        (doto (org.postgresql.util.PGobject.)
-          (.setType pgtype)
-          (.setValue (json/generate-string x))))))
-
-#_(when-pg
-    (extend-protocol prepare/SettableParameter
-      clojure.lang.IPersistentMap
-      (set-parameter [m ^PreparedStatement s i]
-        (.setObject s i (->pgobject m)))
-
-      clojure.lang.IPersistentVector
-      (set-parameter [v ^PreparedStatement s i]
-        (.setObject s i (->pgobject v)))))
 
 (defn -execute!
   ([db-spec sql-params]
@@ -139,19 +131,25 @@
    (let [sql-params (walk/postwalk deserialize sql-params)
          conn (->connectable db-spec)
          res (jdbc/execute! conn sql-params opts)]
-     (if-pg
-         (walk/postwalk #(serialize-pg-obj opts %) res)
-       res))))
+     (walk/postwalk #(serialize opts %) res))))
 
-(defn -execute-one! [db-spec & args]
-  (let [args (walk/postwalk deserialize args)
-        conn (->connectable db-spec)]
-    (apply jdbc/execute-one! conn args)))
+(defn -execute-one!
+  ([db-spec sql-params]
+   (-execute-one! db-spec sql-params nil))
+  ([db-spec sql-params opts]
+   (let [sql-params (walk/postwalk deserialize sql-params)
+         conn (->connectable db-spec)
+         res (jdbc/execute-one! conn sql-params opts)]
+     (walk/postwalk #(serialize opts %) res))))
 
-(defn -insert-multi! [db-spec table cols rows]
-  (let [rows (walk/postwalk deserialize rows)
-        conn (->connectable db-spec)]
-    (sql/insert-multi! conn table cols rows)))
+(defn -insert-multi!
+  ([db-spec table cols rows]
+   (-insert-multi! db-spec table cols rows nil))
+  ([db-spec table cols rows opts]
+   (let [rows (walk/postwalk deserialize rows)
+         conn (->connectable db-spec)
+         res (sql/insert-multi! conn table cols rows)]
+     (walk/postwalk #(serialize opts %) res))))
 
 (defn close-connection [{:keys [::connection]}]
   (let [[old _new] (swap-vals! conns dissoc connection)]
@@ -232,11 +230,11 @@
 
 (def execute-str
   (replace-sql-ns (str '(defn execute! [db-spec & args]
-                          (apply sqlns/-execute! db-spec (sqlns/-serialize args))))))
+                          (sqlns/-deserialize (apply sqlns/-execute! db-spec (sqlns/-serialize args)))))))
 
 (def execute-one-str
   (replace-sql-ns (str '(defn execute-one! [db-spec & args]
-                          (apply sqlns/-execute-one! db-spec (sqlns/-serialize args))))))
+                          (sqlns/-deserialize (apply sqlns/-execute-one! db-spec (sqlns/-serialize args)))))))
 
 (def insert-multi-str
   (-> (str '(defn insert-multi! [db-spec table cols rows]
@@ -248,7 +246,8 @@
              (if-let [c (class x)]
                (if
                  (.isArray c)
-                 {::array (vec x)}
+                 {::write :array
+                  ::val (vec x)}
                  (let [m (meta x)
                        t (:pod.babashka.sql/write m)]
                    (if t
@@ -263,6 +262,22 @@
                 (defn -serialize [obj]
                   (clojure.walk/postwalk sqlns/-serialize-1 obj))))))
 
+(def -deserialize-1-str
+  (pr-str '(defn -deserialize-1 [x]
+             (if (map? x)
+               (if-let [t (::read x)]
+                 (let [v (::val x)]
+                   (case t
+                     :array (into-array x)))
+                 x)
+               x))))
+
+(def -deserialize-str
+  (replace-sql-ns
+   (pr-str '(do (require 'clojure.walk)
+                (defn -deserialize [obj]
+                  (clojure.walk/postwalk sqlns/-deserialize-1 obj))))))
+
 (def describe-map
   (walk/postwalk
    (fn [v]
@@ -276,6 +291,10 @@
                            :code ~-serialize-1-str}
                           {:name -serialize
                            :code ~-serialize-str}
+                          {:name -deserialize-1
+                           :code ~-deserialize-1-str}
+                          {:name -deserialize
+                           :code ~-deserialize-str}
                           {:name execute!
                            :code ~execute-str}
                           {:name execute-one!

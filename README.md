@@ -116,6 +116,26 @@ An example using `pod-babashka-hsqldb`:
 A more elaborate example can be found
 [here](https://github.com/borkdude/babashka/blob/2d12c954a1ef25e6ed83cde3db57be69dbb0c906/examples/hsqldb_unused_vars.clj).
 
+### Arrays
+
+#### Writing arrays
+
+- Inserting arrays works automatically: just pass a Java array, with e.g. `(into-array [1 2 3])`.
+- Clojure vectors annotated with `{:pod.babashka.sql/write :array}` also get stored as arrays:
+
+``` clojure
+(db/execute! db ["insert into bar values (?);" ^{:pod.babashka.sql/write :array} [4 5 6]])
+```
+
+#### Reading arrays
+
+- Array columns automatically get converted to Clojure vectors. This can be overriden by passing a `:pod.babashka.sql/read` option to `execute!`:
+
+``` clojure
+{:pod.babashka.sql/read {:array :vector}} ;; default
+{:pod.babashka.sql/read {:array :array}} ;; array as Java array
+```
+
 ### JSON
 
 This section only applies to PostgreSQL for now, but can be extended to other databases.
@@ -139,7 +159,7 @@ This section only applies to PostgreSQL for now, but can be extended to other da
 - Both json and jsonb are automatically converted to Clojure values. Keys are keywordized automatically. You can override this behavior by passing a `:pod.babashka.sql/read` option to `execute!`:
 
 ``` clojure
-{:pod.babashka.sql/read {:json :parse+keywordize}}
+{:pod.babashka.sql/read {:json :parse+keywordize}} ;; default
 {:pod.babashka.sql/read {:json :parse}} ;; no keyword keys
 {:pod.babashka.sql/read {:json :string}} ;; json as raw string
 ```
