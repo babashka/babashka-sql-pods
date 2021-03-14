@@ -2,6 +2,14 @@
 
 For a list of breaking changes, check [here](#breaking-changes)
 
+## v0.0.4
+
+- Automatically convert json and jsonb into Clojure values (for PostgreSQL only)
+- Add `:pod.babashka.sql/write` and `:pod.babashka.sql/read` options to give
+  precise control over how arrays and json/jsonb values are read and
+  written. See [arrays](https://github.com/babashka/babashka-sql-pods#arrays)
+  and [json](https://github.com/babashka/babashka-sql-pods#json) docs.
+
 ## v0.0.3
 
 - Add `insert-multi!`
