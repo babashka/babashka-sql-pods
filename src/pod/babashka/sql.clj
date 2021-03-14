@@ -157,7 +157,7 @@
 (defn close-connection [{:keys [::connection]}]
   (let [[old _new] (swap-vals! conns dissoc connection)]
     (when-let [conn (get old connection)]
-      (.close ^java.io.Closeable conn))))
+      (.close ^java.lang.AutoCloseable conn))))
 
 (def transact @#'t/transact*)
 
@@ -271,7 +271,7 @@
                (if-let [t (::read x)]
                  (let [v (::val x)]
                    (case t
-                     :array (into-array x)))
+                     :array (into-array v)))
                  x)
                x))))
 
