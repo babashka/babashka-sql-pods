@@ -96,12 +96,12 @@ fi" java java java)}}
    :version 2.1,
    :jobs (ordered-map
           ;; NOTE: hsqldb tests on java11 fail with a weird NullPointerException (1/2021)
-          :hsqldb-linux (assoc-in (linux :java 8)
+          :hsqldb-linux (assoc-in (linux)
                                   [:environment :POD_DB_TYPE] "hsqldb")
-          :hsqldb-linux-static (assoc-in (linux :java 8 :static true)
+          :hsqldb-linux-static (assoc-in (linux :static true)
                                          [:environment :POD_DB_TYPE] "hsqldb")
           ;; graalvm isn't available in version 8 anymore for macOS
-          :hsqldb-mac  (assoc-in (mac :java 11)
+          :hsqldb-mac  (assoc-in (mac)
                                  [:environment :POD_DB_TYPE] "hsqldb")
           :postgresql-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "postgresql")
           :postgresql-linux-static (assoc-in (linux :static true)

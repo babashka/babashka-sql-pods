@@ -5,7 +5,7 @@ jobs:
     docker:
     - {image: 'circleci/clojure:lein-2.9.3-buster'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: hsqldb}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: hsqldb}
     resource_class: large
     steps:
     - checkout
@@ -38,9 +38,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java8-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java8-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java8-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
     - run:
         name: Build binary
@@ -57,14 +57,14 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java8-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-linux-static:
     docker:
     - {image: 'circleci/clojure:lein-2.9.3-buster'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java8-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: hsqldb}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: hsqldb}
     resource_class: large
     steps:
     - checkout
@@ -97,9 +97,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java8-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java8-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java8-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
     - run:
         name: Build binary
@@ -116,7 +116,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java8-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-mac:
