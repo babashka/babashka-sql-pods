@@ -89,6 +89,11 @@ fi
 
 if [ "$BABASHKA_STATIC" = "true" ]; then
     args+=("--static")
+    if [ "$BABASHKA_MUSL" = "true" ]; then
+        args+=("--libc=musl"
+               # see https://github.com/oracle/graal/issues/3398
+               "-H:CCompilerOption=-Wl,-z,stack-size=2097152")
+    fi
 fi
 
 "$GRAALVM_HOME/bin/native-image" "${args[@]}"
