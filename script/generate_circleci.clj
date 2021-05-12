@@ -119,6 +119,8 @@ fi" java java java)}}
                :ci {:jobs ["hsqldb-linux"
                            "hsqldb-linux-static"
                            "hsqldb-mac"
+                           "mysql-linux"
+                           "mysql-mac"
                            "postgresql-linux"
                            "postgresql-linux-static"
                            "postgresql-mac"
