@@ -22,6 +22,7 @@
              :feature/postgresql {:dependencies [[org.postgresql/postgresql "42.2.18"]]}
              :feature/mssql {:dependencies [[com.microsoft.sqlserver/mssql-jdbc "9.2.0.jre11"]]}
              :feature/hsqldb {:dependencies [[org.hsqldb/hsqldb "2.5.1"]]}
+             :feature/mysql {:dependencies [[mysql/mysql-connector-java "8.0.25"]]}
              :feature/oracle {:dependencies [[io.helidon.integrations.db/ojdbc "2.2.0"]]}} ; ojdbc10 + GraalVM config, by Oracle
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
                                     :username :env/clojars_user

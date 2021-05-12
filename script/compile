@@ -28,6 +28,13 @@ else
     POD_LEIN_PROFILES+=",-feature/hsqldb"
 fi
 
+if [ "$POD_DB_TYPE" = "mysql" ]
+then
+    POD_LEIN_PROFILES+=",+feature/mysql"
+else
+    POD_LEIN_PROFILES+=",-feature/mysql"
+fi
+
 if [ "$POD_DB_TYPE" = "oracle" ]
 then
     POD_LEIN_PROFILES+=",+feature/oracle"
