@@ -1,7 +1,8 @@
 #!/usr/bin/env bb
 
 (ns generate-circleci
-  (:require [flatland.ordered.map :refer [ordered-map]]))
+  (:require [clojure.string :as str]
+            [flatland.ordered.map :refer [ordered-map]]))
 
 (def java-default-version 11)
 
@@ -15,7 +16,8 @@
                                                  :BABASHKA_TEST_ENV "native"
                                                  :BABASHKA_XMX "-J-Xmx7g"
                                                  :POD_TEST_ENV "native")
-                              static (assoc :BABASHKA_STATIC "true"))
+                              static (assoc :BABASHKA_STATIC "true"
+                                            :BABASHKA_MUSL "true"))
                :resource_class "large"
                :steps ["checkout"
                        {:run {:name "Pull Submodules",
@@ -29,7 +31,9 @@ sudo ./linux-install-1.10.2.796.sh"}}
                        {:run {:name "Install lsof",
                               :command "sudo apt-get install lsof\n"}}
                        {:run {:name "Install native dev tools",
-                              :command "sudo apt-get update\nsudo apt-get -y install gcc g++ zlib1g-dev\n"}}
+                              :command (str/join "\n" ["sudo apt-get update"
+                                                       "sudo apt-get -y install gcc g++ zlib1g-dev"
+                                                       "sudo -E script/setup-musl"])}}
                        {:run {:name    "Download GraalVM",
                               :command (format "
 cd ~
