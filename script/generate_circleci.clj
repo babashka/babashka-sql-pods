@@ -32,7 +32,7 @@ sudo ./linux-install-1.10.2.796.sh"}}
                               :command "sudo apt-get install lsof\n"}}
                        {:run {:name "Install native dev tools",
                               :command (str/join "\n" ["sudo apt-get update"
-                                                       "sudo apt-get -y install gcc g++ zlib1g-dev"
+                                                       "sudo apt-get -y install gcc g++ zlib1g-dev make"
                                                        "sudo -E script/setup-musl"])}}
                        {:run {:name    "Download GraalVM",
                               :command (format "
