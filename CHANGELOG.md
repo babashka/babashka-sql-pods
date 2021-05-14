@@ -2,6 +2,10 @@
 
 For a list of breaking changes, check [here](#breaking-changes)
 
+## v0.0.6
+
+All linux binaries are now statically linked with musl.
+
 ## v0.0.5
 
 - Fix insertion and retrieving of byte arrays

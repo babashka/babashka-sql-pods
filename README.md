@@ -7,10 +7,14 @@ Supported databases:
 
 - [HSQLDB](http://www.hsqldb.org/)
 - [Microsoft SQL Server](https://www.microsoft.com/nl-nl/sql-server)
+- [MySQL](https://www.mysql.com)
 - [Oracle](https://www.oracle.com/database/)
 - [PostgresQL](https://www.postgresql.org/)
 
 PRs for other SQL databases are welcome. (Look at #15 + #20 for an example of adding a new DB.)
+
+Due to license restrictions we cannot provide pre-built binaries for MySQL and
+Oracle.
 
 ## Install
 
