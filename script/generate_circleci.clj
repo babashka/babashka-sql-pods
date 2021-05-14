@@ -123,19 +123,19 @@ fi" java java java)}}
           :mssql-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "mssql")),
    :workflows (ordered-map
                :version 2
-               :ci {:jobs ["hsqldb-linux"
+               :ci {:jobs [#_"hsqldb-linux"
                            "hsqldb-linux-static"
                            "hsqldb-mac"
                            #_"mysql-linux"
                            "mysql-linux-static"
                            "mysql-mac"
-                           "postgresql-linux"
+                           #_"postgresql-linux"
                            "postgresql-linux-static"
                            "postgresql-mac"
-                           "oracle-linux"
+                           #_"oracle-linux"
                            "oracle-linux-static"
                            "oracle-mac"
-                           "mssql-linux"
+                           #_"mssql-linux"
                            "mssql-linux-static"
                            "mssql-mac"]})))
 
