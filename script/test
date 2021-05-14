@@ -10,6 +10,11 @@ then
     clojure -M:test -n pod.babashka.hsqldb-test
 fi
 
+if [ "$POD_DB_TYPE" = "mysql" ]
+then
+    clojure -M:test -n pod.babashka.mysql-test
+fi
+
 if [ "$POD_DB_TYPE" = "oracle" ]
 then
     clojure -M:test -n pod.babashka.oracle-test

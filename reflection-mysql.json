@@ -1,0 +1,188 @@
+[ {
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "com.mysql.cj.conf.ConnectionUrlParser", "java.util.Properties" ]
+  } ],
+  "name" : "com.mysql.cj.conf.url.SingleConnectionUrl"
+}, {
+  "name" : "com.mysql.cj.exceptions.AssertionFailedException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.CJCommunicationsException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.CJConnectionFeatureNotAvailableException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.CJException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.CJOperationNotSupportedException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.CJPacketTooBigException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.CJTimeoutException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.ClosedOnExpiredPasswordException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.ConnectionIsClosedException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.DataConversionException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.DataReadException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.DataTruncationException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.DeadlockTimeoutRollbackMarker",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.FeatureNotAvailableException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.InvalidConnectionAttributeException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.NumberOutOfRange",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.OperationCancelledException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.PasswordExpiredException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.PropertyNotModifiableException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.RSAException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.SSLParamsException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.StatementIsClosedException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.StreamingNotifiable",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.UnableToConnectException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.UnsupportedConnectionStringException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.exceptions.WrongArgumentException",
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ]
+}, {
+  "name" : "com.mysql.cj.jdbc.AbandonedConnectionCleanupThread"
+}, {
+  "name" : "com.mysql.cj.jdbc.Driver"
+}, {
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ "java.lang.String" ]
+  } ],
+  "name" : "com.mysql.cj.log.StandardLogger"
+}, {
+  "methods" : [ {
+    "name" : "<init>",
+    "parameterTypes" : [ ]
+  } ],
+  "name" : "com.mysql.cj.protocol.StandardSocketFactory"
+}, {
+  "allPublicMethods" : true,
+  "name" : "java.beans.BeanInfo"
+}, {
+  "allPublicMethods" : true,
+  "name" : "java.beans.Introspector"
+}, {
+  "allPublicMethods" : true,
+  "name" : "java.beans.PropertyDescriptor"
+} ]

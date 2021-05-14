@@ -28,6 +28,13 @@ else
     POD_LEIN_PROFILES+=",-feature/hsqldb"
 fi
 
+if [ "$POD_DB_TYPE" = "mysql" ]
+then
+    POD_LEIN_PROFILES+=",+feature/mysql"
+else
+    POD_LEIN_PROFILES+=",-feature/mysql"
+fi
+
 if [ "$POD_DB_TYPE" = "oracle" ]
 then
     POD_LEIN_PROFILES+=",+feature/oracle"
@@ -75,6 +82,10 @@ args=( "-jar" "$JAR"
        "-H:+AddAllCharsets"
        "-H:IncludeResources=org/hsqldb/.*\.properties"
        "-H:IncludeResources=org/hsqldb/.*\.sql"
+       "--initialize-at-run-time=com.mysql.cj.jdbc.AbandonedConnectionCleanupThread"
+       "--initialize-at-run-time=com.mysql.cj.jdbc.AbandonedConnectionCleanupThread.AbandonedConnectionCleanupThread"
+       "--initialize-at-run-time=com.mysql.cj.jdbc.Driver"
+       "--initialize-at-run-time=com.mysql.cj.jdbc.NonRegisteringDriver"
        "--initialize-at-run-time=org.postgresql.sspi.SSPIClient"
        "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerColumnEncryptionAzureKeyVaultProvider"
        "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerFMTQuery"
