@@ -63,8 +63,16 @@
     then
     else))
 
+(defmacro if-mysql [then else]
+  (if features/mysql?
+    then
+    else))
+
 (defmacro when-pg [& body]
   `(if-pg (do ~@body) nil))
+
+(defmacro when-mysql [& body]
+  `(if-mysql (do ~@body) nil))
 
 (when-pg
     (defn coerce [v as]
@@ -95,11 +103,26 @@
                                  ::read :array}
                          (vec arr))]
            coerced)
+    #_? (instance? java.time.LocalDateTime x)
+    #_=> {::val (str x)
+          ::read :ldt}
     :else #_=> x))
 
 (when-pg
     (defn serialize [opts x]
       (cond
+        #_? (instance? java.sql.Array x)
+        #_=> (let [arr (.getArray ^java.sql.Array x)
+                   coerce-opt (get-in opts [:pod.babashka.sql/read :array])
+                   coerced (case coerce-opt
+                             :array {::val (vec arr)
+                                     ::read :array}
+                             (vec arr))]
+               coerced)
+        #_? (instance? java.time.LocalDateTime x)
+        #_=> {::val (str x)
+              ::read :ldt}
+        ;; pg specific
         #_? (instance? org.postgresql.util.PGobject x)
         #_=> (let [^ org.postgresql.util.PGobject x x
                    t (.getType x)
@@ -115,14 +138,6 @@
                                (.getValue x)
                                ;; default JSON handler
                                (json/parse-string (.getValue x) true)))]
-               coerced)
-        #_? (instance? java.sql.Array x)
-        #_=> (let [arr (.getArray ^java.sql.Array x)
-                   coerce-opt (get-in opts [:pod.babashka.sql/read :array])
-                   coerced (case coerce-opt
-                             :array {::val (vec arr)
-                                     ::read :array}
-                             (vec arr))]
                coerced)
         :else #_=> x))
   nil)
@@ -276,7 +291,8 @@
                (if-let [t (::read x)]
                  (let [v (::val x)]
                    (case t
-                     :array (into-array v)))
+                     :array (into-array v)
+                     :ldt (java.time.LocalDateTime/parse v)))
                  x)
                x))))
 
