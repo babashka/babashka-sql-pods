@@ -7,8 +7,8 @@
  {:test
   {:extra-deps
    {cognitect/test-runner
-    {:git/url "https://github.com/cognitect-labs/test-runner"
-     :sha "cb96e80f6f3d3b307c59cbeb49bb0dcb3a2a780b"}
+    {:git/url "https://github.com/borkdude/test-runner"
+     :sha "680cedab963d38ad677d12efa6f7e61f544b2441"}
     ch.vorburger.mariaDB4j/mariaDB4j {:mvn/version "2.4.0"}
     com.opentable.components/otj-pg-embedded {:mvn/version "0.13.3"}
     babashka/babashka.pods
