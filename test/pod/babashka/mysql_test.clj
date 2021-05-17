@@ -11,6 +11,11 @@
                  ["lein" "with-profiles" "+feature/mysql"
                   "run" "-m" "pod.babashka.sql"]))
 
+;; Note, on macOS, I had to apply the following to be able to use the MariaDBJ tool:
+;; https://github.com/vorburger/MariaDB4j/issues/48#issuecomment-574391644
+;; sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+;; sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
+
 (require '[pod.babashka.mysql :as db])
 (require '[pod.babashka.mysql.sql :as sql])
 (require '[pod.babashka.mysql.transaction :as transaction])
@@ -49,7 +54,15 @@
           (db/execute! x ["create table foo_timed (foo int, created timestamp)"])
           (db/execute! x ["insert into foo_timed values (?, ?)" 1 start-date])
           (let [result (db/execute! x ["select foo from foo_timed where created <= ?" start-date])]
-            (is (= result [{:foo_timed/foo 1}]))))))
+            (is (= result [{:foo_timed/foo 1}])))))
+      (testing "LocalDateTime"
+        (let [conn (db/get-connection db)
+              start-date (java.time.LocalDateTime/now)]
+          (db/with-transaction [x conn]
+            (db/execute! x ["truncate foo_timed;"])
+            (db/execute! x ["insert into foo_timed values (?, ?)" 1 start-date])
+            (let [result (db/execute! x ["select foo from foo_timed where created <= ?" start-date])]
+              (is (= result [{:foo_timed/foo 1}])))))))
     (testing "transaction"
       (let [conn (db/get-connection db)]
         (transaction/begin conn)

@@ -103,9 +103,6 @@
                                  ::read :array}
                          (vec arr))]
            coerced)
-    #_? (instance? java.time.LocalDateTime x)
-    #_=> {::val (str x)
-          ::read :ldt}
     :else #_=> x))
 
 (when-pg
@@ -119,10 +116,6 @@
                                      ::read :array}
                              (vec arr))]
                coerced)
-        #_? (instance? java.time.LocalDateTime x)
-        #_=> {::val (str x)
-              ::read :ldt}
-        ;; pg specific
         #_? (instance? org.postgresql.util.PGobject x)
         #_=> (let [^ org.postgresql.util.PGobject x x
                    t (.getType x)
@@ -146,6 +139,7 @@
   ([db-spec sql-params]
    (-execute! db-spec sql-params nil))
   ([db-spec sql-params opts]
+   ;; (.println System/err (str sql-params))
    (let [sql-params (walk/postwalk deserialize sql-params)
          conn (->connectable db-spec)
          res (jdbc/execute! conn sql-params opts)]
@@ -264,8 +258,7 @@
 (def -serialize-1-str
   (pr-str '(defn -serialize-1 [x]
              (if-let [c (class x)]
-               (if
-                   (and (.isArray c)
+               (if (and (.isArray c)
                         (not (bytes? x)) ;; bytes can he handled by transit
                                          ;; natively
                         ,)
@@ -273,7 +266,8 @@
                   ::val (vec x)}
                  (let [m (meta x)
                        t (:pod.babashka.sql/write m)]
-                   (if t
+                   (if
+                     t
                      {::write t
                       ::val x}
                      x)))
@@ -291,8 +285,7 @@
                (if-let [t (::read x)]
                  (let [v (::val x)]
                    (case t
-                     :array (into-array v)
-                     :ldt (java.time.LocalDateTime/parse v)))
+                     :array (into-array v)))
                  x)
                x))))
 
@@ -302,6 +295,16 @@
                 (defn -deserialize [obj]
                   (clojure.walk/postwalk sqlns/-deserialize-1 obj))))))
 
+(def reg-transit-handlers
+  "
+(require 'babashka.pods)
+(babashka.pods/add-transit-read-handler
+  \"pod.babashka.sql/local-date-time\"
+  (fn [s] (java.time.LocalDateTime/parse s)))
+(babashka.pods/add-transit-write-handler
+  \"pod.babashka.sql/local-date-time\"
+  str #{java.time.LocalDateTime})")
+
 (def describe-map
   (walk/postwalk
    (fn [v]
@@ -309,7 +312,9 @@
          v))
    `{:format :transit+json
      :namespaces [{:name ~(symbol sql-ns)
-                   :vars [{:name -execute!}
+                   :vars [{:name -reg-transit-handlers
+                           :code ~reg-transit-handlers}
+                          {:name -execute!}
                           {:name -execute-one!}
                           {:name -serialize-1
                            :code ~-serialize-1-str}
@@ -339,15 +344,20 @@
 
 (debug describe-map)
 
+(def ldt-read-handler (transit/read-handler #(java.time.LocalDateTime/parse %)))
+
 (defn read-transit [^String v]
   (transit/read
    (transit/reader
     (java.io.ByteArrayInputStream. (.getBytes v "utf-8"))
-    :json)))
+    :json
+    {:handlers {"pod.babashka.sql/local-date-time" ldt-read-handler}})))
+
+(def ldt-write-handler (transit/write-handler "pod.babashka.sql/local-date-time" str))
 
 (defn write-transit [v]
   (let [baos (java.io.ByteArrayOutputStream.)]
-    (transit/write (transit/writer baos :json) v)
+    (transit/write (transit/writer baos :json {:handlers {java.time.LocalDateTime ldt-write-handler}}) v)
     (.toString baos "utf-8")))
 
 (def musl?
