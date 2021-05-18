@@ -71,16 +71,8 @@
     then
     else))
 
-(defmacro if-mysql [then else]
-  (if features/mysql?
-    then
-    else))
-
 (defmacro when-pg [& body]
   `(if-pg (do ~@body) nil))
-
-(defmacro when-mysql [& body]
-  `(if-mysql (do ~@body) nil))
 
 (when-pg
     (defn coerce [v as]
@@ -112,22 +104,6 @@
                          (vec arr))]
            coerced)
     :else #_=> x))
-
-(when-mysql
-    (defn serialize [opts x]
-      (cond
-        #_? (instance? java.time.LocalDateTime x)
-        #_=> {::val (str x)
-              ::read :local-date-time}
-        #_? (instance? java.sql.Array x)
-        #_=> (let [arr (.getArray ^java.sql.Array x)
-                   coerce-opt (get-in opts [:pod.babashka.sql/read :array])
-                   coerced (case coerce-opt
-                             :array {::val (vec arr)
-                                     ::read :array}
-                             (vec arr))]
-               coerced)
-        :else #_=> x)))
 
 (when-pg
     (defn serialize [opts x]
@@ -309,8 +285,7 @@
                (if-let [t (::read x)]
                  (let [v (::val x)]
                    (case t
-                     :array (into-array v)
-                     :local-date-time (java.time.LocalDateTime/parse v)))
+                     :array (into-array v)))
                  x)
                x))))
 
