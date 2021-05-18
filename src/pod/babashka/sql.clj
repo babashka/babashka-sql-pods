@@ -295,15 +295,25 @@
                 (defn -deserialize [obj]
                   (clojure.walk/postwalk sqlns/-deserialize-1 obj))))))
 
+(def ldt-key (str ::local-date-time))
+
 (def reg-transit-handlers
-  "
+  (format "
 (require 'babashka.pods)
-(babashka.pods/add-transit-read-handler
-  \"pod.babashka.sql/local-date-time\"
-  (fn [s] (java.time.LocalDateTime/parse s)))
-(babashka.pods/add-transit-write-handler
-  \"pod.babashka.sql/local-date-time\"
-  str #{java.time.LocalDateTime})")
+(defmacro when-transit-handlers [& body]
+  (when (resolve 'babashka.pods/add-transit-read-handler)
+  `(do ~@body)))
+
+(when-transit-handlers
+
+  (babashka.pods/add-transit-read-handler
+    \"%s\"
+    (fn [s] (java.time.LocalDateTime/parse s)))
+
+  (babashka.pods/add-transit-write-handler
+    \"%s\"
+    str #{java.time.LocalDateTime}))"
+          ldt-key ldt-key))
 
 (def describe-map
   (walk/postwalk
@@ -351,9 +361,9 @@
    (transit/reader
     (java.io.ByteArrayInputStream. (.getBytes v "utf-8"))
     :json
-    {:handlers {"pod.babashka.sql/local-date-time" ldt-read-handler}})))
+    {:handlers {ldt-key ldt-read-handler}})))
 
-(def ldt-write-handler (transit/write-handler "pod.babashka.sql/local-date-time" str))
+(def ldt-write-handler (transit/write-handler ldt-key str))
 
 (defn write-transit [v]
   (let [baos (java.io.ByteArrayOutputStream.)]
