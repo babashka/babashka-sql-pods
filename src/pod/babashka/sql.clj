@@ -301,18 +301,19 @@
   (format "
 (require 'babashka.pods)
 (defmacro when-transit-handlers [& body]
-  (when (resolve 'babashka.pods/add-transit-read-handler)
+  (when (resolve 'babashka.pods/add-transit-read-handler!)
   `(do ~@body)))
 
 (when-transit-handlers
 
-  (babashka.pods/add-transit-read-handler
+  (babashka.pods/add-transit-read-handler!
     \"%s\"
     (fn [s] (java.time.LocalDateTime/parse s)))
 
-  (babashka.pods/add-transit-write-handler
+  (babashka.pods/add-transit-write-handler!
+    #{java.time.LocalDateTime}
     \"%s\"
-    str #{java.time.LocalDateTime}))"
+    str))"
           ldt-key ldt-key))
 
 (def describe-map

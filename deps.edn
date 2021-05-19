@@ -14,7 +14,7 @@
     babashka/babashka.pods
     #_{:local/root "../pods"}
     {:git/url "https://github.com/babashka/babashka.pods"
-     :sha "1fdd8231bd3a396c4d12c40fecc9dd0328b288d3"}}
+     :sha "de4c3610c9ef3879370d01b7202a9f3a9d056f6e"}}
    :extra-paths ["test"]
    :main-opts ["-m" "cognitect.test-runner"]}
   :mysql {:extra-deps {mysql/mysql-connector-java {:mvn/version "8.0.25"}}}}}
