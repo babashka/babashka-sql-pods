@@ -93,29 +93,12 @@
     xs))
 
 ;; Default implementation
-(defn serialize [opts x]
-  (cond
-    #_? (instance? java.sql.Array x)
-    #_=> (let [arr (.getArray ^java.sql.Array x)
-               coerce-opt (get-in opts [:pod.babashka.sql/read :array])
-               coerced (case coerce-opt
-                         :array {::val (vec arr)
-                                 ::read :array}
-                         (vec arr))]
-           coerced)
-    :else #_=> x))
+(defn serialize [_opts x]
+  x)
 
 (when-pg
     (defn serialize [opts x]
       (cond
-        #_? (instance? java.sql.Array x)
-        #_=> (let [arr (.getArray ^java.sql.Array x)
-                   coerce-opt (get-in opts [:pod.babashka.sql/read :array])
-                   coerced (case coerce-opt
-                             :array {::val (vec arr)
-                                     ::read :array}
-                             (vec arr))]
-               coerced)
         #_? (instance? org.postgresql.util.PGobject x)
         #_=> (let [^ org.postgresql.util.PGobject x x
                    t (.getType x)
@@ -296,6 +279,7 @@
                   (clojure.walk/postwalk sqlns/-deserialize-1 obj))))))
 
 (def ldt-key (str ::local-date-time))
+(def jsa-key (str ::java-sql-array))
 
 (def reg-transit-handlers
   (format "
@@ -313,8 +297,13 @@
   (babashka.pods/add-transit-write-handler!
     #{java.time.LocalDateTime}
     \"%s\"
-    str))"
-          ldt-key ldt-key))
+    str))
+
+  (babashka.pods/add-transit-read-handler!
+      \"%s\"
+      vec)"
+          ldt-key ldt-key
+          jsa-key))
 
 (def describe-map
   (walk/postwalk
@@ -356,19 +345,26 @@
 (debug describe-map)
 
 (def ldt-read-handler (transit/read-handler #(java.time.LocalDateTime/parse %)))
+(def rhm (transit/read-handler-map {ldt-key ldt-read-handler}))
 
 (defn read-transit [^String v]
   (transit/read
    (transit/reader
     (java.io.ByteArrayInputStream. (.getBytes v "utf-8"))
     :json
-    {:handlers {ldt-key ldt-read-handler}})))
+    {:handlers rhm})))
 
 (def ldt-write-handler (transit/write-handler ldt-key str))
 
+(def jsa-write-handler (transit/write-handler
+                        jsa-key
+                        (fn [^java.sql.Array arr]
+                          (into-array Object (.getArray arr)))))
+
 (defn write-transit [v]
   (let [baos (java.io.ByteArrayOutputStream.)]
-    (transit/write (transit/writer baos :json {:handlers {java.time.LocalDateTime ldt-write-handler}}) v)
+    (transit/write (transit/writer baos :json {:handlers {java.time.LocalDateTime ldt-write-handler
+                                                          java.sql.Array jsa-write-handler}}) v)
     (.toString baos "utf-8")))
 
 (def musl?
