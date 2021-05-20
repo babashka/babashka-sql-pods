@@ -200,34 +200,16 @@
 
 (def execute-str
   (replace-sql-ns (str '(defn execute! [db-spec & args]
-                          (apply sqlns/-execute! db-spec (sqlns/-serialize args))))))
+                          (apply sqlns/-execute! db-spec args)))))
 
 (def execute-one-str
   (replace-sql-ns (str '(defn execute-one! [db-spec & args]
-                          (apply sqlns/-execute-one! db-spec (sqlns/-serialize args))))))
+                          (apply sqlns/-execute-one! db-spec args)))))
 
 (def insert-multi-str
   (-> (str '(defn insert-multi! [db-spec table cols rows]
-              (sql-sql-ns/-insert-multi! db-spec table cols (sqlns/-serialize rows))))
+              (sql-sql-ns/-insert-multi! db-spec table cols rows)))
       replace-sql-ns))
-
-(def -serialize-1-str
-  (pr-str '(defn -serialize-1 [x]
-             (if-let [c (class x)]
-               (let [m (meta x)
-                     t (:pod.babashka.sql/write m)]
-                 (if
-                     t
-                   {::write t
-                    ::val x}
-                   x))
-               x))))
-
-(def -serialize-str
-  (replace-sql-ns
-   (pr-str '(do (require 'clojure.walk)
-                (defn -serialize [obj]
-                  (clojure.walk/postwalk sqlns/-serialize-1 obj))))))
 
 (def ldt-key (str ::local-date-time))
 (def jsa-key (str ::java-sql-array))
@@ -279,10 +261,6 @@
                            :code ~json-str}
                           {:name -execute!}
                           {:name -execute-one!}
-                          {:name -serialize-1
-                           :code ~-serialize-1-str}
-                          {:name -serialize
-                           :code ~-serialize-str}
                           {:name execute!
                            :code ~execute-str}
                           {:name execute-one!
