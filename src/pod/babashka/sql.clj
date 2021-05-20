@@ -227,15 +227,15 @@
 
 (def execute-str
   (replace-sql-ns (str '(defn execute! [db-spec & args]
-                          (sqlns/-deserialize (apply sqlns/-execute! db-spec (sqlns/-serialize args)))))))
+                          (apply sqlns/-execute! db-spec (sqlns/-serialize args))))))
 
 (def execute-one-str
   (replace-sql-ns (str '(defn execute-one! [db-spec & args]
-                          (sqlns/-deserialize (apply sqlns/-execute-one! db-spec (sqlns/-serialize args)))))))
+                          (apply sqlns/-execute-one! db-spec (sqlns/-serialize args))))))
 
 (def insert-multi-str
   (-> (str '(defn insert-multi! [db-spec table cols rows]
-              (sqlns/-deserialize (sql-sql-ns/-insert-multi! db-spec table cols (sqlns/-serialize rows)))))
+              (sql-sql-ns/-insert-multi! db-spec table cols (sqlns/-serialize rows))))
       replace-sql-ns))
 
 (def -serialize-1-str
@@ -261,22 +261,6 @@
    (pr-str '(do (require 'clojure.walk)
                 (defn -serialize [obj]
                   (clojure.walk/postwalk sqlns/-serialize-1 obj))))))
-
-(def -deserialize-1-str
-  (pr-str '(defn -deserialize-1 [x]
-             (if (map? x)
-               (if-let [t (::read x)]
-                 (let [v (::val x)]
-                   (case t
-                     :array (into-array v)))
-                 x)
-               x))))
-
-(def -deserialize-str
-  (replace-sql-ns
-   (pr-str '(do (require 'clojure.walk)
-                (defn -deserialize [obj]
-                  (clojure.walk/postwalk sqlns/-deserialize-1 obj))))))
 
 (def ldt-key (str ::local-date-time))
 (def jsa-key (str ::java-sql-array))
@@ -320,10 +304,6 @@
                            :code ~-serialize-1-str}
                           {:name -serialize
                            :code ~-serialize-str}
-                          {:name -deserialize-1
-                           :code ~-deserialize-1-str}
-                          {:name -deserialize
-                           :code ~-deserialize-str}
                           {:name execute!
                            :code ~execute-str}
                           {:name execute-one!

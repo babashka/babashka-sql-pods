@@ -132,12 +132,8 @@ A more elaborate example can be found
 
 #### Reading arrays
 
-- Array columns automatically get converted to Clojure vectors. This can be overriden by passing a `:pod.babashka.sql/read` option to `execute!`:
-
-``` clojure
-{:pod.babashka.sql/read {:array :vector}} ;; default
-{:pod.babashka.sql/read {:array :array}} ;; array as Java array
-```
+Array columns automatically get converted to Clojure vectors. Converting back
+into arrays must be done manually.
 
 ### JSON
 
