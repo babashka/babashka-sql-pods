@@ -8,7 +8,7 @@ Breaking changes:
 
 - Arrays are now always returned as vectors, the support for
   `pod.babashka.sql/read {:array :array}` option has been dropped.
-
+- Writing arrays must always be done using an explicit array instead of using the `pod.babashka.sql/write` option
 - Instead of writing `json` or `jsonb` via metadata, this must now be done using the `write-json` and `write-jsonb` functions from the main db namespace.
 
 ## v0.0.6
@@ -51,5 +51,5 @@ Initial release.
 
 - Arrays are now always returned as vectors, the support for
   `pod.babashka.sql/read {:array :array}` option has been dropped.
-
+- Writing arrays must always be done using an explicit array instead of using the `pod.babashka.sql/write` option
 - Instead of writing `json` or `jsonb` via metadata, this must now be done using the `write-json` and `write-jsonb` functions from the main db namespace.
