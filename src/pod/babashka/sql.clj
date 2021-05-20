@@ -52,10 +52,6 @@
     (get @conns conn-id)
     db-spec))
 
-;; default implementation
-(defn coerce [_v _as]
-  (throw (java.lang.UnsupportedOperationException. "not needed anymore")))
-
 (defmacro if-mysql [then else]
   (if features/mysql?
     then
@@ -71,18 +67,6 @@
 
 (defmacro when-pg [& body]
   `(if-pg (do ~@body) nil))
-
-(when-pg
-    (defn coerce [v as]
-      ))
-
-(defn deserialize [xs]
-  (if (map? xs)
-    (if-let [as (:pod.babashka.sql/write xs)]
-      (let [v (::val xs)]
-        (coerce v as))
-      xs)
-    xs))
 
 ;; Default implementation
 (defn serialize [_opts x]
@@ -115,8 +99,7 @@
    (-execute! db-spec sql-params nil))
   ([db-spec sql-params opts]
    ;; (.println System/err (str sql-params))
-   (let [sql-params (walk/postwalk deserialize sql-params)
-         conn (->connectable db-spec)
+   (let [conn (->connectable db-spec)
          res (jdbc/execute! conn sql-params opts)]
      (walk/postwalk #(serialize opts %) res))))
 
@@ -124,8 +107,7 @@
   ([db-spec sql-params]
    (-execute-one! db-spec sql-params nil))
   ([db-spec sql-params opts]
-   (let [sql-params (walk/postwalk deserialize sql-params)
-         conn (->connectable db-spec)
+   (let [conn (->connectable db-spec)
          res (jdbc/execute-one! conn sql-params opts)]
      (walk/postwalk #(serialize opts %) res))))
 
@@ -133,8 +115,7 @@
   ([db-spec table cols rows]
    (-insert-multi! db-spec table cols rows nil))
   ([db-spec table cols rows opts]
-   (let [rows (walk/postwalk deserialize rows)
-         conn (->connectable db-spec)
+   (let [conn (->connectable db-spec)
          res (sql/insert-multi! conn table cols rows)]
      (walk/postwalk #(serialize opts %) res))))
 
