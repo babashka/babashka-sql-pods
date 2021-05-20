@@ -94,26 +94,26 @@
         :else #_=> x))
   nil)
 
-(defn -execute!
+(defn execute!
   ([db-spec sql-params]
-   (-execute! db-spec sql-params nil))
+   (execute! db-spec sql-params nil))
   ([db-spec sql-params opts]
    ;; (.println System/err (str sql-params))
    (let [conn (->connectable db-spec)
          res (jdbc/execute! conn sql-params opts)]
      (walk/postwalk #(serialize opts %) res))))
 
-(defn -execute-one!
+(defn execute-one!
   ([db-spec sql-params]
-   (-execute-one! db-spec sql-params nil))
+   (execute-one! db-spec sql-params nil))
   ([db-spec sql-params opts]
    (let [conn (->connectable db-spec)
          res (jdbc/execute-one! conn sql-params opts)]
      (walk/postwalk #(serialize opts %) res))))
 
-(defn -insert-multi!
+(defn insert-multi!
   ([db-spec table cols rows]
-   (-insert-multi! db-spec table cols rows nil))
+   (insert-multi! db-spec table cols rows nil))
   ([db-spec table cols rows opts]
    (let [conn (->connectable db-spec)
          res (sql/insert-multi! conn table cols rows)]
@@ -173,14 +173,14 @@
                       :else (throw (Exception. "Feature flag expected."))))
 
 (def lookup
-  (let [m {'-execute! -execute!
-           '-execute-one! -execute-one!
+  (let [m {'execute! execute!
+           'execute-one! execute-one!
            'get-connection get-connection
            'close-connection close-connection
            'transaction/begin transaction-begin
            'transaction/rollback transaction-rollback
            'transaction/commit transaction-commit
-           'sql/-insert-multi! -insert-multi!}]
+           'sql/insert-multi! insert-multi!}]
     (zipmap (map (fn [sym]
                    (if-let [ns (namespace sym)]
                      (symbol (str sql-ns "." ns) (name sym))
@@ -193,23 +193,10 @@
       slurp
       (str/replace "pod.babashka.sql" sql-ns)))
 
-(defn replace-sql-ns [s]
+#_(defn replace-sql-ns [s]
   (-> s
       (str/replace "sqlns" sql-ns)
       (str/replace "sql-sql-ns" sql-sql-ns)))
-
-(def execute-str
-  (replace-sql-ns (str '(defn execute! [db-spec & args]
-                          (apply sqlns/-execute! db-spec args)))))
-
-(def execute-one-str
-  (replace-sql-ns (str '(defn execute-one! [db-spec & args]
-                          (apply sqlns/-execute-one! db-spec args)))))
-
-(def insert-multi-str
-  (-> (str '(defn insert-multi! [db-spec table cols rows]
-              (sql-sql-ns/-insert-multi! db-spec table cols rows)))
-      replace-sql-ns))
 
 (def ldt-key (str ::local-date-time))
 (def jsa-key (str ::java-sql-array))
@@ -259,12 +246,8 @@
                            :code ~reg-transit-handlers}
                           {:name json
                            :code ~json-str}
-                          {:name -execute!}
-                          {:name -execute-one!}
-                          {:name execute!
-                           :code ~execute-str}
-                          {:name execute-one!
-                           :code ~execute-one-str}
+                          {:name execute!}
+                          {:name execute-one!}
                           {:name get-connection}
                           {:name close-connection}
                           {:name with-transaction
@@ -274,9 +257,7 @@
                           {:name rollback}
                           {:name commit}]}
                   {:name ~(symbol (str sql-ns ".sql"))
-                   :vars [{:name -insert-multi!}
-                          {:name insert-multi!
-                           :code ~insert-multi-str}]}]
+                   :vars [{:name insert-multi!}]}]
      :opts {:shutdown {}}}))
 
 (debug describe-map)
