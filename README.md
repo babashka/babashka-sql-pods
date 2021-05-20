@@ -132,12 +132,8 @@ A more elaborate example can be found
 
 #### Reading arrays
 
-- Array columns automatically get converted to Clojure vectors. This can be overriden by passing a `:pod.babashka.sql/read` option to `execute!`:
-
-``` clojure
-{:pod.babashka.sql/read {:array :vector}} ;; default
-{:pod.babashka.sql/read {:array :array}} ;; array as Java array
-```
+Array columns automatically get converted to Clojure vectors. Converting back
+into arrays must be done manually.
 
 ### JSON
 
@@ -151,10 +147,10 @@ This section only applies to PostgreSQL for now, but can be extended to other da
 (db/execute! db ["insert into json_table values (?::text);" (json/generate-string {:a 1})])
 ```
 
-- Use `^{:pod.babashka.sql/write :json}` (or `:jsonb`). Full example:
+- Use `db/write-json` or `db/write-jsonb`. Full example:
 
 ``` clojure
-(db/execute! db ["insert into json_table values (?);" ^{:pod.babashka.sql/write :json} {:a 1}])
+(db/execute! db ["insert into json_table values (?);" (db/write-json {:a 1})])
 ```
 
 #### Reading JSON

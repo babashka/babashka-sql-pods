@@ -52,12 +52,6 @@
     (get @conns conn-id)
     db-spec))
 
-;; default implementation
-(defn coerce [v as]
-  (case as
-    :array
-    (into-array v)))
-
 (defmacro if-mysql [then else]
   (if features/mysql?
     then
@@ -74,94 +68,30 @@
 (defmacro when-pg [& body]
   `(if-pg (do ~@body) nil))
 
-(when-pg
-    (defn coerce [v as]
-      (case as
-        (:json :jsonb)
-        (doto (org.postgresql.util.PGobject.)
-          (.setType (name as))
-          (.setValue (json/generate-string v)))
-        :array
-        (into-array v))))
-
-(defn deserialize [xs]
-  (if (map? xs)
-    (if-let [as (:pod.babashka.sql/write xs)]
-      (let [v (::val xs)]
-        (coerce v as))
-      xs)
-    xs))
-
-;; Default implementation
-(defn serialize [opts x]
-  (cond
-    #_? (instance? java.sql.Array x)
-    #_=> (let [arr (.getArray ^java.sql.Array x)
-               coerce-opt (get-in opts [:pod.babashka.sql/read :array])
-               coerced (case coerce-opt
-                         :array {::val (vec arr)
-                                 ::read :array}
-                         (vec arr))]
-           coerced)
-    :else #_=> x))
-
-(when-pg
-    (defn serialize [opts x]
-      (cond
-        #_? (instance? java.sql.Array x)
-        #_=> (let [arr (.getArray ^java.sql.Array x)
-                   coerce-opt (get-in opts [:pod.babashka.sql/read :array])
-                   coerced (case coerce-opt
-                             :array {::val (vec arr)
-                                     ::read :array}
-                             (vec arr))]
-               coerced)
-        #_? (instance? org.postgresql.util.PGobject x)
-        #_=> (let [^ org.postgresql.util.PGobject x x
-                   t (.getType x)
-                   coerce-opts (get opts :pod.babashka.sql/read)
-                   coerced (case t
-                             ("json" "jsonb")
-                             (case (get coerce-opts (keyword t))
-                               :parse+keywordize
-                               (json/parse-string (.getValue x) true)
-                               :parse
-                               (json/parse-string (.getValue x))
-                               :string
-                               (.getValue x)
-                               ;; default JSON handler
-                               (json/parse-string (.getValue x) true)))]
-               coerced)
-        :else #_=> x))
-  nil)
-
-(defn -execute!
+(defn execute!
   ([db-spec sql-params]
-   (-execute! db-spec sql-params nil))
+   (execute! db-spec sql-params nil))
   ([db-spec sql-params opts]
    ;; (.println System/err (str sql-params))
-   (let [sql-params (walk/postwalk deserialize sql-params)
-         conn (->connectable db-spec)
+   (let [conn (->connectable db-spec)
          res (jdbc/execute! conn sql-params opts)]
-     (walk/postwalk #(serialize opts %) res))))
+     res)))
 
-(defn -execute-one!
+(defn execute-one!
   ([db-spec sql-params]
-   (-execute-one! db-spec sql-params nil))
+   (execute-one! db-spec sql-params nil))
   ([db-spec sql-params opts]
-   (let [sql-params (walk/postwalk deserialize sql-params)
-         conn (->connectable db-spec)
+   (let [conn (->connectable db-spec)
          res (jdbc/execute-one! conn sql-params opts)]
-     (walk/postwalk #(serialize opts %) res))))
+     res)))
 
-(defn -insert-multi!
+(defn insert-multi!
   ([db-spec table cols rows]
-   (-insert-multi! db-spec table cols rows nil))
-  ([db-spec table cols rows opts]
-   (let [rows (walk/postwalk deserialize rows)
-         conn (->connectable db-spec)
+   (insert-multi! db-spec table cols rows nil))
+  ([db-spec table cols rows _opts]
+   (let [conn (->connectable db-spec)
          res (sql/insert-multi! conn table cols rows)]
-     (walk/postwalk #(serialize opts %) res))))
+     res)))
 
 (defn close-connection [{:keys [::connection]}]
   (let [[old _new] (swap-vals! conns dissoc connection)]
@@ -217,14 +147,14 @@
                       :else (throw (Exception. "Feature flag expected."))))
 
 (def lookup
-  (let [m {'-execute! -execute!
-           '-execute-one! -execute-one!
+  (let [m {'execute! execute!
+           'execute-one! execute-one!
            'get-connection get-connection
            'close-connection close-connection
            'transaction/begin transaction-begin
            'transaction/rollback transaction-rollback
            'transaction/commit transaction-commit
-           'sql/-insert-multi! -insert-multi!}]
+           'sql/insert-multi! insert-multi!}]
     (zipmap (map (fn [sym]
                    (if-let [ns (namespace sym)]
                      (symbol (str sql-ns "." ns) (name sym))
@@ -237,65 +167,8 @@
       slurp
       (str/replace "pod.babashka.sql" sql-ns)))
 
-(defn replace-sql-ns [s]
-  (-> s
-      (str/replace "sqlns" sql-ns)
-      (str/replace "sql-sql-ns" sql-sql-ns)))
-
-(def execute-str
-  (replace-sql-ns (str '(defn execute! [db-spec & args]
-                          (sqlns/-deserialize (apply sqlns/-execute! db-spec (sqlns/-serialize args)))))))
-
-(def execute-one-str
-  (replace-sql-ns (str '(defn execute-one! [db-spec & args]
-                          (sqlns/-deserialize (apply sqlns/-execute-one! db-spec (sqlns/-serialize args)))))))
-
-(def insert-multi-str
-  (-> (str '(defn insert-multi! [db-spec table cols rows]
-              (sqlns/-deserialize (sql-sql-ns/-insert-multi! db-spec table cols (sqlns/-serialize rows)))))
-      replace-sql-ns))
-
-(def -serialize-1-str
-  (pr-str '(defn -serialize-1 [x]
-             (if-let [c (class x)]
-               (if (and (.isArray c)
-                        (not (bytes? x)) ;; bytes can he handled by transit
-                                         ;; natively
-                        ,)
-                 {::write :array
-                  ::val (vec x)}
-                 (let [m (meta x)
-                       t (:pod.babashka.sql/write m)]
-                   (if
-                     t
-                     {::write t
-                      ::val x}
-                     x)))
-               x))))
-
-(def -serialize-str
-  (replace-sql-ns
-   (pr-str '(do (require 'clojure.walk)
-                (defn -serialize [obj]
-                  (clojure.walk/postwalk sqlns/-serialize-1 obj))))))
-
-(def -deserialize-1-str
-  (pr-str '(defn -deserialize-1 [x]
-             (if (map? x)
-               (if-let [t (::read x)]
-                 (let [v (::val x)]
-                   (case t
-                     :array (into-array v)))
-                 x)
-               x))))
-
-(def -deserialize-str
-  (replace-sql-ns
-   (pr-str '(do (require 'clojure.walk)
-                (defn -deserialize [obj]
-                  (clojure.walk/postwalk sqlns/-deserialize-1 obj))))))
-
 (def ldt-key (str ::local-date-time))
+(def jsa-key (str ::java-sql-array))
 
 (def reg-transit-handlers
   (format "
@@ -313,8 +186,27 @@
   (babashka.pods/add-transit-write-handler!
     #{java.time.LocalDateTime}
     \"%s\"
-    str))"
-          ldt-key ldt-key))
+    str))
+
+  (babashka.pods/add-transit-read-handler!
+      \"%s\"
+      vec)
+
+  (babashka.pods/add-transit-read-handler!
+      \"object\"
+      identity)
+
+  (babashka.pods/set-default-transit-write-handler!
+    (fn [x] (when (.isArray (class x)) \"java.array\"))
+    vec)"
+          ldt-key ldt-key
+          jsa-key))
+
+(def json-str
+  "(defn write-json [obj]
+     (cognitect.transit/tagged-value \"json\" obj))
+   (defn write-jsonb [obj]
+     (cognitect.transit/tagged-value \"jsonb\" obj))")
 
 (def describe-map
   (walk/postwalk
@@ -325,20 +217,10 @@
      :namespaces [{:name ~(symbol sql-ns)
                    :vars [{:name -reg-transit-handlers
                            :code ~reg-transit-handlers}
-                          {:name -execute!}
-                          {:name -execute-one!}
-                          {:name -serialize-1
-                           :code ~-serialize-1-str}
-                          {:name -serialize
-                           :code ~-serialize-str}
-                          {:name -deserialize-1
-                           :code ~-deserialize-1-str}
-                          {:name -deserialize
-                           :code ~-deserialize-str}
-                          {:name execute!
-                           :code ~execute-str}
-                          {:name execute-one!
-                           :code ~execute-one-str}
+                          {:name json
+                           :code ~json-str}
+                          {:name execute!}
+                          {:name execute-one!}
                           {:name get-connection}
                           {:name close-connection}
                           {:name with-transaction
@@ -348,27 +230,87 @@
                           {:name rollback}
                           {:name commit}]}
                   {:name ~(symbol (str sql-ns ".sql"))
-                   :vars [{:name -insert-multi!}
-                          {:name insert-multi!
-                           :code ~insert-multi-str}]}]
+                   :vars [{:name insert-multi!}]}]
      :opts {:shutdown {}}}))
 
 (debug describe-map)
 
 (def ldt-read-handler (transit/read-handler #(java.time.LocalDateTime/parse %)))
+(def java-array-read-handler (transit/read-handler into-array))
+
+(def jak "java.array")
+
+(def jsonk "json")
+(def json-read-handler
+  (transit/read-handler (fn [obj]
+                          (if-pg
+                              (doto (org.postgresql.util.PGobject.)
+                                (.setType "json")
+                                (.setValue (json/generate-string obj)))
+                            obj))))
+
+(def jsonbk "jsonb")
+(def jsonb-read-handler
+  (transit/read-handler (fn [obj]
+                          (if-pg
+                              (doto (org.postgresql.util.PGobject.)
+                                (.setType "jsonb")
+                                (.setValue (json/generate-string obj)))
+                            obj))))
+
+(def rhm (transit/read-handler-map {ldt-key ldt-read-handler
+                                    jak java-array-read-handler
+                                    jsonk json-read-handler
+                                    jsonbk jsonb-read-handler}))
 
 (defn read-transit [^String v]
   (transit/read
    (transit/reader
     (java.io.ByteArrayInputStream. (.getBytes v "utf-8"))
     :json
-    {:handlers {ldt-key ldt-read-handler}})))
+    {:handlers rhm})))
 
 (def ldt-write-handler (transit/write-handler ldt-key str))
 
+(def jsa-write-handler (transit/write-handler
+                        jsa-key
+                        (fn [^java.sql.Array arr]
+                          (into-array Object (.getArray arr)))))
+
+(def ^:dynamic *read-opt* nil)
+
+(when-pg
+    (def pgo-write-handler (transit/write-handler
+                            "object"
+                            (fn [^ org.postgresql.util.PGobject x]
+                              (let [t (.getType x)
+                                    coerce-opts *read-opt*
+                                    coerced (case t
+                                              ("json" "jsonb")
+                                              (case (get coerce-opts (keyword t))
+                                                :parse+keywordize
+                                                (json/parse-string (.getValue x) true)
+                                                :parse
+                                                (json/parse-string (.getValue x))
+                                                :string
+                                                (.getValue x)
+                                                ;; default JSON handler
+                                                (json/parse-string (.getValue x) true)))]
+                                coerced)))))
+
+(def base-write-map
+  {java.time.LocalDateTime ldt-write-handler
+   java.sql.Array jsa-write-handler})
+(def whm (transit/write-handler-map
+          (if-pg
+              (assoc base-write-map
+                     org.postgresql.util.PGobject
+                     pgo-write-handler)
+              base-write-map)))
+
 (defn write-transit [v]
   (let [baos (java.io.ByteArrayOutputStream.)]
-    (transit/write (transit/writer baos :json {:handlers {java.time.LocalDateTime ldt-write-handler}}) v)
+    (transit/write (transit/writer baos :json {:handlers whm}) v)
     (.toString baos "utf-8")))
 
 (def musl?
@@ -400,7 +342,11 @@
                                 args (read-string args)
                                 args (read-transit args)]
                             (if-let [f (lookup var)]
-                              (let [value (write-transit (apply f args))
+                              (let [read-opt (let [v (last args)]
+                                               (when (map? v)
+                                                 (:pod.babashka.sql/read v)))
+                                    value (binding [*read-opt* read-opt]
+                                            (write-transit (apply f args)))
                                     reply {"value" value
                                            "id" id
                                            "status" ["done"]}]

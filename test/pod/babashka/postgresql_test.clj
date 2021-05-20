@@ -86,14 +86,7 @@
       (testing "non-byte arrays"
         (is (db/execute! db ["create table bar ( bar integer[] );"]))
         (is (db/execute! db ["insert into bar values (?);" (into-array [1 2 3])]))
-        (is (db/execute! db ["insert into bar values (?);" ^{:pod.babashka.sql/write :array} [4 5 6]]))
-        (is (= [#:bar{:bar [1 2 3]} #:bar{:bar [4 5 6]}] (db/execute! db ["select * from bar"])))
-        (let [arrays (map :bar/bar
-                          (db/execute! db ["select * from bar"]
-                                       {:pod.babashka.sql/read {:array :array}}))
-              vecs (map vec arrays)]
-          (is (every? #(.isArray (class %)) arrays))
-          (is (= [[1 2 3] [4 5 6]] vecs)))
+        (is (= [#:bar{:bar [1 2 3]}] (db/execute! db ["select * from bar"])))
         (is (db/execute! db ["create table baz ( baz text[] );"]))
         (is (db/execute! db ["insert into baz values (?);" (into-array ["foo" "bar"])]))
         (is (= [#:baz{:baz ["foo" "bar"]}] (db/execute! db ["select * from baz"])))
@@ -103,7 +96,7 @@
                                                   [(into-array ["x" "y"])]])))))
     (testing "json"
       (is (db/execute! db ["create table json_table ( json_col json );"]))
-      (is (db/execute! db ["insert into json_table values (?);" ^{:pod.babashka.sql/write :json} {:a 1}]))
+      (is (db/execute! db ["insert into json_table values (?);" (db/write-json {:a 1})]))
       (is (= [#:json_table{:json_col {:a 1}}] (db/execute! db ["select * from json_table values;"])))
       (is (= [#:json_table{:json_col {:a 1}}]
              (db/execute! db ["select * from json_table values;"]
@@ -116,7 +109,7 @@
                           {:pod.babashka.sql/read {:json :string}}))))
     (testing "jsonb"
       (is (db/execute! db ["create table jsonb_table ( jsonb_col jsonb );"]))
-      (is (db/execute! db ["insert into jsonb_table values (?);" ^{:pod.babashka.sql/write :jsonb} {:a 1}]))
+      (is (db/execute! db ["insert into jsonb_table values (?);" (db/write-jsonb {:a 1})]))
       (is (= [#:jsonb_table{:jsonb_col {:a 1}}] (db/execute! db ["select * from jsonb_table values;"])))
       (is (= [#:jsonb_table{:jsonb_col {:a 1}}]
              (db/execute! db ["select * from jsonb_table values;"]
