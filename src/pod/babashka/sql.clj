@@ -311,17 +311,20 @@
 (def jsonk "json")
 (def json-read-handler
   (transit/read-handler (fn [obj]
-                          (doto (org.postgresql.util.PGobject.)
-                            (.setType "json")
-                            (.setValue (json/generate-string obj))))))
+                          (if-pg
+                              (doto (org.postgresql.util.PGobject.)
+                                (.setType "json")
+                                (.setValue (json/generate-string obj)))
+                            obj))))
 
 (def jsonbk "jsonb")
 (def jsonb-read-handler
   (transit/read-handler (fn [obj]
-                          (doto (org.postgresql.util.PGobject.)
-                            (.setType "jsonb")
-                            (.setValue (json/generate-string obj))))))
-
+                          (if-pg
+                              (doto (org.postgresql.util.PGobject.)
+                                (.setType "jsonb")
+                                (.setValue (json/generate-string obj)))
+                            obj))))
 
 (def rhm (transit/read-handler-map {ldt-key ldt-read-handler
                                     jak java-array-read-handler
