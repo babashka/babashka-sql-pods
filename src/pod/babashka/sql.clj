@@ -168,7 +168,6 @@
       (str/replace "pod.babashka.sql" sql-ns)))
 
 (def ldt-key (str ::local-date-time))
-(def jsa-key (str ::java-sql-array))
 
 (def reg-transit-handlers
   (format "
@@ -189,18 +188,13 @@
     str))
 
   (babashka.pods/add-transit-read-handler!
-      \"%s\"
-      vec)
-
-  (babashka.pods/add-transit-read-handler!
       \"object\"
       identity)
 
   (babashka.pods/set-default-transit-write-handler!
     (fn [x] (when (.isArray (class x)) \"java.array\"))
     vec)"
-          ldt-key ldt-key
-          jsa-key))
+          ldt-key ldt-key))
 
 (def json-str
   "(defn write-json [obj]
@@ -273,9 +267,9 @@
 (def ldt-write-handler (transit/write-handler ldt-key str))
 
 (def jsa-write-handler (transit/write-handler
-                        jsa-key
+                        "array"
                         (fn [^java.sql.Array arr]
-                          (into-array Object (.getArray arr)))))
+                          (vec (.getArray arr)))))
 
 (def ^:dynamic *read-opt* nil)
 

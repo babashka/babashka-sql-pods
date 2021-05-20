@@ -2,6 +2,15 @@
 
 For a list of breaking changes, check [here](#breaking-changes)
 
+## v0.0.7
+
+Breaking changes:
+
+- Arrays are now always returned as vectors, the support for
+  `pod.babashka.sql/read {:array :array}` option has been dropped.
+
+- Instead of writing `json` or `jsonb` via metadata, this must now be done using the `write-json` and `write-jsonb` functions from the main db namespace.
+
 ## v0.0.6
 
 All linux binaries are now statically linked with musl.
@@ -38,4 +47,9 @@ Initial release.
 
 ## Breaking changes
 
-None yet.
+### 0.0.7
+
+- Arrays are now always returned as vectors, the support for
+  `pod.babashka.sql/read {:array :array}` option has been dropped.
+
+- Instead of writing `json` or `jsonb` via metadata, this must now be done using the `write-json` and `write-jsonb` functions from the main db namespace.
