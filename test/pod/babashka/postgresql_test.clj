@@ -96,7 +96,7 @@
                                                   [(into-array ["x" "y"])]])))))
     (testing "json"
       (is (db/execute! db ["create table json_table ( json_col json );"]))
-      (is (db/execute! db ["insert into json_table values (?);" ^{:pod.babashka.sql/write :json} {:a 1}]))
+      (is (db/execute! db ["insert into json_table values (?);" (db/as-json {:a 1})]))
       (is (= [#:json_table{:json_col {:a 1}}] (db/execute! db ["select * from json_table values;"])))
       (is (= [#:json_table{:json_col {:a 1}}]
              (db/execute! db ["select * from json_table values;"]
@@ -109,7 +109,7 @@
                           {:pod.babashka.sql/read {:json :string}}))))
     (testing "jsonb"
       (is (db/execute! db ["create table jsonb_table ( jsonb_col jsonb );"]))
-      (is (db/execute! db ["insert into jsonb_table values (?);" ^{:pod.babashka.sql/write :jsonb} {:a 1}]))
+      (is (db/execute! db ["insert into jsonb_table values (?);" (db/as-jsonb {:a 1})]))
       (is (= [#:jsonb_table{:jsonb_col {:a 1}}] (db/execute! db ["select * from jsonb_table values;"])))
       (is (= [#:jsonb_table{:jsonb_col {:a 1}}]
              (db/execute! db ["select * from jsonb_table values;"]

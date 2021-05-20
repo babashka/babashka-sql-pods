@@ -74,11 +74,7 @@
 
 (when-pg
     (defn coerce [v as]
-      (case as
-        (:json :jsonb)
-        (doto (org.postgresql.util.PGobject.)
-          (.setType (name as))
-          (.setValue (json/generate-string v))))))
+      ))
 
 (defn deserialize [xs]
   (if (map? xs)
@@ -283,6 +279,12 @@
           ldt-key ldt-key
           jsa-key))
 
+(def json-str
+  "(defn as-json [obj]
+     (cognitect.transit/tagged-value \"json\" obj))
+   (defn as-jsonb [obj]
+     (cognitect.transit/tagged-value \"jsonb\" obj))")
+
 (def describe-map
   (walk/postwalk
    (fn [v]
@@ -292,6 +294,8 @@
      :namespaces [{:name ~(symbol sql-ns)
                    :vars [{:name -reg-transit-handlers
                            :code ~reg-transit-handlers}
+                          {:name json
+                           :code ~json-str}
                           {:name -execute!}
                           {:name -execute-one!}
                           {:name -serialize-1
@@ -322,8 +326,26 @@
 (def java-array-read-handler (transit/read-handler into-array))
 
 (def jak "java.array")
+
+(def jsonk "json")
+(def json-read-handler
+  (transit/read-handler (fn [obj]
+                          (doto (org.postgresql.util.PGobject.)
+                            (.setType "json")
+                            (.setValue (json/generate-string obj))))))
+
+(def jsonbk "jsonb")
+(def jsonb-read-handler
+  (transit/read-handler (fn [obj]
+                          (doto (org.postgresql.util.PGobject.)
+                            (.setType "jsonb")
+                            (.setValue (json/generate-string obj))))))
+
+
 (def rhm (transit/read-handler-map {ldt-key ldt-read-handler
-                                    jak java-array-read-handler }))
+                                    jak java-array-read-handler
+                                    jsonk json-read-handler
+                                    jsonbk jsonb-read-handler}))
 
 (defn read-transit [^String v]
   (transit/read
