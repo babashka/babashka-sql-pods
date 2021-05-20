@@ -53,10 +53,8 @@
     db-spec))
 
 ;; default implementation
-(defn coerce [v as]
-  (case as
-    :array
-    (into-array v)))
+(defn coerce [_v _as]
+  (throw (java.lang.UnsupportedOperationException. "not needed anymore")))
 
 (defmacro if-mysql [then else]
   (if features/mysql?
@@ -80,9 +78,7 @@
         (:json :jsonb)
         (doto (org.postgresql.util.PGobject.)
           (.setType (name as))
-          (.setValue (json/generate-string v)))
-        :array
-        (into-array v))))
+          (.setValue (json/generate-string v))))))
 
 (defn deserialize [xs]
   (if (map? xs)

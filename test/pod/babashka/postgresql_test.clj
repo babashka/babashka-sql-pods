@@ -86,8 +86,7 @@
       (testing "non-byte arrays"
         (is (db/execute! db ["create table bar ( bar integer[] );"]))
         (is (db/execute! db ["insert into bar values (?);" (into-array [1 2 3])]))
-        (is (db/execute! db ["insert into bar values (?);" ^{:pod.babashka.sql/write :array} [4 5 6]]))
-        (is (= [#:bar{:bar [1 2 3]} #:bar{:bar [4 5 6]}] (db/execute! db ["select * from bar"])))
+        (is (= [#:bar{:bar [1 2 3]}] (db/execute! db ["select * from bar"])))
         (is (db/execute! db ["create table baz ( baz text[] );"]))
         (is (db/execute! db ["insert into baz values (?);" (into-array ["foo" "bar"])]))
         (is (= [#:baz{:baz ["foo" "bar"]}] (db/execute! db ["select * from baz"])))
