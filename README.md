@@ -123,12 +123,7 @@ A more elaborate example can be found
 
 #### Writing arrays
 
-- Inserting arrays works automatically: just pass a Java array, with e.g. `(into-array [1 2 3])`.
-- Clojure vectors annotated with `{:pod.babashka.sql/write :array}` also get stored as arrays:
-
-``` clojure
-(db/execute! db ["insert into bar values (?);" ^{:pod.babashka.sql/write :array} [4 5 6]])
-```
+Inserting arrays works automatically: just pass a Java array, with e.g. `(into-array [1 2 3])`.
 
 #### Reading arrays
 
