@@ -68,32 +68,6 @@
 (defmacro when-pg [& body]
   `(if-pg (do ~@body) nil))
 
-;; Default implementation
-(defn serialize [_opts x]
-  x)
-
-(when-pg
-    (defn serialize [opts x]
-      (cond
-        #_? (instance? org.postgresql.util.PGobject x)
-        #_=> (let [^ org.postgresql.util.PGobject x x
-                   t (.getType x)
-                   coerce-opts (get opts :pod.babashka.sql/read)
-                   coerced (case t
-                             ("json" "jsonb")
-                             (case (get coerce-opts (keyword t))
-                               :parse+keywordize
-                               (json/parse-string (.getValue x) true)
-                               :parse
-                               (json/parse-string (.getValue x))
-                               :string
-                               (.getValue x)
-                               ;; default JSON handler
-                               (json/parse-string (.getValue x) true)))]
-               coerced)
-        :else #_=> x))
-  nil)
-
 (defn execute!
   ([db-spec sql-params]
    (execute! db-spec sql-params nil))
@@ -101,7 +75,7 @@
    ;; (.println System/err (str sql-params))
    (let [conn (->connectable db-spec)
          res (jdbc/execute! conn sql-params opts)]
-     (walk/postwalk #(serialize opts %) res))))
+     res)))
 
 (defn execute-one!
   ([db-spec sql-params]
@@ -109,15 +83,15 @@
   ([db-spec sql-params opts]
    (let [conn (->connectable db-spec)
          res (jdbc/execute-one! conn sql-params opts)]
-     (walk/postwalk #(serialize opts %) res))))
+     res)))
 
 (defn insert-multi!
   ([db-spec table cols rows]
    (insert-multi! db-spec table cols rows nil))
-  ([db-spec table cols rows opts]
+  ([db-spec table cols rows _opts]
    (let [conn (->connectable db-spec)
          res (sql/insert-multi! conn table cols rows)]
-     (walk/postwalk #(serialize opts %) res))))
+     res)))
 
 (defn close-connection [{:keys [::connection]}]
   (let [[old _new] (swap-vals! conns dissoc connection)]
@@ -193,11 +167,6 @@
       slurp
       (str/replace "pod.babashka.sql" sql-ns)))
 
-#_(defn replace-sql-ns [s]
-  (-> s
-      (str/replace "sqlns" sql-ns)
-      (str/replace "sql-sql-ns" sql-sql-ns)))
-
 (def ldt-key (str ::local-date-time))
 (def jsa-key (str ::java-sql-array))
 
@@ -222,6 +191,10 @@
   (babashka.pods/add-transit-read-handler!
       \"%s\"
       vec)
+
+  (babashka.pods/add-transit-read-handler!
+      \"object\"
+      identity)
 
   (babashka.pods/set-default-transit-write-handler!
     (fn [x] (when (.isArray (class x)) \"java.array\"))
@@ -304,10 +277,40 @@
                         (fn [^java.sql.Array arr]
                           (into-array Object (.getArray arr)))))
 
+(def ^:dynamic *read-opt* nil)
+
+(when-pg
+    (def pgo-write-handler (transit/write-handler
+                            "object"
+                            (fn [^ org.postgresql.util.PGobject x]
+                              (let [t (.getType x)
+                                    coerce-opts *read-opt*
+                                    coerced (case t
+                                              ("json" "jsonb")
+                                              (case (get coerce-opts (keyword t))
+                                                :parse+keywordize
+                                                (json/parse-string (.getValue x) true)
+                                                :parse
+                                                (json/parse-string (.getValue x))
+                                                :string
+                                                (.getValue x)
+                                                ;; default JSON handler
+                                                (json/parse-string (.getValue x) true)))]
+                                coerced)))))
+
+(def base-write-map
+  {java.time.LocalDateTime ldt-write-handler
+   java.sql.Array jsa-write-handler})
+(def whm (transit/write-handler-map
+          (if-pg
+              (assoc base-write-map
+                     org.postgresql.util.PGobject
+                     pgo-write-handler)
+              base-write-map)))
+
 (defn write-transit [v]
   (let [baos (java.io.ByteArrayOutputStream.)]
-    (transit/write (transit/writer baos :json {:handlers {java.time.LocalDateTime ldt-write-handler
-                                                          java.sql.Array jsa-write-handler}}) v)
+    (transit/write (transit/writer baos :json {:handlers whm}) v)
     (.toString baos "utf-8")))
 
 (def musl?
@@ -339,7 +342,11 @@
                                 args (read-string args)
                                 args (read-transit args)]
                             (if-let [f (lookup var)]
-                              (let [value (write-transit (apply f args))
+                              (let [read-opt (let [v (last args)]
+                                               (when (map? v)
+                                                 (:pod.babashka.sql/read v)))
+                                    value (binding [*read-opt* read-opt]
+                                            (write-transit (apply f args)))
                                     reply {"value" value
                                            "id" id
                                            "status" ["done"]}]
