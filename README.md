@@ -37,7 +37,7 @@ The following installation methods are available:
 
 ## Compatibility
 
-Pods from this repo require babashka v0.0.96 or later.
+Pods from this repo require babashka v0.4.2 or later.
 
 ## Available vars
 

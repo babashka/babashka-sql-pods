@@ -2,7 +2,7 @@
 
 For a list of breaking changes, check [here](#breaking-changes)
 
-## v0.0.7
+## v0.0.7 (requires bb 0.4.2+)
 
 Breaking changes:
 
