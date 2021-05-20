@@ -261,9 +261,9 @@
           jsa-key))
 
 (def json-str
-  "(defn as-json [obj]
+  "(defn write-json [obj]
      (cognitect.transit/tagged-value \"json\" obj))
-   (defn as-jsonb [obj]
+   (defn write-jsonb [obj]
      (cognitect.transit/tagged-value \"jsonb\" obj))")
 
 (def describe-map
