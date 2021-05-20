@@ -172,28 +172,24 @@
 (def reg-transit-handlers
   (format "
 (require 'babashka.pods)
-(defmacro when-transit-handlers [& body]
-  (when (resolve 'babashka.pods/add-transit-read-handler!)
-  `(do ~@body)))
 
-(when-transit-handlers
-
-  (babashka.pods/add-transit-read-handler!
+(babashka.pods/add-transit-read-handler!
     \"%s\"
     (fn [s] (java.time.LocalDateTime/parse s)))
 
-  (babashka.pods/add-transit-write-handler!
-    #{java.time.LocalDateTime}
-    \"%s\"
-    str))
+(babashka.pods/add-transit-write-handler!
+  #{java.time.LocalDateTime}
+  \"%s\"
+  str)
 
-  (babashka.pods/add-transit-read-handler!
-      \"object\"
-      identity)
+(babashka.pods/add-transit-read-handler!
+  \"object\"
+  identity)
 
-  (babashka.pods/set-default-transit-write-handler!
-    (fn [x] (when (.isArray (class x)) \"java.array\"))
-    vec)"
+(babashka.pods/set-default-transit-write-handler!
+  (fn [x] (when (.isArray (class x)) \"java.array\"))
+  vec)
+"
           ldt-key ldt-key))
 
 (def json-str
