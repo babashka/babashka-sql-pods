@@ -241,19 +241,13 @@
 (def -serialize-1-str
   (pr-str '(defn -serialize-1 [x]
              (if-let [c (class x)]
-               (if (and (.isArray c)
-                        (not (bytes? x)) ;; bytes can he handled by transit
-                                         ;; natively
-                        ,)
-                 {::write :array
-                  ::val (vec x)}
-                 (let [m (meta x)
-                       t (:pod.babashka.sql/write m)]
-                   (if
+               (let [m (meta x)
+                     t (:pod.babashka.sql/write m)]
+                 (if
                      t
-                     {::write t
-                      ::val x}
-                     x)))
+                   {::write t
+                    ::val x}
+                   x))
                x))))
 
 (def -serialize-str
@@ -285,7 +279,11 @@
 
   (babashka.pods/add-transit-read-handler!
       \"%s\"
-      vec)"
+      vec)
+
+  (babashka.pods/set-default-transit-write-handler!
+    (fn [x] (when (.isArray (class x)) \"java.array\"))
+    vec)"
           ldt-key ldt-key
           jsa-key))
 
@@ -325,7 +323,11 @@
 (debug describe-map)
 
 (def ldt-read-handler (transit/read-handler #(java.time.LocalDateTime/parse %)))
-(def rhm (transit/read-handler-map {ldt-key ldt-read-handler}))
+(def java-array-read-handler (transit/read-handler into-array))
+
+(def jak "java.array")
+(def rhm (transit/read-handler-map {ldt-key ldt-read-handler
+                                    jak java-array-read-handler }))
 
 (defn read-transit [^String v]
   (transit/read
