@@ -46,6 +46,8 @@ fi" java java java)}}
                               :no_output_timeout "30m"}}
                        {:run {:name "Run tests",
                               :command "script/test\n"}}
+                       {:run {:name "Install bb"
+                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir ."}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"
@@ -83,6 +85,8 @@ fi" java java java)}}
                               :no_output_timeout "30m"}}
                        {:run {:name "Run tests",
                               :command "script/test\n"}}
+                       {:run {:name "Install bb"
+                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir ."}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"

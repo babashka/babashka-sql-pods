@@ -52,6 +52,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -111,6 +112,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -160,6 +162,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -219,6 +222,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -268,6 +272,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -327,6 +332,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -386,6 +392,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -435,6 +442,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -494,6 +502,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -553,6 +562,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -602,6 +612,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -661,6 +672,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -720,6 +732,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
@@ -769,6 +782,7 @@ jobs:
         name: Run tests
         command: |
           script/test
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir .'}
     - run:
         name: Release
         command: |
