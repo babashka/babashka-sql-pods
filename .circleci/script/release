@@ -17,6 +17,7 @@ cd -
 
 pwd
 
+ls "/tmp/release/$archive"
 ./bb release-artifact "/tmp/release/$archive"
 
 cd /tmp/release
