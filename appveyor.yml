@@ -30,13 +30,11 @@ clone_script:
 - cmd: git submodule update --init --recursive
 
 build_script:
+
 - cmd: >-
+    powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')"
 
-# set CLJ_KONDO_TEST_ENV=jvm
-
-# call script/test.bat
-
-# see https://github.com/quarkusio/quarkus/pull/7663
+    call lein self-install
 
 - cmd: >-
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
