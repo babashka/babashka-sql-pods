@@ -13,8 +13,6 @@ Supported databases:
 
 PRs for other SQL databases are welcome. (Look at #15 + #20 for an example of adding a new DB.)
 
-Due to license restrictions we cannot provide pre-built binaries for Oracle.
-
 ## Install
 
 The following installation methods are available:
