@@ -3,4 +3,30 @@
         #_{:local/root "../gh-release-artifact"}
         {:git/url "https://github.com/borkdude/gh-release-artifact"
          :sha "2f8898d84126a4e922c490f8614211a8b0cf67cd"}}
- :tasks {release-artifact babashka.release-artifact/release}}
+ :tasks {uberjar (shell "lein uberjar")
+         graalvm {:doc "Checks GRAALVM_HOME env var"
+                  :task
+                  (let [env (System/getenv "GRAALVM_HOME")]
+                    (assert "Set GRAALVM_HOME")
+                    env)}
+         native-image {:doc "Builds native image"
+                       :depends [graalvm uberjar]
+                       :task (do
+                               (shell (str (fs/file graalvm
+                                                    "bin"
+                                                    (if windows?
+                                                      "gu.cmd"
+                                                      "gu")))
+                                      "install" "native-image")
+                               (shell (str (fs/file graalvm
+                                                    "bin"
+                                                    (if windows?
+                                                      "native-image.cmd"
+                                                      "native-image")))
+                                      "-H:Name=jayfu"
+                                      "-jar" "jayfu.jar"
+                                      "--initialize-at-build-time"
+                                      "--no-fallback"
+                                      "--no-server"))}
+         release-artifact babashka.release-artifact/release
+         }}

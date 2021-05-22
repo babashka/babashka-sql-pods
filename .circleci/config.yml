@@ -42,17 +42,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -102,17 +97,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -152,17 +142,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -212,17 +197,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -262,17 +242,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -322,17 +297,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -382,17 +352,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -432,17 +397,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -492,17 +452,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -552,17 +507,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -602,17 +552,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -662,17 +607,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -722,17 +662,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
@@ -772,17 +707,12 @@ jobs:
             curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
             tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
           fi
-    - run:
-        name: Build binary
-        command: |
-          # script/uberjar
-          script/compile
-        no_output_timeout: 30m
+    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
+    - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
     - run:
         name: Run tests
         command: |
           script/test
-    - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run:
         name: Release
         command: |
