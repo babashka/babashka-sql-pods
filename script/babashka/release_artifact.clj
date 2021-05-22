@@ -20,7 +20,7 @@
     (if (and ght (contains? #{"master" "main"} branch))
       (do (assert file "File name must be provided")
           (ghr/overwrite-asset {:org "babashka"
-                                :repo "babashka"
+                                :repo "babashka-sql-pods"
                                 :file file
                                 :tag (str "v" current-version)}))
       (println "Skipping release artifact (no GITHUB_TOKEN or not on main branch)"))
