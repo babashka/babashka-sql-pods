@@ -29,14 +29,14 @@ clone_script:
     }
 - cmd: git submodule update --init --recursive
 
-build_script:
+before_build:
+
 - cmd: >-
+    powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein.bat', 'lein.bat')"
 
-# set CLJ_KONDO_TEST_ENV=jvm
+    call lein self-install
 
-# call script/test.bat
-
-# see https://github.com/quarkusio/quarkus/pull/7663
+build_script:
 
 - cmd: >-
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
@@ -50,10 +50,88 @@ build_script:
     powershell -Command "if (Test-Path('bb.exe')) { return } else { Expand-Archive bb.zip . }"
 
 - cmd: >-
+    set POD_DB_TYPE=hsqldb
+
+    call bb script/compile.clj
+
+    echo Creating zip archive
+
+    set /P VERSION=< resources\POD_BABASHKA_SQL_VERSION
+
+    set zip=pod-babashka-%POD_DB_TYPE%-%VERSION%-windows-amd64.zip
+
+    jar -cMf %zip% pod-babashka-%POD_DB_TYPE%.exe
+
+    call bb release-artifact %zip%
+
+- cmd: >-
+    set POD_DB_TYPE=mysql
+
+    call bb script/compile.clj
+
+    echo Creating zip archive
+
+    set /P VERSION=< resources\POD_BABASHKA_SQL_VERSION
+
+    set zip=pod-babashka-%POD_DB_TYPE%-%VERSION%-windows-amd64.zip
+
+    jar -cMf %zip% pod-babashka-%POD_DB_TYPE%.exe
+
+    call bb release-artifact %zip%
+
+- cmd: >-
     set POD_DB_TYPE=mssql
 
     call bb script/compile.clj
 
+    echo Creating zip archive
+
+    set /P VERSION=< resources\POD_BABASHKA_SQL_VERSION
+
+    set zip=pod-babashka-%POD_DB_TYPE%-%VERSION%-windows-amd64.zip
+
+    jar -cMf %zip% pod-babashka-%POD_DB_TYPE%.exe
+
+    call bb release-artifact %zip%
+
+- cmd: >-
+    set POD_DB_TYPE=postgresql
+
+    call bb script/compile.clj
+
+    echo Creating zip archive
+
+    set /P VERSION=< resources\POD_BABASHKA_SQL_VERSION
+
+    set zip=pod-babashka-%POD_DB_TYPE%-%VERSION%-windows-amd64.zip
+
+    jar -cMf %zip% pod-babashka-%POD_DB_TYPE%.exe
+
+    call bb release-artifact %zip%
+
+- cmd: >-
+    set POD_DB_TYPE=oracle
+
+    call bb script/compile.clj
+
+    echo Creating zip archive
+
+    set /P VERSION=< resources\POD_BABASHKA_SQL_VERSION
+
+    set zip=pod-babashka-%POD_DB_TYPE%-%VERSION%-windows-amd64.zip
+
+    jar -cMf %zip% pod-babashka-%POD_DB_TYPE%.exe
+
+    call bb release-artifact %zip%
+
 artifacts:
+- path: pod-babashka-hsqldb-*-windows-amd64.zip
+  name: pod-babashka-hsqldb
+- path: pod-babashka-mysql-*-windows-amd64.zip
+  name: pod-babashka-mysql
 - path: pod-babashka-mssql-*-windows-amd64.zip
   name: pod-babashka-mssql
+- path: pod-babashka-postgresql-*-windows-amd64.zip
+  name: pod-babashka-postgresql
+- path: pod-babashka-oracle-*-windows-amd64.zip
+  name: pod-babashka-oracle

@@ -15,7 +15,13 @@
 
 (def gvm-bin (fs/file graalvm "bin"))
 
-(shell {:continue true} (fs/file gvm-bin "gu") "install" "native-image")
+(def windows?
+  (str/includes? (str/lower-case (System/getProperty "os.name"))
+                 "windows"))
+
+(shell {:continue true} (str (fs/file gvm-bin "gu")
+                             (when windows?
+                               ".cmd")) "install" "native-image")
 
 (def path (str/join fs/path-separator [gvm-bin (System/getenv "PATH")]))
 
@@ -26,7 +32,8 @@
   (println "Profiles:" lein-profiles)
   (println "Reflection config:" refl-conf)
   (shell "java -version")
-  (shell "lein with-profiles" lein-profiles "do" "clean," "uberjar")
+  (shell (str "lein" (when windows? ".bat") " with-profiles")
+         lein-profiles "do" "clean," "uberjar")
   (let [pod-name (str "pod-babashka-" pod-db-type)
         jar (format "target/pod-babashka-sql-%s-standalone.jar" version)
         xmx (or (System/getenv "BABASHKA_XMX") "-J-Xmx4500m")
@@ -72,6 +79,8 @@
                          "-H:CCompilerOption=-Wl,-z,stack-size=2097152")
                    args))
                args)]
-    (apply shell (fs/file gvm-bin "native-image") args)))
+    (apply shell (str (fs/file gvm-bin "native-image")
+                      (when windows?
+                        ".cmd")) args)))
 
 
