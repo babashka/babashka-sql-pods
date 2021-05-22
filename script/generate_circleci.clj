@@ -47,7 +47,7 @@ fi" java java java)}}
                        {:run {:name "Run tests",
                               :command "script/test\n"}}
                        {:run {:name "Install bb"
-                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir ."}}
+                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"
@@ -86,7 +86,7 @@ fi" java java java)}}
                        {:run {:name "Run tests",
                               :command "script/test\n"}}
                        {:run {:name "Install bb"
-                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir ."}}
+                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"
