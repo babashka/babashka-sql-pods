@@ -15,7 +15,13 @@
 
 (def gvm-bin (fs/file graalvm "bin"))
 
-(shell {:continue true} (fs/file gvm-bin "gu") "install" "native-image")
+(def windows?
+  (str/includes? (str/lower-case (System/getProperty "os.name"))
+                 "Windows"))
+
+(shell {:continue true} (str (fs/file gvm-bin "gu")
+                             (when windows?
+                               ".cmd")) "install" "native-image")
 
 (def path (str/join fs/path-separator [gvm-bin (System/getenv "PATH")]))
 
@@ -72,6 +78,8 @@
                          "-H:CCompilerOption=-Wl,-z,stack-size=2097152")
                    args))
                args)]
-    (apply shell (fs/file gvm-bin "native-image") args)))
+    (apply shell (str (fs/file gvm-bin "native-image")
+                      (when windows?
+                        ".cmd")) args)))
 
 
