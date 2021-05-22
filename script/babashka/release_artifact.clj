@@ -17,7 +17,8 @@
         ght (System/getenv "GITHUB_TOKEN")
         file (first args)
         branch (current-branch)]
-    (if (and ght (contains? #{"master" "main"} branch))
+    (if (and ght (contains? #{"master" "main"} branch)
+             (not (str/includes? file "oracle")))
       (do (assert file "File name must be provided")
           (ghr/overwrite-asset {:org "babashka"
                                 :repo "babashka-sql-pods"
