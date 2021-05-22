@@ -235,4 +235,8 @@ Copyright © 2020-2021 Michiel Borkent
 
 Distributed under the EPL License. See LICENSE.
 
+[Helidon license](https://github.com/oracle/helidon/blob/master/LICENSE.txt)
 [HyperSQL license](http://hsqldb.org/web/hsqlLicense.html)
+[MySQL JDBC license](https://downloads.mysql.com/docs/licenses/connector-j-8.0-gpl-en.pdf)
+[MSSQL JDBC license](https://raw.githubusercontent.com/microsoft/mssql-jdbc/dev/LICENSE)
+[PostgreSQL JDBC license](https://jdbc.postgresql.org/about/license.html)

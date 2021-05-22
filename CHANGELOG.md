@@ -2,6 +2,11 @@
 
 For a list of breaking changes, check [here](#breaking-changes)
 
+## v0.0.8
+
+- Releases for Windows
+- Releases for Oracle
+
 ## v0.0.7 (requires bb 0.4.3+)
 
 Breaking changes:
