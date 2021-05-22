@@ -41,13 +41,13 @@ if ! [ -d graalvm-ce-java%s-21.1.0 ]; then
   curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java%s-linux-amd64-21.1.0.tar.gz
   tar xzf graalvm-ce-java%s-linux-amd64-21.1.0.tar.gz
 fi" java java java)}}
+                       {:run {:name "Install bb"
+                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Build binary",
-                              :command "# script/uberjar\nscript/compile\n",
+                              :command "./bb script/compile.clj",
                               :no_output_timeout "30m"}}
                        {:run {:name "Run tests",
                               :command "script/test\n"}}
-                       {:run {:name "Install bb"
-                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"
@@ -80,13 +80,13 @@ if ! [ -d graalvm-ce-java%s-21.1.0 ]; then
   curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java%s-darwin-amd64-21.1.0.tar.gz
   tar xzf graalvm-ce-java%s-darwin-amd64-21.1.0.tar.gz
 fi" java java java)}}
+                       {:run {:name "Install bb"
+                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Build binary",
-                              :command "# script/uberjar\nscript/compile\n",
+                              :command "./bb script/compile.clj",
                               :no_output_timeout "30m"}}
                        {:run {:name "Run tests",
                               :command "script/test\n"}}
-                       {:run {:name "Install bb"
-                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"
@@ -108,7 +108,7 @@ fi" java java java)}}
           :hsqldb-mac  (assoc-in (mac)
                                  [:environment :POD_DB_TYPE] "hsqldb")
           #_#_:mysql-linux (assoc-in (linux)
-                                 [:environment :POD_DB_TYPE] "mysql")
+                                     [:environment :POD_DB_TYPE] "mysql")
           :mysql-linux-static (assoc-in (linux :static true)
                                         [:environment :POD_DB_TYPE] "mysql")
           :mysql-mac (assoc-in (mac)
