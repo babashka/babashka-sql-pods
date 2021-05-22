@@ -32,10 +32,7 @@
   (println "Profiles:" lein-profiles)
   (println "Reflection config:" refl-conf)
   (shell "java -version")
-  (shell (str
-          (when windows?
-            "call ")
-           "lein with-profiles") lein-profiles "do" "clean," "uberjar")
+  (shell "lein with-profiles" lein-profiles "do" "clean," "uberjar")
   (let [pod-name (str "pod-babashka-" pod-db-type)
         jar (format "target/pod-babashka-sql-%s-standalone.jar" version)
         xmx (or (System/getenv "BABASHKA_XMX") "-J-Xmx4500m")
