@@ -17,7 +17,7 @@
 
 (def windows?
   (str/includes? (str/lower-case (System/getProperty "os.name"))
-                 "Windows"))
+                 "windows"))
 
 (shell {:continue true} (str (fs/file gvm-bin "gu")
                              (when windows?
