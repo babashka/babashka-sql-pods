@@ -8,10 +8,10 @@
 
 (defn linux [& {:keys [java static] :or {java java-default-version
                                          static false}}]
-  (ordered-map :docker [{:image "circleci/clojure:lein-2.9.3-buster"}]
+  (ordered-map :docker [{:image "circleci/clojure:openjdk-11-lein-2.9.6-bullseye"}]
                :working_directory "~/repo"
                :environment (cond-> (ordered-map :LEIN_ROOT "true"
-                                                 :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-21.1.0" java)
+                                                 :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-21.3.0" java)
                                                  :BABASHKA_PLATFORM (str "linux" (when static "-static"))
                                                  :BABASHKA_TEST_ENV "native"
                                                  :BABASHKA_XMX "-J-Xmx7g"
@@ -37,9 +37,9 @@ sudo ./linux-install-1.10.2.796.sh"}}
                        {:run {:name    "Download GraalVM",
                               :command (format "
 cd ~
-if ! [ -d graalvm-ce-java%s-21.1.0 ]; then
-  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java%s-linux-amd64-21.1.0.tar.gz
-  tar xzf graalvm-ce-java%s-linux-amd64-21.1.0.tar.gz
+if ! [ -d graalvm-ce-java%s-21.3.0 ]; then
+  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java%s-linux-amd64-21.3.0.tar.gz
+  tar xzf graalvm-ce-java%s-linux-amd64-21.3.0.tar.gz
 fi" java java java)}}
                        {:run {:name "Install bb"
                               :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
@@ -51,14 +51,15 @@ fi" java java java)}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"
-                                             (format "~/graalvm-ce-java%s-21.1.0" java)],
+                                             (format "~/graalvm-ce-java%s-21.3.0" java)],
                                      :key   "linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
                        {:store_artifacts {:path "/tmp/release",
                                           :destination "release"}}]))
 
 (defn mac [& {:keys [java] :or {java java-default-version}}]
   (ordered-map :macos {:xcode "12.0.0"},
-               :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-ce-java%s-21.1.0/Contents/Home" java),
+               :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-ce-java%s-21.3.0/Contents/Home" java),
+                                         :MACOSX_DEPLOYMENT_TARGET "10.13" ;; 10.12 is EOL
                                          :BABASHKA_PLATFORM "macos",
                                          :BABASHKA_TEST_ENV "native",
                                          :BABASHKA_XMX "-J-Xmx7g"
@@ -76,21 +77,25 @@ fi" java java java)}}
                               :command (format "
 cd ~
 ls -la
-if ! [ -d graalvm-ce-java%s-21.1.0 ]; then
-  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java%s-darwin-amd64-21.1.0.tar.gz
-  tar xzf graalvm-ce-java%s-darwin-amd64-21.1.0.tar.gz
+if ! [ -d graalvm-ce-java%s-21.3.0 ]; then
+  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java%s-darwin-amd64-21.3.0.tar.gz
+  tar xzf graalvm-ce-java%s-darwin-amd64-21.3.0.tar.gz
 fi" java java java)}}
                        {:run {:name "Install bb"
                               :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Build binary",
                               :command "./bb script/compile.clj",
                               :no_output_timeout "30m"}}
+                       {:run {:name "Fix ssl libs for tests"
+                              :command "
+sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib\n
+sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib\n"}}
                        {:run {:name "Run tests",
                               :command "script/test\n"}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
                        {:save_cache {:paths ["~/.m2"
-                                             (format "~/graalvm-ce-java%s-21.1.0" java)],
+                                             (format "~/graalvm-ce-java%s-21.3.0" java)],
                                      :key   "mac-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
                        {:store_artifacts {:path "/tmp/release",
                                           :destination "release"}}]))
@@ -107,8 +112,6 @@ fi" java java java)}}
           ;; graalvm isn't available in version 8 anymore for macOS
           :hsqldb-mac  (assoc-in (mac)
                                  [:environment :POD_DB_TYPE] "hsqldb")
-          #_#_:mysql-linux (assoc-in (linux)
-                                     [:environment :POD_DB_TYPE] "mysql")
           :mysql-linux-static (assoc-in (linux :static true)
                                         [:environment :POD_DB_TYPE] "mysql")
           :mysql-mac (assoc-in (mac)

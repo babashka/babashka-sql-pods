@@ -3,9 +3,9 @@ version: 2.1
 jobs:
   hsqldb-linux:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: hsqldb}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: hsqldb}
     resource_class: large
     steps:
     - checkout
@@ -38,9 +38,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
@@ -53,14 +53,14 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: hsqldb}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: hsqldb}
     resource_class: large
     steps:
     - checkout
@@ -93,9 +93,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
@@ -108,12 +108,12 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-mac:
     macos: {xcode: 12.0.0}
-    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.1.0/Contents/Home, BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: hsqldb}
+    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.3.0/Contents/Home, MACOSX_DEPLOYMENT_TARGET: '10.13', BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: hsqldb}
     resource_class: large
     steps:
     - checkout
@@ -138,12 +138,19 @@ jobs:
 
           cd ~
           ls -la
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
+    - run:
+        name: Fix ssl libs for tests
+        command: |2
+
+          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
     - run:
         name: Run tests
         command: |
@@ -153,14 +160,14 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mysql-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mysql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mysql}
     resource_class: large
     steps:
     - checkout
@@ -193,9 +200,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
@@ -208,12 +215,12 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mysql-mac:
     macos: {xcode: 12.0.0}
-    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.1.0/Contents/Home, BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: mysql}
+    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.3.0/Contents/Home, MACOSX_DEPLOYMENT_TARGET: '10.13', BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: mysql}
     resource_class: large
     steps:
     - checkout
@@ -238,12 +245,19 @@ jobs:
 
           cd ~
           ls -la
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
+    - run:
+        name: Fix ssl libs for tests
+        command: |2
+
+          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
     - run:
         name: Run tests
         command: |
@@ -253,14 +267,14 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-linux:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: postgresql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: postgresql}
     resource_class: large
     steps:
     - checkout
@@ -293,9 +307,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
@@ -308,14 +322,14 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: postgresql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: postgresql}
     resource_class: large
     steps:
     - checkout
@@ -348,9 +362,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
@@ -363,12 +377,12 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-mac:
     macos: {xcode: 12.0.0}
-    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.1.0/Contents/Home, BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: postgresql}
+    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.3.0/Contents/Home, MACOSX_DEPLOYMENT_TARGET: '10.13', BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: postgresql}
     resource_class: large
     steps:
     - checkout
@@ -393,12 +407,19 @@ jobs:
 
           cd ~
           ls -la
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
+    - run:
+        name: Fix ssl libs for tests
+        command: |2
+
+          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
     - run:
         name: Run tests
         command: |
@@ -408,14 +429,14 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-linux:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: oracle}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: oracle}
     resource_class: large
     steps:
     - checkout
@@ -448,9 +469,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
@@ -463,14 +484,14 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: oracle}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: oracle}
     resource_class: large
     steps:
     - checkout
@@ -503,9 +524,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
@@ -518,12 +539,12 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-mac:
     macos: {xcode: 12.0.0}
-    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.1.0/Contents/Home, BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: oracle}
+    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.3.0/Contents/Home, MACOSX_DEPLOYMENT_TARGET: '10.13', BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: oracle}
     resource_class: large
     steps:
     - checkout
@@ -548,12 +569,19 @@ jobs:
 
           cd ~
           ls -la
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
+    - run:
+        name: Fix ssl libs for tests
+        command: |2
+
+          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
     - run:
         name: Run tests
         command: |
@@ -563,14 +591,14 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-linux:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: mssql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: mssql}
     resource_class: large
     steps:
     - checkout
@@ -603,9 +631,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
@@ -618,14 +646,14 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mssql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mssql}
     resource_class: large
     steps:
     - checkout
@@ -658,9 +686,9 @@ jobs:
         command: |2-
 
           cd ~
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
@@ -673,12 +701,12 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-mac:
     macos: {xcode: 12.0.0}
-    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.1.0/Contents/Home, BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: mssql}
+    environment: {GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-21.3.0/Contents/Home, MACOSX_DEPLOYMENT_TARGET: '10.13', BABASHKA_PLATFORM: macos, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: mssql}
     resource_class: large
     steps:
     - checkout
@@ -703,12 +731,19 @@ jobs:
 
           cd ~
           ls -la
-          if ! [ -d graalvm-ce-java11-21.1.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz
+          if ! [ -d graalvm-ce-java11-21.3.0 ]; then
+            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
+            tar xzf graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
+    - run:
+        name: Fix ssl libs for tests
+        command: |2
+
+          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
     - run:
         name: Run tests
         command: |
@@ -718,7 +753,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.1.0]
+        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
 workflows:

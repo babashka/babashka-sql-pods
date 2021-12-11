@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 if [ "$POD_DB_TYPE" = "postgresql" ]
 then
     clojure -M:test -n pod.babashka.postgresql-test
