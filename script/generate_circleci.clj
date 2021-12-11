@@ -8,7 +8,7 @@
 
 (defn linux [& {:keys [java static] :or {java java-default-version
                                          static false}}]
-  (ordered-map :docker [{:image "circleci/clojure:lein-2.9.3-buster"}]
+  (ordered-map :docker [{:image "circleci/clojure:openjdk-11-lein-2.9.6-bullseye"}]
                :working_directory "~/repo"
                :environment (cond-> (ordered-map :LEIN_ROOT "true"
                                                  :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-21.1.0" java)

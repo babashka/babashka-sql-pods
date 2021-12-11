@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   hsqldb-linux:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: hsqldb}
     resource_class: large
@@ -58,7 +58,7 @@ jobs:
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: hsqldb}
     resource_class: large
@@ -158,7 +158,7 @@ jobs:
     - store_artifacts: {path: /tmp/release, destination: release}
   mysql-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mysql}
     resource_class: large
@@ -258,7 +258,7 @@ jobs:
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-linux:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: postgresql}
     resource_class: large
@@ -313,7 +313,7 @@ jobs:
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: postgresql}
     resource_class: large
@@ -413,7 +413,7 @@ jobs:
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-linux:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: oracle}
     resource_class: large
@@ -468,7 +468,7 @@ jobs:
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: oracle}
     resource_class: large
@@ -568,7 +568,7 @@ jobs:
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-linux:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, POD_DB_TYPE: mssql}
     resource_class: large
@@ -623,7 +623,7 @@ jobs:
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-linux-static:
     docker:
-    - {image: 'circleci/clojure:lein-2.9.3-buster'}
+    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.1.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mssql}
     resource_class: large
