@@ -20,11 +20,15 @@
 (require '[pod.babashka.mysql.sql :as sql])
 (require '[pod.babashka.mysql.transaction :as transaction])
 
+;; start mysql with docker for testing against mysql instead of MariaDB:
+;; docker run -d --rm --name=mysql-pod-repro -p33066:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=test -e MYSQL_ROOT_HOST=% mysql/mysql-server:8.0.27 --general-log=1 --general-log-file=/var/log/mysql/general-log.log
+;; and remove start/stop from below macro:
 (def port 33066)
 (def db {:dbtype "mysql"
          :port port
-         :user "mysql"
-         :dbname "mysql"})
+         :user "root"
+         :password "my-secret-pw"
+         :dbname "test"})
 
 (defmacro with-start [[name-sym obj] & body]
   `(let [~name-sym ~obj]
@@ -36,6 +40,8 @@
 
 (deftest mysql-test
   (with-start [_ (DB/newEmbeddedDB port)]
+    (try (db/execute! db ["drop table foo;"])
+         (catch Exception _ nil))
     (is (db/execute! db ["create table foo ( foo int );"]))
     (is (thrown-with-msg? Exception #"exists"
           (db/execute! db ["create table foo ( foo int );"])))
@@ -79,21 +85,18 @@
           (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}]
                 (db/execute! db  ["select * from foo;"])))))
       (testing "with-transaction"
-        (is (= [#:next.jdbc{:update-count 2}]
-              (db/with-transaction [x db]
-                (db/execute! x ["insert into foo values (5);"])
-                (db/execute! x ["insert into foo values (6), (7);"]))))
-        (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}
-                #:foo{:foo 5} #:foo{:foo 6} #:foo{:foo 7}]
-              (db/execute! db  ["select * from foo;"])))
+        (dotimes [_ 10]
+          (is (= [#:next.jdbc{:update-count 2}]
+                 (db/with-transaction [x db]
+                   (db/execute! x ["insert into foo values (5);"])
+                   (db/execute! x ["insert into foo values (6), (7);"])))))
+        (is (= 2 (count (db/execute! db  ["select distinct foo from foo where foo > 5;"]))))
         (testing "failing transaction"
           (is (thrown-with-msg?
                 Exception #"read-only"
                 (db/with-transaction [x db {:read-only true}]
                   (db/execute! x ["insert into foo values (8);"]))))
-          (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}
-                  #:foo{:foo 5} #:foo{:foo 6} #:foo{:foo 7}]
-                (db/execute! db  ["select * from foo;"])))))
+          (is (zero? (count (db/execute! db  ["select * from foo where foo = 8;"]))))))
       (testing "java.time classes"
         (is (instance? java.time.LocalDateTime
               (-> (db/execute! db ["select now();"]) ffirst val)))

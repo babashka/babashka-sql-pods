@@ -62,21 +62,18 @@
           (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}]
                  (db/execute! db  ["select * from foo;"])))))
       (testing "with-transaction"
-        (is (= [#:next.jdbc{:update-count 2}]
-               (db/with-transaction [x db]
-                 (db/execute! x ["insert into foo values (5);"])
-                 (db/execute! x ["insert into foo values (6), (7);"]))))
-        (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}
-                #:foo{:foo 5} #:foo{:foo 6} #:foo{:foo 7}]
-               (db/execute! db  ["select * from foo;"])))
+        (dotimes [_ 10]
+          (is (= [#:next.jdbc{:update-count 2}]
+                 (db/with-transaction [x db]
+                   (db/execute! x ["insert into foo values (5);"])
+                   (db/execute! x ["insert into foo values (6), (7);"])))))
+        (is (= 2 (count (db/execute! db  ["select distinct foo from foo where foo > 5;"]))))
         (testing "failing transaction"
           (is (thrown-with-msg?
                Exception #"read-only"
                (db/with-transaction [x db {:read-only true}]
                  (db/execute! x ["insert into foo values (8);"]))))
-          (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}
-                  #:foo{:foo 5} #:foo{:foo 6} #:foo{:foo 7}]
-                 (db/execute! db  ["select * from foo;"]))))))
+          (is (zero? (count (db/execute! db  ["select * from foo where foo = 8;"])))))))
     (testing "arrays"
       (testing "byte arrays"
         (let [bs (.getBytes "foo")]

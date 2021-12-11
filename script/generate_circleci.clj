@@ -130,19 +130,14 @@ sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.d
           :mssql-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "mssql")),
    :workflows (ordered-map
                :version 2
-               :ci {:jobs [#_"hsqldb-linux"
-                           "hsqldb-linux-static"
+               :ci {:jobs ["hsqldb-linux-static"
                            "hsqldb-mac"
-                           #_"mysql-linux"
                            "mysql-linux-static"
                            "mysql-mac"
-                           #_"postgresql-linux"
                            "postgresql-linux-static"
                            "postgresql-mac"
-                           #_"oracle-linux"
                            "oracle-linux-static"
                            "oracle-mac"
-                           #_"mssql-linux"
                            "mssql-linux-static"
                            "mssql-mac"]})))
 
