@@ -759,4 +759,4 @@ jobs:
 workflows:
   version: 2
   ci:
-    jobs: [mysql-linux-static]
+    jobs: [hsqldb-linux-static, hsqldb-mac, mysql-linux-static, mysql-mac, postgresql-linux-static, postgresql-mac, oracle-linux-static, oracle-mac, mssql-linux-static, mssql-mac]
