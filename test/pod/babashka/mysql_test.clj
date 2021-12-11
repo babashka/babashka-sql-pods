@@ -87,7 +87,7 @@
                    (db/execute! x ["insert into foo values (6), (7);"])))))
         (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}
                 #:foo{:foo 5} #:foo{:foo 6} #:foo{:foo 7}]
-              (db/execute! db  ["select distinct(*) from foo;"])))
+              (db/execute! db  ["select distinct foo from foo;"])))
         (testing "failing transaction"
           (is (thrown-with-msg?
                 Exception #"read-only"
