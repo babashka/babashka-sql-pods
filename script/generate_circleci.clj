@@ -107,8 +107,6 @@ fi" java java java)}}
           ;; graalvm isn't available in version 8 anymore for macOS
           :hsqldb-mac  (assoc-in (mac)
                                  [:environment :POD_DB_TYPE] "hsqldb")
-          #_#_:mysql-linux (assoc-in (linux)
-                                     [:environment :POD_DB_TYPE] "mysql")
           :mysql-linux-static (assoc-in (linux :static true)
                                         [:environment :POD_DB_TYPE] "mysql")
           :mysql-mac (assoc-in (mac)
