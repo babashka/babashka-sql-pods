@@ -86,6 +86,10 @@ fi" java java java)}}
                        {:run {:name "Build binary",
                               :command "./bb script/compile.clj",
                               :no_output_timeout "30m"}}
+                       {:run {:name "Fix ssl libs for tests"
+                              :command "
+sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib\n
+sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib\n"}}
                        {:run {:name "Run tests",
                               :command "script/test\n"}}
                        {:run {:name "Release",
