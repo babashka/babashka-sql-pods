@@ -38,7 +38,12 @@
 (def conns (atom {}))
 (def transactions (atom {}))
 
+(defn log [& xs]
+  (binding [*out* *err*]
+    (apply prn xs)))
+
 (defn get-connection [db-spec]
+  (log :get-connn)
   (if (and (map? db-spec) (::connection db-spec))
     db-spec
     (let [conn (jdbc/get-connection db-spec)
@@ -72,9 +77,14 @@
   ([db-spec sql-params]
    (execute! db-spec sql-params nil))
   ([db-spec sql-params opts]
-   ;; (.println System/err (str sql-params))
+   (log :sql-params sql-params opts)
    (let [conn (->connectable db-spec)
-         res (jdbc/execute! conn sql-params opts)]
+         _ (log :con conn)
+         res (try (jdbc/execute! conn sql-params opts)
+                  (catch Exception e
+                    (log :e e)
+                    (throw e)))]
+     (log :res res)
      res)))
 
 (defn execute-one!
@@ -104,14 +114,17 @@
   ([conn] (transaction-begin conn nil))
   ([{:keys [::connection] :as conn} opts]
    (let [prom (promise)]
+     (log :connection connection)
      (swap! transactions assoc connection prom)
      (future
        (try
          (transact (->connectable conn)
-                   (fn [_conn]
+                   (fn [conn]
                      ;; wait for promise to be delivered as a result of
                      ;; calling end-transaction
+                     (log :beginning-transaction conn)
                      (let [v @prom]
+                       (log :prom-for-identical-connection conn (= conn v))
                        (when (identical? ::rollback v)
                          (throw (ex-info "rollback" {::rollback true})))))
                    opts)
@@ -126,10 +139,11 @@
     (deliver prom ::rollback)
     nil))
 
-(defn transaction-commit [{:keys [::connection]}]
+(defn transaction-commit [{:keys [::connection] :as opts}]
   (let [[old _new] (swap-vals! transactions dissoc connection)
-        prom (get old connection)]
-    (deliver prom :ok)
+        prom (get old connection)
+        conn (->connectable opts)]
+    (deliver prom conn)
     nil))
 
 (def sql-ns (cond features/postgresql? "pod.babashka.postgresql"
