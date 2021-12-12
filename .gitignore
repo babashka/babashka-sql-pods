@@ -2,3 +2,5 @@
 /pod-babashka-hsqldb
 /pod-babashka-postgresql
 /.cpcache
+/.clj-kondo/.cache
+/.lsp/.cache
