@@ -7,7 +7,7 @@
 
 (def db {:dbtype "mysql"
          :host "localhost"
-         :port 3306
+         :port 33066
          :dbname "test"
          :user "root"
          :password "my-secret-pw"})
