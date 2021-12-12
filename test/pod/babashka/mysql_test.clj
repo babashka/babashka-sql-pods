@@ -54,6 +54,8 @@
               (db/execute! conn  ["select * from foo;"])))
         (db/close-connection conn)))
     (testing "input parameters"
+      (try (db/execute! db ["drop table foo_timed;"])
+           (catch Exception _ nil))
       (let [conn (db/get-connection db)
             start-date (Date. 158178094000)]
         (db/with-transaction [x conn]
@@ -67,7 +69,7 @@
           (db/with-transaction [x conn]
             (db/execute! x ["truncate foo_timed;"])
             (db/execute! x ["insert into foo_timed values (?, ?)" 1 start-date])
-            (let [result (db/execute! x ["select foo from foo_timed where created <= ?" start-date])]
+            (let [result (db/execute! x ["select foo from foo_timed"])]
               (is (= result [{:foo_timed/foo 1}])))))))
     (testing "transaction"
       (let [conn (db/get-connection db)]
@@ -98,6 +100,8 @@
                   (db/execute! x ["insert into foo values (8);"]))))
           (is (zero? (count (db/execute! db  ["select * from foo where foo = 8;"]))))))
       (testing "java.time classes"
+        (try (db/execute! db ["drop table java_time;"])
+             (catch Exception _ nil))
         (is (instance? java.time.LocalDateTime
               (-> (db/execute! db ["select now();"]) ffirst val)))
         (db/with-transaction [x (db/get-connection db)]

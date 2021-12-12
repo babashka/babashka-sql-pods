@@ -103,22 +103,24 @@
 (defn transaction-begin
   ([conn] (transaction-begin conn nil))
   ([{:keys [::connection] :as conn} opts]
-   (let [prom (promise)]
-     (swap! transactions assoc connection prom)
+   (let [transaction-started (promise)
+         transaction-ended (promise)]
+     (swap! transactions assoc connection transaction-ended)
      (future
        (try
          (transact (->connectable conn)
                    (fn [_conn]
+                     (deliver transaction-started :ok)
                      ;; wait for promise to be delivered as a result of
                      ;; calling end-transaction
-                     (let [v @prom]
+                     (let [v @transaction-ended]
                        (when (identical? ::rollback v)
                          (throw (ex-info "rollback" {::rollback true})))))
                    opts)
          (catch clojure.lang.ExceptionInfo e
            (when-not (::rollback (ex-data e))
              (throw e)))))
-     nil)))
+     @transaction-started)))
 
 (defn transaction-rollback [{:keys [::connection]}]
   (let [[old _new] (swap-vals! transactions dissoc connection)
