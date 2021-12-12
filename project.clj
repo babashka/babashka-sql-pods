@@ -10,7 +10,7 @@
   :source-paths ["src"]
   :resource-paths ["resources"]
   :dependencies [[org.clojure/clojure "1.10.3"]
-                 [com.github.seancorfield/next.jdbc "1.2.659"]
+                 [com.github.seancorfield/next.jdbc "1.2.753"]
                  [nrepl/bencode "1.1.0"]
                  [com.cognitect/transit-clj "1.0.324"]
                  [cheshire/cheshire "5.10.0"]]
