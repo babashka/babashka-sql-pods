@@ -23,7 +23,7 @@ The following installation methods are available:
 
   ``` clojure
   (require '[babashka.pods :as pods])
-  (pods/load-pod 'org.babashka/postgresql "0.0.7")
+  (pods/load-pod 'org.babashka/postgresql "0.1.0")
   ```
 
   Babashka will automatically download the pod if it is not available on your system yet.
@@ -66,7 +66,7 @@ An example using `pod-babashka-postgresql`:
 (require '[babashka.pods :as pods])
 
 ;; load from pod registry:
-(pods/load-pod 'org.babashka/postgresql "0.0.7")
+(pods/load-pod 'org.babashka/postgresql "0.1.0")
 ;; or load from system path:
 ;; (pods/load-pod "pod-babashka-postgresql")
 ;; or load from a relative or absolute path:
@@ -91,7 +91,7 @@ An example using `pod-babashka-hsqldb`:
 (require '[babashka.pods :as pods])
 
 ;; load from pod registry:
-(pods/load-pod 'org.babashka/hsqldb "0.0.7")
+(pods/load-pod 'org.babashka/hsqldb "0.1.0")
 ;; or load from system path:
 ;; (pods/load-pod "pod-babashka-hsqldb")
 ;; or load from a relative or absolute path:
