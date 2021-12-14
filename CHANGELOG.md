@@ -2,6 +2,11 @@
 
 For a list of breaking changes, check [here](#breaking-changes)
 
+## v0.1.0
+
+- Fix bug in `with-transaction` for MySQL [#47](https://github.com/babashka/babashka-sql-pods/issues/47)
+- Upgrade `next.jdbc` to `1.2.753`
+
 ## v0.0.8
 
 - Releases for Windows
