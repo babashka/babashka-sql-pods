@@ -2,7 +2,7 @@
         com.github.seancorfield/next.jdbc {:mvn/version "1.2.753"}
         nrepl/bencode {:mvn/version "1.1.0"}
         com.cognitect/transit-clj {:mvn/version "1.0.324"}
-        cheshire/cheshire {:mvn/version "5.10.0"}}
+        cheshire/cheshire {:mvn/version "5.10.1"}}
  :aliases
  {:test
   {:extra-deps
