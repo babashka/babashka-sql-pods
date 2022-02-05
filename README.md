@@ -173,7 +173,7 @@ helpful:
 
 Turn Clojure data structures into SQL.
 
-Needs babashka >= 0.2.6. Babashka is tested against HoneySQL version `1.0.444` in CI.
+Needs babashka >= 0.2.6. Babashka is tested against HoneySQL version `2.2.861` in CI.
 
 Example:
 
@@ -183,9 +183,9 @@ Example:
             [babashka.pods :as pods]))
 
 ;; Load HoneySQL from Clojars:
-(deps/add-deps '{:deps {honeysql/honeysql {:mvn/version "1.0.444"}}})
+(deps/add-deps '{:deps {com.github.seancorfield/honeysql {:mvn/version "2.2.861"}}})
 
-(require '[honeysql.core :as hsql])
+(require '[honey.sql :as hsql])
 
 (hsql/format {:select [:a :b :c] :from [:foo] :where [:= :a 1]})
 ;;=> ["SELECT a, b, c FROM foo WHERE a = ?" 1]
