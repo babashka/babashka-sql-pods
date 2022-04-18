@@ -59,7 +59,7 @@ jobs:
   hsqldb-linux-aarch64-static:
     machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: hsqldb}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'false', POD_DB_TYPE: hsqldb}
     resource_class: arm.large
     steps:
     - checkout
@@ -220,7 +220,7 @@ jobs:
   mysql-linux-aarch64-static:
     machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mysql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'false', POD_DB_TYPE: mysql}
     resource_class: arm.large
     steps:
     - checkout
@@ -381,7 +381,7 @@ jobs:
   postgresql-linux-aarch64-static:
     machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: postgresql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'false', POD_DB_TYPE: postgresql}
     resource_class: arm.large
     steps:
     - checkout
@@ -542,7 +542,7 @@ jobs:
   oracle-linux-aarch64-static:
     machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: oracle}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'false', POD_DB_TYPE: oracle}
     resource_class: arm.large
     steps:
     - checkout
@@ -703,7 +703,7 @@ jobs:
   mssql-linux-aarch64-static:
     machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
-    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mssql}
+    environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'false', POD_DB_TYPE: mssql}
     resource_class: arm.large
     steps:
     - checkout
