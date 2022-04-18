@@ -6,8 +6,9 @@
 
 (def java-default-version 11)
 
-(defn linux [& {:keys [java static] :or {java java-default-version
-                                         static false}}]
+(defn linux [& {:keys [java static arch] :or {java java-default-version
+                                              static false
+                                              arch "amd64"}}]
   (ordered-map :docker [{:image "circleci/clojure:openjdk-11-lein-2.9.6-bullseye"}]
                :working_directory "~/repo"
                :environment (cond-> (ordered-map :LEIN_ROOT "true"
@@ -38,9 +39,9 @@ sudo ./linux-install-1.10.2.796.sh"}}
                               :command (format "
 cd ~
 if ! [ -d graalvm-ce-java%s-21.3.0 ]; then
-  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java%s-linux-amd64-21.3.0.tar.gz
-  tar xzf graalvm-ce-java%s-linux-amd64-21.3.0.tar.gz
-fi" java java java)}}
+  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java%s-linux-%s-21.3.0.tar.gz
+  tar xzf graalvm-ce-java%s-linux-%s-21.3.0.tar.gz
+fi" java java arch java arch)}}
                        {:run {:name "Install bb"
                               :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Build binary",
@@ -105,40 +106,50 @@ sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.d
    :version 2.1,
    :jobs (ordered-map
           ;; NOTE: hsqldb tests on java11 fail with a weird NullPointerException (1/2021)
-          :hsqldb-linux (assoc-in (linux)
-                                  [:environment :POD_DB_TYPE] "hsqldb")
           :hsqldb-linux-static (assoc-in (linux :static true)
                                          [:environment :POD_DB_TYPE] "hsqldb")
+          :hsqldb-linux-aarch64-static (assoc-in (linux :arch "aarch64" :static true)
+                                                 [:environment :POD_DB_TYPE] "hsqldb")
           ;; graalvm isn't available in version 8 anymore for macOS
           :hsqldb-mac  (assoc-in (mac)
                                  [:environment :POD_DB_TYPE] "hsqldb")
           :mysql-linux-static (assoc-in (linux :static true)
                                         [:environment :POD_DB_TYPE] "mysql")
+          :mysql-linux-aarch64-static (assoc-in (linux :arch "aarch64" :static true)
+                                                [:environment :POD_DB_TYPE] "mysql")
           :mysql-mac (assoc-in (mac)
                                [:environment :POD_DB_TYPE] "mysql")
-          :postgresql-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "postgresql")
           :postgresql-linux-static (assoc-in (linux :static true)
                                              [:environment :POD_DB_TYPE] "postgresql")
+          :postgresql-linux-aarch64-static (assoc-in (linux :arch "aarch64" :static true)
+                                                     [:environment :POD_DB_TYPE] "postgresql")
           :postgresql-mac  (assoc-in (mac) [:environment :POD_DB_TYPE] "postgresql")
-          :oracle-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "oracle")
           :oracle-linux-static (assoc-in (linux :static true)
                                          [:environment :POD_DB_TYPE] "oracle")
+          :oracle-linux-aarch64-static (assoc-in (linux :arch "aarch64" :static true)
+                                                 [:environment :POD_DB_TYPE] "oracle")
           :oracle-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "oracle")
-          :mssql-linux (assoc-in (linux) [:environment :POD_DB_TYPE] "mssql")
           :mssql-linux-static (assoc-in (linux :static true)
                                         [:environment :POD_DB_TYPE] "mssql")
+          :mssql-linux-aarch64-static (assoc-in (linux :arch "aarch64" :static true)
+                                                [:environment :POD_DB_TYPE] "mssql")
           :mssql-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "mssql")),
    :workflows (ordered-map
                :version 2
                :ci {:jobs ["hsqldb-linux-static"
+                           "hsqldb-linux-aarch64-static"
                            "hsqldb-mac"
                            "mysql-linux-static"
+                           "mysql-linux-aarch64-static"
                            "mysql-mac"
                            "postgresql-linux-static"
+                           "postgresql-linux-aarch64-static"
                            "postgresql-mac"
                            "oracle-linux-static"
+                           "oracle-linux-aarch64-static"
                            "oracle-mac"
                            "mssql-linux-static"
+                           "mssql-linux-aarch64-static"
                            "mssql-mac"]})))
 
 (require '[clj-yaml.core :as yaml])
