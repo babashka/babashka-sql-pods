@@ -53,7 +53,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-linux-aarch64-static:
@@ -107,7 +107,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-mac:
@@ -159,7 +159,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mysql-linux-static:
@@ -214,7 +214,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mysql-linux-aarch64-static:
@@ -268,7 +268,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mysql-mac:
@@ -320,7 +320,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-linux-static:
@@ -375,7 +375,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-linux-aarch64-static:
@@ -429,7 +429,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-mac:
@@ -481,7 +481,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-linux-static:
@@ -536,7 +536,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-linux-aarch64-static:
@@ -590,7 +590,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-mac:
@@ -642,7 +642,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-linux-static:
@@ -697,7 +697,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-linux-aarch64-static:
@@ -751,7 +751,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-mac:
@@ -803,7 +803,7 @@ jobs:
         command: |
           .circleci/script/release
     - save_cache:
-        paths: [~/.m2, ~/graalvm-ce-java11-21.3.0]
+        paths: [~/.m2]
         key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
 workflows:

@@ -56,8 +56,7 @@ fi" java java arch java arch)}}
                                              :command "script/test\n"}}
                                       {:run {:name "Release",
                                              :command ".circleci/script/release\n"}}
-                                      {:save_cache {:paths ["~/.m2"
-                                                            (format "~/graalvm-ce-java%s-21.3.0" java)],
+                                      {:save_cache {:paths ["~/.m2"]
                                                     :key   "linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
                                       {:store_artifacts {:path "/tmp/release",
                                                          :destination "release"}}]))]
@@ -103,8 +102,7 @@ sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.d
                               :command "script/test\n"}}
                        {:run {:name "Release",
                               :command ".circleci/script/release\n"}}
-                       {:save_cache {:paths ["~/.m2"
-                                             (format "~/graalvm-ce-java%s-21.3.0" java)],
+                       {:save_cache {:paths ["~/.m2"]
                                      :key   "mac-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
                        {:store_artifacts {:path "/tmp/release",
                                           :destination "release"}}]))
