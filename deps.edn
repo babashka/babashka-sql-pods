@@ -9,8 +9,8 @@
    {cognitect/test-runner
     {:git/url "https://github.com/borkdude/test-runner"
      :sha "680cedab963d38ad677d12efa6f7e61f544b2441"}
-    ch.vorburger.mariaDB4j/mariaDB4j {:mvn/version "2.4.0"}
-    com.opentable.components/otj-pg-embedded {:mvn/version "0.13.3"}
+    ch.vorburger.mariaDB4j/mariaDB4j {:mvn/version "2.5.3"}
+    com.opentable.components/otj-pg-embedded {:mvn/version "1.0.0"}
     babashka/babashka.pods
     #_{:local/root "../pods"}
     {:git/url "https://github.com/babashka/babashka.pods"
