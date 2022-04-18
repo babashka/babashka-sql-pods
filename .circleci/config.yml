@@ -57,11 +57,10 @@ jobs:
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   hsqldb-linux-aarch64-static:
-    docker:
-    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
+    machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: hsqldb}
-    resource_class: large
+    resource_class: arm.large
     steps:
     - checkout
     - run:
@@ -219,11 +218,10 @@ jobs:
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mysql-linux-aarch64-static:
-    docker:
-    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
+    machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mysql}
-    resource_class: large
+    resource_class: arm.large
     steps:
     - checkout
     - run:
@@ -381,11 +379,10 @@ jobs:
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   postgresql-linux-aarch64-static:
-    docker:
-    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
+    machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: postgresql}
-    resource_class: large
+    resource_class: arm.large
     steps:
     - checkout
     - run:
@@ -543,11 +540,10 @@ jobs:
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   oracle-linux-aarch64-static:
-    docker:
-    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
+    machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: oracle}
-    resource_class: large
+    resource_class: arm.large
     steps:
     - checkout
     - run:
@@ -705,11 +701,10 @@ jobs:
         key: linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - store_artifacts: {path: /tmp/release, destination: release}
   mssql-linux-aarch64-static:
-    docker:
-    - {image: 'circleci/clojure:openjdk-11-lein-2.9.6-bullseye'}
+    machine: {image: 'ubuntu-2004:202101-01'}
     working_directory: ~/repo
     environment: {LEIN_ROOT: 'true', GRAALVM_HOME: /home/circleci/graalvm-ce-java11-21.3.0, BABASHKA_PLATFORM: linux-static, BABASHKA_TEST_ENV: native, BABASHKA_XMX: -J-Xmx7g, POD_TEST_ENV: native, BABASHKA_STATIC: 'true', BABASHKA_MUSL: 'true', POD_DB_TYPE: mssql}
-    resource_class: large
+    resource_class: arm.large
     steps:
     - checkout
     - run:
