@@ -77,7 +77,7 @@
                          "--libc=musl"
                          ;; see https://github.com/oracle/graal/issues/3398
                          "-H:CCompilerOption=-Wl,-z,stack-size=2097152")
-                   args))
+                   (conj args "-H:+StaticExecutableWithDynamicLibC")))
                args)]
     (apply shell (str (fs/file gvm-bin "native-image")
                       (when windows?
