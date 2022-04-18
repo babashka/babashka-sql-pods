@@ -82,5 +82,3 @@
     (apply shell (str (fs/file gvm-bin "native-image")
                       (when windows?
                         ".cmd")) args)))
-
-

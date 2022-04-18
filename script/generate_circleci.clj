@@ -9,53 +9,61 @@
 (defn linux [& {:keys [java static arch] :or {java java-default-version
                                               static false
                                               arch "amd64"}}]
-  (ordered-map :docker [{:image "circleci/clojure:openjdk-11-lein-2.9.6-bullseye"}]
-               :working_directory "~/repo"
-               :environment (cond-> (ordered-map :LEIN_ROOT "true"
-                                                 :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-21.3.0" java)
-                                                 :BABASHKA_PLATFORM (str "linux" (when static "-static"))
-                                                 :BABASHKA_TEST_ENV "native"
-                                                 :BABASHKA_XMX "-J-Xmx7g"
-                                                 :POD_TEST_ENV "native")
-                              static (assoc :BABASHKA_STATIC "true"
-                                            :BABASHKA_MUSL "true"))
-               :resource_class "large"
-               :steps ["checkout"
-                       {:run {:name "Pull Submodules",
-                              :command "git submodule init\ngit submodule update\n"}}
-                       {:restore_cache {:keys ["linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
-                       {:run {:name "Install Clojure",
-                              :command "
+  (let [executor (if (= "aarch64" arch)
+                   {:machine {:image "ubuntu-2004:202101-01"}}
+                   {:docker [{:image "circleci/clojure:openjdk-11-lein-2.9.6-bullseye"}]})
+        resource-class (when (= "aarch64" arch)
+                         "arm.large")
+        config (merge executor
+                 (ordered-map :working_directory "~/repo"
+                              :environment (cond-> (ordered-map :LEIN_ROOT "true"
+                                                                :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-21.3.0" java)
+                                                                :BABASHKA_PLATFORM (str "linux" (when static "-static"))
+                                                                :BABASHKA_TEST_ENV "native"
+                                                                :BABASHKA_XMX "-J-Xmx7g"
+                                                                :POD_TEST_ENV "native")
+                                             static (assoc :BABASHKA_STATIC "true"
+                                                           :BABASHKA_MUSL "true"))
+                              :resource_class "large"
+                              :steps ["checkout"
+                                      {:run {:name "Pull Submodules",
+                                             :command "git submodule init\ngit submodule update\n"}}
+                                      {:restore_cache {:keys ["linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
+                                      {:run {:name "Install Clojure",
+                                             :command "
 wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
 chmod +x linux-install-1.10.2.796.sh
 sudo ./linux-install-1.10.2.796.sh"}}
-                       {:run {:name "Install lsof",
-                              :command "sudo apt-get install lsof\n"}}
-                       {:run {:name "Install native dev tools",
-                              :command (str/join "\n" ["sudo apt-get update"
-                                                       "sudo apt-get -y install gcc g++ zlib1g-dev make"
-                                                       "sudo -E script/setup-musl"])}}
-                       {:run {:name    "Download GraalVM",
-                              :command (format "
+                                      {:run {:name "Install lsof",
+                                             :command "sudo apt-get install lsof\n"}}
+                                      {:run {:name "Install native dev tools",
+                                             :command (str/join "\n" ["sudo apt-get update"
+                                                                      "sudo apt-get -y install gcc g++ zlib1g-dev make"
+                                                                      "sudo -E script/setup-musl"])}}
+                                      {:run {:name    "Download GraalVM",
+                                             :command (format "
 cd ~
 if ! [ -d graalvm-ce-java%s-21.3.0 ]; then
   curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java%s-linux-%s-21.3.0.tar.gz
   tar xzf graalvm-ce-java%s-linux-%s-21.3.0.tar.gz
 fi" java java arch java arch)}}
-                       {:run {:name "Install bb"
-                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
-                       {:run {:name "Build binary",
-                              :command "./bb script/compile.clj",
-                              :no_output_timeout "30m"}}
-                       {:run {:name "Run tests",
-                              :command "script/test\n"}}
-                       {:run {:name "Release",
-                              :command ".circleci/script/release\n"}}
-                       {:save_cache {:paths ["~/.m2"
-                                             (format "~/graalvm-ce-java%s-21.3.0" java)],
-                                     :key   "linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
-                       {:store_artifacts {:path "/tmp/release",
-                                          :destination "release"}}]))
+                                      {:run {:name "Install bb"
+                                             :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
+                                      {:run {:name "Build binary",
+                                             :command "./bb script/compile.clj",
+                                             :no_output_timeout "30m"}}
+                                      {:run {:name "Run tests",
+                                             :command "script/test\n"}}
+                                      {:run {:name "Release",
+                                             :command ".circleci/script/release\n"}}
+                                      {:save_cache {:paths ["~/.m2"
+                                                            (format "~/graalvm-ce-java%s-21.3.0" java)],
+                                                    :key   "linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"}}
+                                      {:store_artifacts {:path "/tmp/release",
+                                                         :destination "release"}}]))]
+    (if (nil? resource-class)
+      config
+      (assoc config :resource_class resource-class))))
 
 (defn mac [& {:keys [java] :or {java java-default-version}}]
   (ordered-map :macos {:xcode "12.0.0"},
