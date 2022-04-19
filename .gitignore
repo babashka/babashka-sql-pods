@@ -4,3 +4,4 @@
 /.cpcache
 /.clj-kondo/.cache
 /.lsp/.cache
+.nrepl-port

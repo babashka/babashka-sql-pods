@@ -19,9 +19,9 @@
   (str/includes? (str/lower-case (System/getProperty "os.name"))
                  "windows"))
 
-(shell {:continue true} (str (fs/file gvm-bin "gu")
-                             (when windows?
-                               ".cmd")) "install" "native-image")
+(shell (str (fs/file gvm-bin "gu")
+            (when windows?
+              ".cmd")) "install" "native-image")
 
 (def path (str/join fs/path-separator [gvm-bin (System/getenv "PATH")]))
 
@@ -77,10 +77,8 @@
                          "--libc=musl"
                          ;; see https://github.com/oracle/graal/issues/3398
                          "-H:CCompilerOption=-Wl,-z,stack-size=2097152")
-                   args))
+                   (conj args "-H:+StaticExecutableWithDynamicLibC")))
                args)]
     (apply shell (str (fs/file gvm-bin "native-image")
                       (when windows?
                         ".cmd")) args)))
-
-
