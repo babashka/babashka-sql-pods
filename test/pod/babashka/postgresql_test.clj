@@ -15,12 +15,15 @@
 (require '[pod.babashka.postgresql.sql :as sql])
 (require '[pod.babashka.postgresql.transaction :as transaction])
 
+(def port 54322)
 (def db {:dbtype "postgres"
+         :port port
          :user "postgres"
          :dbname "postgres"})
 
 (deftest postgresql-test
   (with-open [_ (-> (EmbeddedPostgres/builder)
+                    (.setPort port)
                     .start
                     .getPostgresDatabase
                     .getConnection)]
