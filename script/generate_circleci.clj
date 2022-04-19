@@ -53,7 +53,9 @@ fi" java java arch java arch)}}
                                              :command "./bb script/compile.clj",
                                              :no_output_timeout "30m"}}
                                       {:run {:name "Run tests",
-                                             :command "script/test\n"}}
+                                             :command (if (= "aarch64" arch)
+                                                        "echo 'Skipping tests for ARM'"
+                                                        "script/test\n")}}
                                       {:run {:name "Release",
                                              :command ".circleci/script/release\n"}}
                                       {:save_cache {:paths ["~/.m2"]

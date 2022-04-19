@@ -98,10 +98,7 @@ jobs:
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
-    - run:
-        name: Run tests
-        command: |
-          script/test
+    - run: {name: Run tests, command: echo 'Skipping tests for ARM'}
     - run:
         name: Release
         command: |
@@ -259,10 +256,7 @@ jobs:
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
-    - run:
-        name: Run tests
-        command: |
-          script/test
+    - run: {name: Run tests, command: echo 'Skipping tests for ARM'}
     - run:
         name: Release
         command: |
@@ -420,10 +414,7 @@ jobs:
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
-    - run:
-        name: Run tests
-        command: |
-          script/test
+    - run: {name: Run tests, command: echo 'Skipping tests for ARM'}
     - run:
         name: Release
         command: |
@@ -581,10 +572,7 @@ jobs:
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
-    - run:
-        name: Run tests
-        command: |
-          script/test
+    - run: {name: Run tests, command: echo 'Skipping tests for ARM'}
     - run:
         name: Release
         command: |
@@ -742,10 +730,7 @@ jobs:
           fi
     - run: {name: Install bb, command: 'bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)'}
     - run: {name: Build binary, command: ./bb script/compile.clj, no_output_timeout: 30m}
-    - run:
-        name: Run tests
-        command: |
-          script/test
+    - run: {name: Run tests, command: echo 'Skipping tests for ARM'}
     - run:
         name: Release
         command: |
