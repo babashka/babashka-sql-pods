@@ -9,12 +9,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: amd64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
+      BABASHKA_ARCH: amd64
       POD_DB_TYPE: hsqldb
     resource_class: large
     steps:
@@ -83,12 +83,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: aarch64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'false'
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: hsqldb
     resource_class: arm.large
     steps:
@@ -225,12 +225,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: amd64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
+      BABASHKA_ARCH: amd64
       POD_DB_TYPE: mysql
     resource_class: large
     steps:
@@ -299,12 +299,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: aarch64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'false'
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: mysql
     resource_class: arm.large
     steps:
@@ -441,12 +441,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: amd64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
+      BABASHKA_ARCH: amd64
       POD_DB_TYPE: postgresql
     resource_class: large
     steps:
@@ -515,12 +515,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: aarch64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'false'
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: postgresql
     resource_class: arm.large
     steps:
@@ -657,12 +657,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: amd64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
+      BABASHKA_ARCH: amd64
       POD_DB_TYPE: oracle
     resource_class: large
     steps:
@@ -731,12 +731,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: aarch64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'false'
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: oracle
     resource_class: arm.large
     steps:
@@ -873,12 +873,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: amd64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
+      BABASHKA_ARCH: amd64
       POD_DB_TYPE: mssql
     resource_class: large
     steps:
@@ -947,12 +947,12 @@ jobs:
       LEIN_ROOT: 'true'
       GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.0.0.2
       BABASHKA_PLATFORM: linux
-      BABASHKA_ARCH: aarch64
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'false'
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: mssql
     resource_class: arm.large
     steps:
