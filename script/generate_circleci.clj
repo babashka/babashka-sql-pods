@@ -24,6 +24,7 @@
                               :environment (cond-> (ordered-map :LEIN_ROOT "true"
                                                                 :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-{{graalvm-version}}" java)
                                                                 :BABASHKA_PLATFORM "linux"
+                                                                :BABASHKA_ARCH arch
                                                                 :BABASHKA_TEST_ENV "native"
                                                                 :BABASHKA_XMX "-J-Xmx7g"
                                                                 :POD_TEST_ENV "native")

@@ -8,8 +8,10 @@ VERSION=$(cat resources/POD_BABASHKA_SQL_VERSION)
 
 cd /tmp/release
 
+arch=${BABASHKA_ARCH:-amd64}
+
 ## release binary as zip archive
-archive="pod-babashka-$POD_DB_TYPE-$VERSION-$BABASHKA_PLATFORM-amd64.zip"
+archive="pod-babashka-$POD_DB_TYPE-$VERSION-$BABASHKA_PLATFORM-$arch.zip"
 zip "$archive" "pod-babashka-$POD_DB_TYPE"
 
 ## cleanup
