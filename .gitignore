@@ -5,3 +5,4 @@
 /.clj-kondo/.cache
 /.lsp/.cache
 .nrepl-port
+.lsp
