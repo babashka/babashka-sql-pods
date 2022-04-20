@@ -14,7 +14,6 @@ jobs:
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
-      BABASHKA_ARCH: amd64
       POD_DB_TYPE: hsqldb
     resource_class: large
     steps:
@@ -230,7 +229,6 @@ jobs:
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
-      BABASHKA_ARCH: amd64
       POD_DB_TYPE: mysql
     resource_class: large
     steps:
@@ -446,7 +444,6 @@ jobs:
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
-      BABASHKA_ARCH: amd64
       POD_DB_TYPE: postgresql
     resource_class: large
     steps:
@@ -662,7 +659,6 @@ jobs:
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
-      BABASHKA_ARCH: amd64
       POD_DB_TYPE: oracle
     resource_class: large
     steps:
@@ -878,7 +874,6 @@ jobs:
       POD_TEST_ENV: native
       BABASHKA_STATIC: 'true'
       BABASHKA_MUSL: 'true'
-      BABASHKA_ARCH: amd64
       POD_DB_TYPE: mssql
     resource_class: large
     steps:

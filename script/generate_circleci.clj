@@ -28,8 +28,9 @@
                                                                 :BABASHKA_XMX "-J-Xmx7g"
                                                                 :POD_TEST_ENV "native")
                                              static (assoc :BABASHKA_STATIC "true"
-                                                           :BABASHKA_MUSL (if (= "aarch64" arch) "false" "true")
-                                                           :BABASHKA_ARCH arch))
+                                                           :BABASHKA_MUSL (if (= "aarch64" arch) "false" "true"))
+                                             (= "aarch64" arch)
+                                             (assoc :BABASHKA_ARCH arch))
                               :resource_class "large"
                               :steps ["checkout"
                                       {:run {:name "Pull Submodules",
