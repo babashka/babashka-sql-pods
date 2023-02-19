@@ -46,6 +46,11 @@
           (db/execute! x ["insert into foo_timed values (?, ?)" 1 start-date])
           (let [result (db/execute! x ["select foo from foo_timed where created <= ?" start-date])]
             (is (= result [{:foo_timed/foo 1}]))))))
+    (testing "prepared statements"
+      (let [conn (db/get-connection db)]
+        (with-open [ps (db/prepare conn ["select * from foo where foo = ?" 1])]
+          (let [result (db/execute-one! ps)]
+            (is (= result #:foo{:foo 1}))))))
     (testing "transaction"
       (let [conn (db/get-connection db)]
         (transaction/begin conn)

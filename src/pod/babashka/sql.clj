@@ -98,6 +98,11 @@
     (when-let [conn (get old connection)]
       (.close ^java.lang.AutoCloseable conn))))
 
+(defn prepare
+  ([conn statement] (prepare conn statement nil))
+  ([conn statement opts]
+   (jdbc/prepare conn statement opts)))
+
 (def transact @#'t/transact*)
 
 (defn transaction-begin

@@ -25,6 +25,11 @@
           (is (= [#:FOO{:FOO 1} #:FOO{:FOO 2} #:FOO{:FOO 3}]
                  (db/execute! conn  ["select * from foo;"])))
           (db/close-connection conn)))
+      (testing "prepared statements"
+        (let [conn (db/get-connection db)]
+          (with-open [ps (db/prepare conn ["select * from foo where foo = ?" 1])]
+            (let [result (db/execute-one! ps)]
+              (is (= result #:foo{:foo 1}))))))
       (testing "transaction"
         (let [conn (db/get-connection db)]
           (transaction/begin conn)
