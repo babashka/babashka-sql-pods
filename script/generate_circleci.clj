@@ -134,7 +134,8 @@ fi" java java java)}}
                                         [:environment :POD_DB_TYPE] "mysql")
           :mysql-linux-aarch64 (assoc-in (linux :arch "aarch64" :static true)
                                                 [:environment :POD_DB_TYPE] "mysql")
-          :mysql-mac (assoc-in (mac)
+          ;; disabled because of libssl issues
+          #_#_:mysql-mac (assoc-in (mac)
                                [:environment :POD_DB_TYPE] "mysql")
           :postgresql-linux (assoc-in (linux :static true)
                                              [:environment :POD_DB_TYPE] "postgresql")
