@@ -103,12 +103,8 @@ fi" java java java)}}
                               :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Fix ssl libs for tests"
                               :command "
-ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/\n
-ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/\n
-\n
 sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib\n
 sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib\n
-ls -la /usr/lib/libssl.dylib\n
 "}}
                        {:run {:name "Build binary",
                               :command "./bb script/compile.clj",
