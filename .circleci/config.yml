@@ -193,9 +193,9 @@ jobs:
         name: Fix ssl libs for tests
         command: |2+
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
     - run:
         name: Build binary
@@ -408,9 +408,9 @@ jobs:
         name: Fix ssl libs for tests
         command: |2+
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
     - run:
         name: Build binary
@@ -623,9 +623,9 @@ jobs:
         name: Fix ssl libs for tests
         command: |2+
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
     - run:
         name: Build binary
@@ -838,9 +838,9 @@ jobs:
         name: Fix ssl libs for tests
         command: |2+
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
     - run:
         name: Build binary
@@ -1053,9 +1053,9 @@ jobs:
         name: Fix ssl libs for tests
         command: |2+
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
-          sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
 
     - run:
         name: Build binary
