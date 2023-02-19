@@ -1,20 +1,20 @@
-{:deps {org.hsqldb/hsqldb {:mvn/version "2.6.0"}
-        com.github.seancorfield/next.jdbc {:mvn/version "1.2.753"}
+{:deps {org.hsqldb/hsqldb {:mvn/version "2.7.1"}
+        com.github.seancorfield/next.jdbc {:mvn/version "1.3.847"}
         nrepl/bencode {:mvn/version "1.1.0"}
-        com.cognitect/transit-clj {:mvn/version "1.0.324"}
-        cheshire/cheshire {:mvn/version "5.10.1"}}
+        com.cognitect/transit-clj {:mvn/version "1.0.329"}
+        cheshire/cheshire {:mvn/version "5.11.0"}}
  :aliases
  {:test
   {:extra-deps
    {cognitect/test-runner
     {:git/url "https://github.com/cognitect-labs/test-runner"
      :sha "7284cda41fb9edc0f3bc6b6185cfb7138fc8a023"}
-    ch.vorburger.mariaDB4j/mariaDB4j {:mvn/version "2.4.0"}
-    com.opentable.components/otj-pg-embedded {:mvn/version "0.13.3"}
+    ch.vorburger.mariaDB4j/mariaDB4j {:mvn/version "2.6.0"}
+    com.opentable.components/otj-pg-embedded {:mvn/version "1.0.1"}
     babashka/babashka.pods
     #_{:local/root "../pods"}
     {:git/url "https://github.com/babashka/babashka.pods"
-     :sha "de4c3610c9ef3879370d01b7202a9f3a9d056f6e"}}
+     :git/sha "75c2216649bf5caf3ae41e7b8fc202e45b090ea9"}}
    :extra-paths ["test"]
    :main-opts ["-m" "cognitect.test-runner"]}
   :mysql {:extra-deps {mysql/mysql-connector-java {:mvn/version "8.0.25"}}}}}
