@@ -159,7 +159,7 @@ fi" java java java)}}
                            "hsqldb-mac"
                            "mysql-linux"
                            "mysql-linux-aarch64"
-                           "mysql-mac"
+                           #_"mysql-mac"
                            "postgresql-linux"
                            "postgresql-linux-aarch64"
                            "postgresql-mac"
