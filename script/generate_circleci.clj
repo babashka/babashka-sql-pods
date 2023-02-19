@@ -106,6 +106,7 @@ fi" java java java)}}
                               :no_output_timeout "30m"}}
                        {:run {:name "Fix ssl libs for tests"
                               :command "
+ls -la /usr/lib/libssl.dylib
 sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib\n
 sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib\n"}}
                        {:run {:name "Run tests",
