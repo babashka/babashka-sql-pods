@@ -10,7 +10,7 @@
     {:git/url "https://github.com/cognitect-labs/test-runner"
      :sha "7284cda41fb9edc0f3bc6b6185cfb7138fc8a023"}
     ch.vorburger.mariaDB4j/mariaDB4j {:mvn/version "2.6.0"}
-    com.opentable.components/otj-pg-embedded {:mvn/version "1.0.1"}
+    io.zonky.test/embedded-postgres {:mvn/version "2.0.1"}
     babashka/babashka.pods
     #_{:local/root "../pods"}
     {:git/url "https://github.com/babashka/babashka.pods"
