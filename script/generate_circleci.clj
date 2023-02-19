@@ -75,7 +75,7 @@ fi" java java arch java arch)}}
       (assoc config :resource_class resource-class))))
 
 (defn mac [& {:keys [java] :or {java java-default-version}}]
-  (ordered-map :macos {:xcode "12.0.0"},
+  (ordered-map :macos {:xcode "14.0.0"},
                :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-ce-java%s-{{graalvm-version}}/Contents/Home" java),
                                          :MACOSX_DEPLOYMENT_TARGET "10.13" ;; 10.12 is EOL
                                          :BABASHKA_PLATFORM "macos",

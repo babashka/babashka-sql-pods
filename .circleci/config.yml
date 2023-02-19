@@ -148,7 +148,7 @@ jobs:
         destination: release
   hsqldb-mac:
     macos:
-      xcode: 12.0.0
+      xcode: 14.0.0
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
@@ -362,7 +362,7 @@ jobs:
         destination: release
   mysql-mac:
     macos:
-      xcode: 12.0.0
+      xcode: 14.0.0
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
@@ -576,7 +576,7 @@ jobs:
         destination: release
   postgresql-mac:
     macos:
-      xcode: 12.0.0
+      xcode: 14.0.0
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
@@ -790,7 +790,7 @@ jobs:
         destination: release
   oracle-mac:
     macos:
-      xcode: 12.0.0
+      xcode: 14.0.0
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
@@ -1004,7 +1004,7 @@ jobs:
         destination: release
   mssql-mac:
     macos:
-      xcode: 12.0.0
+      xcode: 14.0.0
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
