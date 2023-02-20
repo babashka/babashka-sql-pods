@@ -3,7 +3,7 @@
    '{:lint-as {pod.babashka.postgresql/with-transaction next.jdbc/with-transaction}}}
   (:require [babashka.pods :as pods]
             [clojure.test :refer [deftest is testing]])
-  (:import [com.opentable.db.postgres.embedded EmbeddedPostgres]
+  (:import [io.zonky.test.db.postgres.embedded EmbeddedPostgres]
            [java.util Date Arrays]))
 
 (pods/load-pod (if (= "native" (System/getenv "POD_TEST_ENV"))
@@ -16,17 +16,18 @@
 (require '[pod.babashka.postgresql.transaction :as transaction])
 
 (def port 54322)
+
 (def db {:dbtype "postgres"
-         :port port
          :user "postgres"
+         :port port
          :dbname "postgres"})
 
 (deftest postgresql-test
-  (with-open [_ (-> (EmbeddedPostgres/builder)
-                    (.setPort port)
-                    .start
-                    .getPostgresDatabase
-                    .getConnection)]
+  (with-open [_conn (-> (EmbeddedPostgres/builder)
+                        (.setPort port)
+                        .start
+                        .getPostgresDatabase
+                        .getConnection)]
     (is (db/execute! db ["create table foo ( foo int );"]))
     (is (thrown-with-msg? Exception #"exists"
                           (db/execute! db ["create table foo ( foo int );"])))
@@ -36,7 +37,7 @@
     (testing "connection"
       (let [conn (db/get-connection db)]
         (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3}]
-               (db/execute! conn  ["select * from foo;"])))
+               (db/execute! conn ["select * from foo;"])))
         (db/close-connection conn)))
     (testing "input parameters"
       (let [conn (db/get-connection db)
@@ -57,7 +58,7 @@
         (db/execute! conn ["insert into foo values (4);"])
         (transaction/commit conn)
         (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}]
-               (db/execute! db  ["select * from foo;"]))))
+               (db/execute! db ["select * from foo;"]))))
       (testing "rollback"
         (let [conn (db/get-connection db)]
           (transaction/begin conn)
@@ -65,20 +66,20 @@
           (transaction/rollback conn)
           (db/close-connection conn)
           (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3} #:foo{:foo 4}]
-                 (db/execute! db  ["select * from foo;"])))))
+                 (db/execute! db ["select * from foo;"])))))
       (testing "with-transaction"
         (dotimes [_ 10]
           (is (= [#:next.jdbc{:update-count 2}]
                  (db/with-transaction [x db]
                    (db/execute! x ["insert into foo values (5);"])
                    (db/execute! x ["insert into foo values (6), (7);"])))))
-        (is (= 2 (count (db/execute! db  ["select distinct foo from foo where foo > 5;"]))))
+        (is (= 2 (count (db/execute! db ["select distinct foo from foo where foo > 5;"]))))
         (testing "failing transaction"
           (is (thrown-with-msg?
                Exception #"read-only"
                (db/with-transaction [x db {:read-only true}]
                  (db/execute! x ["insert into foo values (8);"]))))
-          (is (zero? (count (db/execute! db  ["select * from foo where foo = 8;"])))))))
+          (is (zero? (count (db/execute! db ["select * from foo where foo = 8;"])))))))
     (testing "arrays"
       (testing "byte arrays"
         (let [bs (.getBytes "foo")]

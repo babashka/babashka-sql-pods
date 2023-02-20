@@ -30,9 +30,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -104,9 +104,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -148,7 +148,7 @@ jobs:
         destination: release
   hsqldb-mac:
     macos:
-      xcode: 12.0.0
+      xcode: 14.0.0
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
@@ -190,16 +190,17 @@ jobs:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
     - run:
+        name: Fix ssl libs for tests
+        command: |2+
+
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+    - run:
         name: Build binary
         command: ./bb script/compile.clj
         no_output_timeout: 30m
-    - run:
-        name: Fix ssl libs for tests
-        command: |2
-
-          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
-
-          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
     - run:
         name: Run tests
         command: |
@@ -244,9 +245,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -318,9 +319,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -360,75 +361,6 @@ jobs:
     - store_artifacts:
         path: /tmp/release
         destination: release
-  mysql-mac:
-    macos:
-      xcode: 12.0.0
-    environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
-      BABASHKA_PLATFORM: macos
-      BABASHKA_TEST_ENV: native
-      BABASHKA_XMX: -J-Xmx7g
-      POD_TEST_ENV: native
-      POD_DB_TYPE: mysql
-    resource_class: large
-    steps:
-    - checkout
-    - run:
-        name: Pull Submodules
-        command: |
-          git submodule init
-          git submodule update
-    - restore_cache:
-        keys:
-        - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Clojure
-        command: |
-          script/install-clojure /usr/local
-    - run:
-        name: Install Leiningen
-        command: |
-          script/install-leiningen
-    - run:
-        name: Download GraalVM
-        command: |2-
-
-          cd ~
-          ls -la
-          if ! [ -d graalvm-ce-java11-22.0.0.2 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.0.0.2/graalvm-ce-java11-darwin-amd64-22.0.0.2.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-22.0.0.2.tar.gz
-          fi
-    - run:
-        name: Install bb
-        command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
-    - run:
-        name: Build binary
-        command: ./bb script/compile.clj
-        no_output_timeout: 30m
-    - run:
-        name: Fix ssl libs for tests
-        command: |2
-
-          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
-
-          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
-    - run:
-        name: Run tests
-        command: |
-          script/test
-    - run:
-        name: Release
-        command: |
-          .circleci/script/release
-    - save_cache:
-        paths:
-        - ~/.m2
-        key: mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - store_artifacts:
-        path: /tmp/release
-        destination: release
   postgresql-linux:
     docker:
     - image: circleci/clojure:openjdk-11-lein-2.9.6-bullseye
@@ -458,9 +390,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -532,9 +464,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -576,7 +508,7 @@ jobs:
         destination: release
   postgresql-mac:
     macos:
-      xcode: 12.0.0
+      xcode: 14.0.0
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
@@ -618,16 +550,17 @@ jobs:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
     - run:
+        name: Fix ssl libs for tests
+        command: |2+
+
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+    - run:
         name: Build binary
         command: ./bb script/compile.clj
         no_output_timeout: 30m
-    - run:
-        name: Fix ssl libs for tests
-        command: |2
-
-          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
-
-          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
     - run:
         name: Run tests
         command: |
@@ -672,9 +605,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -746,9 +679,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -790,7 +723,7 @@ jobs:
         destination: release
   oracle-mac:
     macos:
-      xcode: 12.0.0
+      xcode: 14.0.0
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
@@ -832,16 +765,17 @@ jobs:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
     - run:
+        name: Fix ssl libs for tests
+        command: |2+
+
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+    - run:
         name: Build binary
         command: ./bb script/compile.clj
         no_output_timeout: 30m
-    - run:
-        name: Fix ssl libs for tests
-        command: |2
-
-          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
-
-          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
     - run:
         name: Run tests
         command: |
@@ -886,9 +820,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -960,9 +894,9 @@ jobs:
         name: Install Clojure
         command: |2-
 
-          wget https://download.clojure.org/install/linux-install-1.10.2.796.sh
-          chmod +x linux-install-1.10.2.796.sh
-          sudo ./linux-install-1.10.2.796.sh
+          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
+          chmod +x linux-install-1.11.1.1224.sh
+          sudo ./linux-install-1.11.1.1224.sh
     - run:
         name: Install lsof
         command: |
@@ -1004,7 +938,7 @@ jobs:
         destination: release
   mssql-mac:
     macos:
-      xcode: 12.0.0
+      xcode: 14.0.0
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.0.0.2/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
@@ -1046,16 +980,17 @@ jobs:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
     - run:
+        name: Fix ssl libs for tests
+        command: |2+
+
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libssl.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+          # sudo ln -s /usr/local/opt/openssl@3/lib/libcrypto.1.0.0.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
+
+    - run:
         name: Build binary
         command: ./bb script/compile.clj
         no_output_timeout: 30m
-    - run:
-        name: Fix ssl libs for tests
-        command: |2
-
-          sudo ln -s /usr/lib/libssl.dylib /usr/local/opt/openssl/lib/libssl.1.0.0.dylib
-
-          sudo ln -s /usr/lib/libcrypto.dylib /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib
     - run:
         name: Run tests
         command: |
@@ -1080,7 +1015,6 @@ workflows:
     - hsqldb-mac
     - mysql-linux
     - mysql-linux-aarch64
-    - mysql-mac
     - postgresql-linux
     - postgresql-linux-aarch64
     - postgresql-mac
