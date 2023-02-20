@@ -50,7 +50,7 @@
     (testing "prepared statements"
       (let [conn (db/get-connection db)]
         (with-open [ps (db/prepare conn ["select * from foo where foo = ?" 1])]
-          (let [result (db/execute-one! ps)]
+          (let [result (db/execute-one! ps nil)]
             (is (= result #:foo{:foo 1}))))))
     (testing "transaction"
       (let [conn (db/get-connection db)]
