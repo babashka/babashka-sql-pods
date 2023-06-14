@@ -6,3 +6,4 @@
 /.lsp/.cache
 .nrepl-port
 .lsp
+output.calva-repl
