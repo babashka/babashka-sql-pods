@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+if [ "$BABASHKA_PLATFORM" = "macos" ]
+then
+    if [ "$POD_DB_TYPE" = "mysql" ]
+    then
+        echo "Skipping tests due to ssl error in test setup"
+        exit 0
+    fi
+fi
+
 set -euo pipefail
 
 if [ "$POD_DB_TYPE" = "postgresql" ]
