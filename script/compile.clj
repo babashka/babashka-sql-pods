@@ -67,7 +67,7 @@
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerBouncyCastleLoader"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerMSAL4JUtils"
               xmx]
-        args (if (= "mysql" pod-db-type)
+        args (if (= "mssql" pod-db-type)
                (conj args "-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource")
                args)
         args (if (= "true" (System/getenv "BABASHKA_STATIC"))
