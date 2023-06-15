@@ -2,6 +2,17 @@
 
 For a list of breaking changes, check [here](#breaking-changes)
 
+[babashka-sql-pods](https://github.com/babashka/babashka-sql-pods): Babashka pods for SQL databases
+
+## v0.1.2
+
+- Upgrade libraries
+- Fix bug with mssql on Windows (@kbosompem)
+
+## v0.1.1
+
+- Remove dynamic linux builds
+
 ## v0.1.0
 
 - Fix bug in `with-transaction` for MySQL [#47](https://github.com/babashka/babashka-sql-pods/issues/47)
