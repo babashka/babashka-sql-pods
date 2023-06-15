@@ -7,7 +7,7 @@ For a list of breaking changes, check [here](#breaking-changes)
 ## v0.1.2
 
 - Upgrade libraries
-- Fix bug with mssql on Windows (@kbosompem)
+- Fix bug with mssql on Windows ([@kbosompem](https://github.com/kbosompem))
 
 ## v0.1.1
 
