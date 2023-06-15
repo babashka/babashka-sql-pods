@@ -1085,6 +1085,7 @@ workflows:
     - hsqldb-mac
     - mysql-linux
     - mysql-linux-aarch64
+    - mysql-mac
     - postgresql-linux
     - postgresql-linux-aarch64
     - postgresql-mac
