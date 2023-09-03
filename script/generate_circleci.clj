@@ -82,7 +82,7 @@ fi" java java arch java arch)}}
                                          :BABASHKA_TEST_ENV "native",
                                          :BABASHKA_XMX "-J-Xmx7g"
                                          :POD_TEST_ENV "native"),
-               :resource_class "large",
+               :resource_class "macos.x86.medium.gen2",
                :steps ["checkout"
                        {:run {:name "Pull Submodules",
                               :command "git submodule init\ngit submodule update\n"}}

@@ -3,7 +3,8 @@
         #_{:local/root "../gh-release-artifact"}
         {:git/url "https://github.com/borkdude/gh-release-artifact"
          :sha "4a9a74f0e50e897c45df8cc70684360eb30fce80"}}
- :tasks {uberjar (shell "lein uberjar")
+ :tasks {uberjar {:task (shell "lein uberjar")
+                  :override-builtin true}
          graalvm {:doc "Checks GRAALVM_HOME env var"
                   :task
                   (let [env (System/getenv "GRAALVM_HOME")]

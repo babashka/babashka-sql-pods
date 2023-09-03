@@ -157,7 +157,7 @@ jobs:
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       POD_DB_TYPE: hsqldb
-    resource_class: large
+    resource_class: macos.x86.medium.gen2
     steps:
     - checkout
     - run:
@@ -372,7 +372,7 @@ jobs:
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       POD_DB_TYPE: mysql
-    resource_class: large
+    resource_class: macos.x86.medium.gen2
     steps:
     - checkout
     - run:
@@ -587,7 +587,7 @@ jobs:
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       POD_DB_TYPE: postgresql
-    resource_class: large
+    resource_class: macos.x86.medium.gen2
     steps:
     - checkout
     - run:
@@ -802,7 +802,7 @@ jobs:
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       POD_DB_TYPE: oracle
-    resource_class: large
+    resource_class: macos.x86.medium.gen2
     steps:
     - checkout
     - run:
@@ -1017,7 +1017,7 @@ jobs:
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
       POD_DB_TYPE: mssql
-    resource_class: large
+    resource_class: macos.x86.medium.gen2
     steps:
     - checkout
     - run:
