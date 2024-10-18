@@ -82,11 +82,12 @@ fi" java java arch java arch)}}
                                          :BABASHKA_TEST_ENV "native",
                                          :BABASHKA_XMX "-J-Xmx7g"
                                          :POD_TEST_ENV "native"),
-               :resource_class "macos.x86.medium.gen2",
                :steps ["checkout"
                        {:run {:name "Pull Submodules",
                               :command "git submodule init\ngit submodule update\n"}}
                        {:restore_cache {:keys ["mac-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
+                       {:run {:name "Install Rosetta"
+                              :command "sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license"}}
                        {:run {:name "Install Clojure",
                               :command "script/install-clojure /usr/local\n"}}
                        {:run {:name "Install Leiningen",
