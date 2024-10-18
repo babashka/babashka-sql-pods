@@ -11,6 +11,13 @@
 (defn with-graalvm-version [s]
   (str/replace s "{{graalvm-version}}" graalvm-version))
 
+(def install-clojure
+  {:run {:name "Install Clojure",
+         :command "
+curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh\n
+chmod +x posix-install.sh\n
+sudo ./posix-install.sh\n"}})
+
 (defn linux [& {:keys [java static arch] :or {java java-default-version
                                               static false
                                               arch "amd64"}}]
@@ -36,11 +43,7 @@
                                       {:run {:name "Pull Submodules",
                                              :command "git submodule init\ngit submodule update\n"}}
                                       {:restore_cache {:keys ["linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
-                                      {:run {:name "Install Clojure",
-                                             :command "
-wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-chmod +x linux-install-1.11.1.1224.sh
-sudo ./linux-install-1.11.1.1224.sh"}}
+                                      install-clojure
                                       {:run {:name "Install lsof",
                                              :command "sudo apt-get install lsof\n"}}
                                       {:run {:name "Install native dev tools",
@@ -88,8 +91,7 @@ fi" java java arch java arch)}}
                        {:restore_cache {:keys ["mac-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
                        {:run {:name "Install Rosetta"
                               :command "sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license"}}
-                       {:run {:name "Install Clojure",
-                              :command "script/install-clojure /usr/local\n"}}
+                       install-clojure
                        {:run {:name "Install Leiningen",
                               :command "script/install-leiningen\n"}}
                        {:run {:name    "Download GraalVM",

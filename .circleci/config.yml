@@ -28,11 +28,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -102,11 +104,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -172,8 +176,13 @@ jobs:
         command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
-        command: |
-          script/install-clojure /usr/local
+        command: |2
+
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install Leiningen
         command: |
@@ -245,11 +254,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -319,11 +330,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -389,8 +402,13 @@ jobs:
         command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
-        command: |
-          script/install-clojure /usr/local
+        command: |2
+
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install Leiningen
         command: |
@@ -462,11 +480,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -536,11 +556,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -606,8 +628,13 @@ jobs:
         command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
-        command: |
-          script/install-clojure /usr/local
+        command: |2
+
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install Leiningen
         command: |
@@ -679,11 +706,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -753,11 +782,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -823,8 +854,13 @@ jobs:
         command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
-        command: |
-          script/install-clojure /usr/local
+        command: |2
+
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install Leiningen
         command: |
@@ -896,11 +932,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -970,11 +1008,13 @@ jobs:
         - linux-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
     - run:
         name: Install Clojure
-        command: |2-
+        command: |2
 
-          wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-          chmod +x linux-install-1.11.1.1224.sh
-          sudo ./linux-install-1.11.1.1224.sh
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install lsof
         command: |
@@ -1040,8 +1080,13 @@ jobs:
         command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
-        command: |
-          script/install-clojure /usr/local
+        command: |2
+
+          curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+
+          chmod +x posix-install.sh
+
+          sudo ./posix-install.sh
     - run:
         name: Install Leiningen
         command: |
