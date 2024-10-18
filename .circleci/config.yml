@@ -76,7 +76,7 @@ jobs:
         destination: release
   hsqldb-linux-aarch64:
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2004:2024.05.1
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
@@ -293,7 +293,7 @@ jobs:
         destination: release
   mysql-linux-aarch64:
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2004:2024.05.1
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
@@ -510,7 +510,7 @@ jobs:
         destination: release
   postgresql-linux-aarch64:
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2004:2024.05.1
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
@@ -727,7 +727,7 @@ jobs:
         destination: release
   oracle-linux-aarch64:
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2004:2024.05.1
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
@@ -944,7 +944,7 @@ jobs:
         destination: release
   mssql-linux-aarch64:
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2004:2024.05.1
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'

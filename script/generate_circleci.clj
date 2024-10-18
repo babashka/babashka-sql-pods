@@ -15,7 +15,7 @@
                                               static false
                                               arch "amd64"}}]
   (let [executor (if (= "aarch64" arch)
-                   {:machine {:image "ubuntu-2004:202101-01"}}
+                   {:machine {:image "ubuntu-2004:2024.05.1"}}
                    {:docker [{:image "circleci/clojure:openjdk-11-lein-2.9.6-bullseye"}]})
         resource-class (when (= "aarch64" arch)
                          "arm.large")
