@@ -11,11 +11,18 @@
 (defn with-graalvm-version [s]
   (str/replace s "{{graalvm-version}}" graalvm-version))
 
+(def install-clojure
+  {:run {:name "Install Clojure",
+         :command "
+curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh\n
+chmod +x posix-install.sh\n
+sudo ./posix-install.sh\n"}})
+
 (defn linux [& {:keys [java static arch] :or {java java-default-version
                                               static false
                                               arch "amd64"}}]
   (let [executor (if (= "aarch64" arch)
-                   {:machine {:image "ubuntu-2004:202101-01"}}
+                   {:machine {:image "ubuntu-2004:2024.05.1"}}
                    {:docker [{:image "circleci/clojure:openjdk-11-lein-2.9.6-bullseye"}]})
         resource-class (when (= "aarch64" arch)
                          "arm.large")
@@ -36,11 +43,7 @@
                                       {:run {:name "Pull Submodules",
                                              :command "git submodule init\ngit submodule update\n"}}
                                       {:restore_cache {:keys ["linux-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
-                                      {:run {:name "Install Clojure",
-                                             :command "
-wget https://download.clojure.org/install/linux-install-1.11.1.1224.sh
-chmod +x linux-install-1.11.1.1224.sh
-sudo ./linux-install-1.11.1.1224.sh"}}
+                                      install-clojure
                                       {:run {:name "Install lsof",
                                              :command "sudo apt-get install lsof\n"}}
                                       {:run {:name "Install native dev tools",
@@ -75,20 +78,20 @@ fi" java java arch java arch)}}
       (assoc config :resource_class resource-class))))
 
 (defn mac [& {:keys [java] :or {java java-default-version}}]
-  (ordered-map :macos {:xcode "14.0.0"},
+  (ordered-map :macos {:xcode "13.4.1"},
                :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-ce-java%s-{{graalvm-version}}/Contents/Home" java),
                                          :MACOSX_DEPLOYMENT_TARGET "10.13" ;; 10.12 is EOL
                                          :BABASHKA_PLATFORM "macos",
                                          :BABASHKA_TEST_ENV "native",
                                          :BABASHKA_XMX "-J-Xmx7g"
                                          :POD_TEST_ENV "native"),
-               :resource_class "macos.x86.medium.gen2",
                :steps ["checkout"
                        {:run {:name "Pull Submodules",
                               :command "git submodule init\ngit submodule update\n"}}
                        {:restore_cache {:keys ["mac-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
-                       {:run {:name "Install Clojure",
-                              :command "script/install-clojure /usr/local\n"}}
+                       {:run {:name "Install Rosetta"
+                              :command "sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license"}}
+                       install-clojure
                        {:run {:name "Install Leiningen",
                               :command "script/install-leiningen\n"}}
                        {:run {:name    "Download GraalVM",
