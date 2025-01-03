@@ -7,3 +7,4 @@
 .nrepl-port
 .lsp
 output.calva-repl
+*.duckdb
