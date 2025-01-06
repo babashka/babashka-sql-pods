@@ -65,6 +65,21 @@ build_script:
     call bb release-artifact %zip%
 
 - cmd: >-
+    set POD_DB_TYPE=duckdb
+
+    call bb script/compile.clj
+
+    echo Creating zip archive
+
+    set /P VERSION=< resources\POD_BABASHKA_SQL_VERSION
+
+    set zip=pod-babashka-%POD_DB_TYPE%-%VERSION%-windows-amd64.zip
+
+    jar -cMf %zip% pod-babashka-%POD_DB_TYPE%.exe
+
+    call bb release-artifact %zip%
+
+- cmd: >-
     set POD_DB_TYPE=mysql
 
     call bb script/compile.clj
@@ -127,6 +142,8 @@ build_script:
 artifacts:
 - path: pod-babashka-hsqldb-*-windows-amd64.zip
   name: pod-babashka-hsqldb
+- path: pod-babashka-duckdb-*-windows-amd64.zip
+  name: pod-babashka-duckdb
 - path: pod-babashka-mysql-*-windows-amd64.zip
   name: pod-babashka-mysql
 - path: pod-babashka-mssql-*-windows-amd64.zip

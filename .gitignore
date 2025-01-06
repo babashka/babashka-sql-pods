@@ -8,3 +8,4 @@
 .lsp
 output.calva-repl
 *.duckdb
+.lein-failures
