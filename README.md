@@ -10,6 +10,7 @@ Supported databases:
 - [MySQL](https://www.mysql.com)
 - [Oracle](https://www.oracle.com/database/)
 - [PostgresQL](https://www.postgresql.org/)
+- [DuckDB](https://duckdb.org/)
 
 PRs for other SQL databases are welcome. (Look at #15 + #20 for an example of adding a new DB.)
 
