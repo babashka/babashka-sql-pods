@@ -1,0 +1,52 @@
+[
+  {
+    "name": "org.duckdb.DuckDBConnection",
+    "methods": [
+      {"name": "close"},
+      {"name": "createStatement"},
+      {"name": "prepareStatement"},
+      {"name": "setAutoCommit"},
+      {"name": "commit"},
+      {"name": "rollback"},
+      {"name": "getMetaData"}
+    ]
+  },
+  {
+    "name": "org.duckdb.DuckDBPreparedStatement",
+    "methods": [
+      {"name": "executeQuery"},
+      {"name": "executeUpdate"},
+      {"name": "setObject"},
+      {"name": "setString"},
+      {"name": "setLong"},
+      {"name": "setInt"},
+      {"name": "setDouble"},
+      {"name": "setBoolean"},
+      {"name": "setNull"},
+      {"name": "close"}
+    ]
+  },
+  {
+    "name": "org.duckdb.DuckDBResultSet",
+    "methods": [
+      {"name": "next"},
+      {"name": "getString"},
+      {"name": "getObject"},
+      {"name": "getLong"},
+      {"name": "getInt"},
+      {"name": "getDouble"},
+      {"name": "getBoolean"},
+      {"name": "getMetaData"},
+      {"name": "close"}
+    ]
+  },
+  {
+    "name": "org.duckdb.DuckDBResultSetMetaData",
+    "methods": [
+      {"name": "getColumnCount"},
+      {"name": "getColumnName"},
+      {"name": "getColumnType"},
+      {"name": "getColumnTypeName"}
+    ]
+  }
+] 

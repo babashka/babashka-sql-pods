@@ -133,6 +133,12 @@ fi" java java java)}}
           ;; graalvm isn't available in version 8 anymore for macOS
           :hsqldb-mac  (assoc-in (mac)
                                  [:environment :POD_DB_TYPE] "hsqldb")
+          :duckdb-linux (assoc-in (linux :static true)
+                                         [:environment :POD_DB_TYPE] "duckdb")
+          :duckdb-linux-aarch64 (assoc-in (linux :arch "aarch64" :static true)
+                                                 [:environment :POD_DB_TYPE] "duckdb")
+          :duckdb-mac  (assoc-in (mac)
+                                 [:environment :POD_DB_TYPE] "duckdb")
           :mysql-linux (assoc-in (linux :static true)
                                         [:environment :POD_DB_TYPE] "mysql")
           :mysql-linux-aarch64 (assoc-in (linux :arch "aarch64" :static true)
@@ -160,6 +166,9 @@ fi" java java java)}}
                :ci {:jobs ["hsqldb-linux"
                            "hsqldb-linux-aarch64"
                            "hsqldb-mac"
+                           "duckdb-linux"
+                           "duckdb-linux-aarch64"
+                           "duckdb-mac"
                            "mysql-linux"
                            "mysql-linux-aarch64"
                            "mysql-mac"

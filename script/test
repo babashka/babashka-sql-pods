@@ -13,7 +13,7 @@ set -euo pipefail
 
 if [ "$POD_DB_TYPE" = "postgresql" ]
 then
-    clojure -M:test -n pod.babashka.postgresql-test
+    clojure -M:test:postgresql -n pod.babashka.postgresql-test
 fi
 
 if [ "$POD_DB_TYPE" = "hsqldb" ]
@@ -23,15 +23,20 @@ fi
 
 if [ "$POD_DB_TYPE" = "mysql" ]
 then
-    clojure -M:test -n pod.babashka.mysql-test
+    clojure -M:test:mysql -n pod.babashka.mysql-test
 fi
 
 if [ "$POD_DB_TYPE" = "oracle" ]
 then
-    clojure -M:test -n pod.babashka.oracle-test
+    clojure -M:test:oracle -n pod.babashka.oracle-test
 fi
 
 if [ "$POD_DB_TYPE" = "mssql" ]
 then
-    clojure -M:test -n pod.babashka.mssql-test
+    clojure -M:test:mssql -n pod.babashka.mssql-test
+fi
+
+if [ "$POD_DB_TYPE" = "duckdb" ]
+then
+    clojure -M:test:duckdb -n pod.babashka.duckdb-test
 fi

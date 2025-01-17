@@ -1,7 +1,7 @@
 (defproject babashka/pod-babashka-sql
   #=(clojure.string/trim
      #=(slurp "resources/POD_BABASHKA_SQL_VERSION"))
-  :description "babashka pod for HSQLDB"
+  :description "babashka pod for SQL databases"
   :url "https://github.com/borkdude/pod-babashka-hsqldb"
   :scm {:name "git"
         :url "https://github.com/borkdude/pod-babashka-hsqldb"}
@@ -23,7 +23,8 @@
              :feature/mssql {:dependencies [[com.microsoft.sqlserver/mssql-jdbc "9.2.0.jre11"]]}
              :feature/hsqldb {:dependencies [[org.hsqldb/hsqldb "2.6.0"]]}
              :feature/mysql {:dependencies [[mysql/mysql-connector-java "8.0.25"]]}
-             :feature/oracle {:dependencies [[io.helidon.integrations.db/ojdbc "2.3.0"]]}} ; ojdbc10 + GraalVM config, by Oracle
+             :feature/oracle {:dependencies [[io.helidon.integrations.db/ojdbc "2.3.0"]]}
+             :feature/duckdb {:dependencies [[org.duckdb/duckdb_jdbc "0.10.0"]]}}
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
                                     :username :env/clojars_user
                                     :password :env/clojars_pass
