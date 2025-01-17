@@ -4,6 +4,10 @@ For a list of breaking changes, check [here](#breaking-changes)
 
 [babashka-sql-pods](https://github.com/babashka/babashka-sql-pods): Babashka pods for SQL databases
 
+## v0.1.3
+
+- Add support for DuckDB ([@avelino](https://github.com/avelino))
+
 ## v0.1.2
 
 - Upgrade libraries
