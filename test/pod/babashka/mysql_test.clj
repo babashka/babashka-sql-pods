@@ -53,6 +53,11 @@
         (is (= [#:foo{:foo 1} #:foo{:foo 2} #:foo{:foo 3}]
               (db/execute! conn  ["select * from foo;"])))
         (db/close-connection conn)))
+    (testing "prepared statements"
+      (let [conn (db/get-connection db)]
+        (with-open [ps (db/prepare conn ["select * from foo where foo = ?" 1])]
+          (let [result (db/execute-one! ps)]
+            (is (= result #:foo{:foo 1}))))))
     (testing "input parameters"
       (try (db/execute! db ["drop table foo_timed;"])
            (catch Exception _ nil))
