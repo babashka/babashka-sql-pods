@@ -91,6 +91,7 @@ args=( "-jar" "$JAR"
        "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerFMTQuery"
        "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerBouncyCastleLoader"
        "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerMSAL4JUtils"
+       "-EPOD_DB_TYPE"
        "$BABASHKA_XMX" )
 
 if [ "$POD_DB_TYPE" = "mssql" ]
