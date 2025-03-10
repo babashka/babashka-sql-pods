@@ -121,6 +121,8 @@
                           {:pod.babashka.sql/read {:jsonb :string}}))))
     (testing "interval"
       (is (db/execute! db ["create table interval_table (interval_col interval);"]))
-      (is (db/execute! db ["insert into interval_table(interval_col) values ('00:00:00'::interval);"]))
+      (is (= [#:interval_table{:interval_col ""} #:interval_table{:interval_col ""}]
+             (sql/insert-multi! db :interval_table [:interval_col] [[(into-array ["00:00:00"])]
+                                                                   [(into-array ["01:01:01"])]])))
       (is (= [#:interval_table{:interval_col "0 years 0 mons 0 days 0 hours 0 mins 0.0 secs"}]
              (db/execute! db ["SELECT interval_col from interval_table;"]))))))
