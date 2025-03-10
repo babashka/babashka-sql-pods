@@ -4,7 +4,8 @@
   (:require [babashka.pods :as pods]
             [clojure.test :refer [deftest is testing]])
   (:import [io.zonky.test.db.postgres.embedded EmbeddedPostgres]
-           [java.util Date Arrays]))
+           [java.util Date Arrays]
+           [java.time Duration]))
 
 (pods/load-pod (if (= "native" (System/getenv "POD_TEST_ENV"))
                  "./pod-babashka-postgresql"
@@ -117,4 +118,8 @@
                           {:pod.babashka.sql/read {:jsonb :parse}})))
       (is (= [#:jsonb_table{:jsonb_col "{\"a\": 1}"}]
              (db/execute! db ["select * from jsonb_table values;"]
-                          {:pod.babashka.sql/read {:jsonb :string}}))))))
+                          {:pod.babashka.sql/read {:jsonb :string}}))))
+    (testing "interval"
+      (is (db/execute! db ["create table interval_table (interval_col interval);"]))
+      (is (db/execute! db ["insert into interval_table(interval_col) values ('00:00:00'::interval);"]))
+      (is (= [#:interval_table{:interval_col Duration/ZERO}] (db/execute! db ["SELECT interval_col from interval_table;"]))))))
