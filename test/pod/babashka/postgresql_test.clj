@@ -122,4 +122,5 @@
     (testing "interval"
       (is (db/execute! db ["create table interval_table (interval_col interval);"]))
       (is (db/execute! db ["insert into interval_table(interval_col) values ('00:00:00'::interval);"]))
-      (is (= [#:interval_table{:interval_col Duration/ZERO}] (db/execute! db ["SELECT interval_col from interval_table;"]))))))
+      (is (= [#:interval_table{:interval_col "0 years 0 mons 0 days 0 hours 0 mins 0.0 secs"}]
+             (db/execute! db ["SELECT interval_col from interval_table;"]))))))
