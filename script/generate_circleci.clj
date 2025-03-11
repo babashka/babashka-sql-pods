@@ -6,7 +6,7 @@
 
 (def java-default-version 11)
 
-(def graalvm-version "22.3.0")
+(def graalvm-version "23")
 
 (defn with-graalvm-version [s]
   (str/replace s "{{graalvm-version}}" graalvm-version))
@@ -29,7 +29,7 @@ sudo ./posix-install.sh\n"}})
         config (merge executor
                  (ordered-map :working_directory "~/repo"
                               :environment (cond-> (ordered-map :LEIN_ROOT "true"
-                                                                :GRAALVM_HOME (format "/home/circleci/graalvm-ce-java%s-{{graalvm-version}}" java)
+                                                                :GRAALVM_HOME "/home/circleci/graalvm-{{graalvm-version}}"
                                                                 :BABASHKA_PLATFORM "linux"
                                                                 :BABASHKA_TEST_ENV "native"
                                                                 :BABASHKA_XMX "-J-Xmx7g"
@@ -52,12 +52,7 @@ sudo ./posix-install.sh\n"}})
                                                                       (when (not= "aarch64" arch)
                                                                         "sudo -E script/setup-musl")])}}
                                       {:run {:name    "Download GraalVM",
-                                             :command (format "
-cd ~
-if ! [ -d graalvm-ce-java%s-{{graalvm-version}} ]; then
-  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-{{graalvm-version}}/graalvm-ce-java%s-linux-%s-{{graalvm-version}}.tar.gz
-  tar xzf graalvm-ce-java%s-linux-%s-{{graalvm-version}}.tar.gz
-fi" java java arch java arch)}}
+                                             :command "script/install-graalvm"}}
                                       {:run {:name "Install bb"
                                              :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                                       {:run {:name "Build binary",
@@ -79,7 +74,7 @@ fi" java java arch java arch)}}
 
 (defn mac [& {:keys [java] :or {java java-default-version}}]
   (ordered-map :macos {:xcode "13.4.1"},
-               :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-ce-java%s-{{graalvm-version}}/Contents/Home" java),
+               :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-{{graalvm-version}}/Contents/Home"),
                                          :MACOSX_DEPLOYMENT_TARGET "10.13" ;; 10.12 is EOL
                                          :BABASHKA_PLATFORM "macos",
                                          :BABASHKA_TEST_ENV "native",
@@ -95,13 +90,7 @@ fi" java java arch java arch)}}
                        {:run {:name "Install Leiningen",
                               :command "script/install-leiningen\n"}}
                        {:run {:name    "Download GraalVM",
-                              :command (format "
-cd ~
-ls -la
-if ! [ -d graalvm-ce-java%s-{{graalvm-version}} ]; then
-  curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-{{graalvm-version}}/graalvm-ce-java%s-darwin-amd64-{{graalvm-version}}.tar.gz
-  tar xzf graalvm-ce-java%s-darwin-amd64-{{graalvm-version}}.tar.gz
-fi" java java java)}}
+                              :command "script/install-graalvm"}}
                        {:run {:name "Install bb"
                               :command "bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)"}}
                        {:run {:name "Fix ssl libs for tests"
