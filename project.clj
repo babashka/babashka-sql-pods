@@ -20,7 +20,7 @@
                                   "-Dclojure.spec.skip-macros=true"]
                        :aot :all
                        :main pod.babashka.sql}
-             :feature/postgresql {:dependencies [[org.postgresql/postgresql "42.2.20"]]}
+             :feature/postgresql {:dependencies [[org.postgresql/postgresql "42.7.5"]]}
              :feature/mssql {:dependencies [[com.microsoft.sqlserver/mssql-jdbc "9.2.0.jre11"]]}
              :feature/hsqldb {:dependencies [[org.hsqldb/hsqldb "2.6.0"]]}
              :feature/mysql {:dependencies [[com.mysql/mysql-connector-j "9.2.0"]]}
