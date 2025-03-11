@@ -19,11 +19,6 @@
   (str/includes? (str/lower-case (System/getProperty "os.name"))
                  "windows"))
 
-(shell {:continue true}
-       (str (fs/file gvm-bin "gu")
-            (when windows?
-              ".cmd")) "install" "native-image")
-
 (def path (str/join fs/path-separator [gvm-bin (System/getenv "PATH")]))
 
 (let [lein-profiles "+uberjar"
