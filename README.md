@@ -227,6 +227,11 @@ Run `bb script/compile.clj`
 
 Run `script/test`.
 
+### Reflection configs
+
+See https://www.graalvm.org/native-image/libraries-and-frameworks
+Also projects like Micronaut, Helidon, might help obtaining the right configs.
+
 ## License
 
 Copyright © 2020-2021 Michiel Borkent
