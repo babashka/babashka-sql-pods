@@ -28,7 +28,7 @@
 (defn read []
   (bencode/read-bencode stdin))
 
-(def debug? false)
+(def debug? true)
 
 (defn debug [& strs]
   (when debug?
