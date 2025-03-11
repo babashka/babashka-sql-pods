@@ -68,13 +68,14 @@
                (conj args "-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource")
                args)
         args (if (= "true" (System/getenv "BABASHKA_STATIC"))
-               (let [args (conj args "--static")]
-                 (if (= "true" (System/getenv "BABASHKA_MUSL"))
+               (if (= "true" (System/getenv "BABASHKA_MUSL"))
+                 (let [args (conj args "--static")]
                    (conj args
                          "--libc=musl"
                          ;; see https://github.com/oracle/graal/issues/3398
-                         "-H:CCompilerOption=-Wl,-z,stack-size=2097152")
-                   (conj args "-H:+StaticExecutableWithDynamicLibC")))
+                         "-H:CCompilerOption=-Wl,-z,stack-size=2097152"))
+                 (-> (conj args "-H:+StaticExecutableWithDynamicLibC")
+                     (conj "-H:+UnlockExperimentalVMOptions")))
                args)]
     (apply shell (str (fs/file gvm-bin "native-image")
                       (when windows?
