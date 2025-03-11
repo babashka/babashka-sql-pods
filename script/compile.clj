@@ -19,7 +19,8 @@
   (str/includes? (str/lower-case (System/getProperty "os.name"))
                  "windows"))
 
-(shell (str (fs/file gvm-bin "gu")
+(shell {:continue true}
+       (str (fs/file gvm-bin "gu")
             (when windows?
               ".cmd")) "install" "native-image")
 
