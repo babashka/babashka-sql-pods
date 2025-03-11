@@ -22,7 +22,7 @@
              :feature/postgresql {:dependencies [[org.postgresql/postgresql "42.2.20"]]}
              :feature/mssql {:dependencies [[com.microsoft.sqlserver/mssql-jdbc "9.2.0.jre11"]]}
              :feature/hsqldb {:dependencies [[org.hsqldb/hsqldb "2.6.0"]]}
-             :feature/mysql {:dependencies [[mysql/mysql-connector-java "8.0.25"]]}
+             :feature/mysql {:dependencies [[com.mysql/mysql-connector-j "9.2.0"]]}
              :feature/oracle {:dependencies [[io.helidon.integrations.db/ojdbc "2.3.0"]]}
              :feature/duckdb {:dependencies [[org.duckdb/duckdb_jdbc "0.10.0"]]}}
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
