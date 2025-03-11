@@ -166,5 +166,9 @@
     },
     "allPublicConstructors": true,
     "name": "com.mysql.cj.jdbc.ha.StandardLoadBalanceExceptionChecker"
+  },
+  {
+    "allPublicConstructors": true,
+    "name": "com.mysql.cj.util.Util"
   }
 ]
