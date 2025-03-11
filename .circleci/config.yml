@@ -7,7 +7,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -47,13 +47,7 @@ jobs:
           sudo -E script/setup-musl
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -82,7 +76,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -122,13 +116,7 @@ jobs:
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -154,7 +142,7 @@ jobs:
     macos:
       xcode: 13.4.1
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.3.0/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -189,14 +177,7 @@ jobs:
           script/install-leiningen
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          ls -la
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -233,7 +214,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -273,13 +254,7 @@ jobs:
           sudo -E script/setup-musl
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -308,7 +283,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -348,13 +323,7 @@ jobs:
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -380,7 +349,7 @@ jobs:
     macos:
       xcode: 13.4.1
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.3.0/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -415,14 +384,7 @@ jobs:
           script/install-leiningen
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          ls -la
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -459,7 +421,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -499,13 +461,7 @@ jobs:
           sudo -E script/setup-musl
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -534,7 +490,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -574,13 +530,7 @@ jobs:
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -606,7 +556,7 @@ jobs:
     macos:
       xcode: 13.4.1
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.3.0/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -641,14 +591,7 @@ jobs:
           script/install-leiningen
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          ls -la
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -685,7 +628,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -725,13 +668,7 @@ jobs:
           sudo -E script/setup-musl
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -760,7 +697,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -800,13 +737,7 @@ jobs:
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -832,7 +763,7 @@ jobs:
     macos:
       xcode: 13.4.1
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.3.0/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -867,14 +798,7 @@ jobs:
           script/install-leiningen
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          ls -la
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -911,7 +835,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -951,13 +875,7 @@ jobs:
           sudo -E script/setup-musl
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -986,7 +904,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -1026,13 +944,7 @@ jobs:
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -1058,7 +970,7 @@ jobs:
     macos:
       xcode: 13.4.1
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.3.0/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -1093,14 +1005,7 @@ jobs:
           script/install-leiningen
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          ls -la
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -1137,7 +1042,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -1177,13 +1082,7 @@ jobs:
           sudo -E script/setup-musl
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -1212,7 +1111,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-ce-java11-22.3.0
+      GRAALVM_HOME: /home/circleci/graalvm-23
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -1252,13 +1151,7 @@ jobs:
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-linux-aarch64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
@@ -1284,7 +1177,7 @@ jobs:
     macos:
       xcode: 13.4.1
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-ce-java11-22.3.0/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -1319,14 +1212,7 @@ jobs:
           script/install-leiningen
     - run:
         name: Download GraalVM
-        command: |2-
-
-          cd ~
-          ls -la
-          if ! [ -d graalvm-ce-java11-22.3.0 ]; then
-            curl -O -sL https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-            tar xzf graalvm-ce-java11-darwin-amd64-22.3.0.tar.gz
-          fi
+        command: script/install-graalvm
     - run:
         name: Install bb
         command: bash <(curl -s https://raw.githubusercontent.com/borkdude/babashka/master/install) --dir $(pwd)
