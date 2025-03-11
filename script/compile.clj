@@ -63,6 +63,7 @@
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerFMTQuery"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerBouncyCastleLoader"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerMSAL4JUtils"
+              "--initialize-at-build-time=oracle.i18n.text.OraCharsetWithConverter"
               "--features=clj_easy.graal_build_time.InitClojureClasses"
               "-EPOD_DB_TYPE"
               xmx]
