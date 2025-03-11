@@ -221,7 +221,7 @@ Set `POD_DB_TYPE` to either `hsqldb`, `postgresql`, or `oracle`.
 
 ### Build
 
-Run `script/compile`
+Run `bb script/compile.clj`
 
 ### Test
 

@@ -27,7 +27,7 @@
 
 (let [lein-profiles "+uberjar"
       refl-conf (str "reflection-" pod-db-type ".json")
-      lein-profiles (str lein-profiles "," (str "+feature/" pod-db-type))
+      lein-profiles (str lein-profiles "," "+feature/" pod-db-type)
       version (str/trim (slurp "resources/POD_BABASHKA_SQL_VERSION"))]
   (println "Profiles:" lein-profiles)
   (println "Reflection config:" refl-conf)
@@ -66,6 +66,7 @@
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerFMTQuery"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerBouncyCastleLoader"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerMSAL4JUtils"
+              "-EPOD_DB_TYPE"
               xmx]
         args (if (= "mssql" pod-db-type)
                (conj args "-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource")
