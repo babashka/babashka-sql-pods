@@ -18,7 +18,7 @@
      :git/sha "47e55fe5e728578ff4dbf7d2a2caf00efea87b1e"}}
    :extra-paths ["test"]
    :main-opts ["-m" "cognitect.test-runner"]}
-  :mysql {:extra-deps {com.mysql/mysql-connector {:mvn/version "8.0.31"}}}
+  :mysql {:extra-deps {com.mysql/mysql-connector-j {:mvn/version "8.0.31"}}}
   :duckdb {:extra-deps {org.duckdb/duckdb_jdbc {:mvn/version "0.10.0"}}}
   :postgresql {:extra-deps {org.postgresql/postgresql {:mvn/version "42.7.5"}}}
   :oracle {:extra-deps {io.helidon.integrations.db/ojdbc {:mvn/version "2.3.0"}}}
