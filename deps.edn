@@ -13,8 +13,8 @@
     ch.vorburger.mariaDB4j/mariaDB4j {:mvn/version "2.6.0"}
     io.zonky.test/embedded-postgres {:mvn/version "2.0.1"}
     babashka/babashka.pods
-    {:local/root "../babashka/pods"}
-    #_{:git/url "https://github.com/babashka/babashka.pods"
+    #_{:local/root "../babashka/pods"}
+    {:git/url "https://github.com/babashka/babashka.pods"
      :git/sha "47e55fe5e728578ff4dbf7d2a2caf00efea87b1e"}}
    :extra-paths ["test"]
    :main-opts ["-m" "cognitect.test-runner"]}
