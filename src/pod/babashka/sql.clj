@@ -289,7 +289,11 @@
                                                 :string
                                                 (.getValue x)
                                                 ;; default JSON handler
-                                                (json/parse-string (.getValue x) true)))]
+                                                (json/parse-string (.getValue x) true))
+                                              "interval"
+                                              ;; there is no strictly correct way to convert from PGInterval to Java time objects,
+                                              ;; so punt on it and just convert it to a string
+                                              (.getValue x))]
                                 coerced)))))
 
 (def base-write-map

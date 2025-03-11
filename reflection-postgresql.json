@@ -1,2 +1,14 @@
 [{"name": "org.postgresql.jdbc.PgConnection",
-  "methods" : [{"name":"close"}]}]
+  "methods" : [{"name":"close"}]},
+ {"name": "org.postgresql.util.PGInterval",
+  "allDeclaredConstructors": true,
+  "allPublicConstructors": true,
+  "allDeclaredMethods": true,
+  "allPublicMethods": true,
+  "allDeclaredFields": true,
+  "allPublicFields": true,
+  "unsafeAllocated": true,
+  "queryAllDeclaredConstructors" : true,
+  "queryAllPublicConstructors" : true,
+  "queryAllDeclaredMethods" : true,
+  "queryAllPublicMethods" : true}]
