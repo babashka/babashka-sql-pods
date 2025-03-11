@@ -40,7 +40,6 @@
               "-J-Dclojure.compiler.direct-linking=true"
               (str "-H:IncludeResources=" version)
               (str "-H:ReflectionConfigurationFiles=" refl-conf)
-              "--initialize-at-build-time"
               "-H:Log=registerResource:"
               "-H:EnableURLProtocols=http,https"
               "--enable-all-security-services"
@@ -62,6 +61,7 @@
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerFMTQuery"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerBouncyCastleLoader"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerMSAL4JUtils"
+              "--features=clj_easy.graal_build_time.InitClojureClasses"
               "-EPOD_DB_TYPE"
               xmx]
         args (if (= "mssql" pod-db-type)
