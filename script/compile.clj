@@ -52,6 +52,7 @@
               "-H:+AddAllCharsets"
               "-H:IncludeResources=org/hsqldb/.*.properties"
               "-H:IncludeResources=org/hsqldb/.*.sql"
+              "--initialize-at-build-time=com.cognitect.transit"
               "--initialize-at-run-time=com.mysql.cj.jdbc.AbandonedConnectionCleanupThread"
               "--initialize-at-run-time=com.mysql.cj.jdbc.AbandonedConnectionCleanupThread.AbandonedConnectionCleanupThread"
               "--initialize-at-run-time=com.mysql.cj.jdbc.Driver"
