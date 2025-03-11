@@ -169,6 +169,7 @@
   },
   {
     "allPublicMethods": true,
+    "allPublicFields": true,
     "allPublicConstructors": true,
     "name": "com.mysql.cj.util.Util"
   }
