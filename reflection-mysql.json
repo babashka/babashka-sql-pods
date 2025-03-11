@@ -185,4 +185,7 @@
 }, {
   "allPublicMethods" : true,
   "name" : "java.beans.PropertyDescriptor"
-} ]
+},
+  {"allPublicMethods": true,
+   "name": "com.mysql.cj.util.Util"}
+]
