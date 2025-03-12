@@ -59,7 +59,6 @@
               "--initialize-at-run-time=com.mysql.cj.jdbc.Driver"
               "--initialize-at-run-time=com.mysql.cj.jdbc.NonRegisteringDriver"
               "--initialize-at-build-time=com.mysql.cj.util.Util"
-              "--initialize-at-build-time=com.mysql.cj.conf.PropertyDefinitions"
               "--initialize-at-run-time=org.postgresql.sspi.SSPIClient"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerColumnEncryptionAzureKeyVaultProvider"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerFMTQuery"

@@ -172,5 +172,11 @@
     "allPublicFields": true,
     "allPublicConstructors": true,
     "name": "com.mysql.cj.util.Util"
+  },
+  {
+    "allPublicMethods": true,
+    "allPublicFields": true,
+    "allPublicConstructors": true,
+    "name": "com.mysql.cj.conf.PropertyDefinitions"
   }
 ]
