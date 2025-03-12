@@ -32,7 +32,7 @@
          lein-profiles "do" "clean," "uberjar")
   (let [pod-name (str "pod-babashka-" pod-db-type)
         jar (format "target/pod-babashka-sql-%s-standalone.jar" version)
-        xmx (or (System/getenv "BABASHKA_XMX") "-J-Xmx4500m")
+        ;; xmx (or (System/getenv "BABASHKA_XMX") "-J-Xmx4500m")
         args ["-jar" jar
               (str "-H:Name=" pod-name)
               "-H:+ReportExceptionStackTraces"
@@ -69,8 +69,9 @@
               "--initialize-at-build-time=oracle.i18n.text"
               "--features=clj_easy.graal_build_time.InitClojureClasses"
               "-EPOD_DB_TYPE"
+              "-march=compatibility"
               "-O1"
-              xmx]
+              #_xmx]
         args (if (= "mssql" pod-db-type)
                (conj args "-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource")
                args)
