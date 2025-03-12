@@ -69,6 +69,7 @@
               "--initialize-at-build-time=oracle.i18n.text"
               "--features=clj_easy.graal_build_time.InitClojureClasses"
               "-EPOD_DB_TYPE"
+              "-O1"
               xmx]
         args (if (= "mssql" pod-db-type)
                (conj args "-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource")
