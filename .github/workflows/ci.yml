@@ -1,0 +1,60 @@
+name: build
+
+on: [push, pull_request]
+
+# TODO: Add deploy if needed
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        db: ["hsqldb", "duckdb", "mysql", "postgresql", "oracle", "mssql"]
+        os: [windows]
+
+    # if: "!contains(github.event.head_commit.message, 'skip ci')"
+    runs-on: ${{ matrix.os }}-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      POD_DB_TYPE: ${{ db }}
+      GRAALVM_VERSION: "23"
+      BABASHKA_TEST_ENV: native
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: 'true'
+
+      - name: Cache deps
+        uses: actions/cache@v4
+        id: cache-deps
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('project.clj') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1.3.3
+        with:
+          java-version: '23'
+          distribution: 'graalvm'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@5.0
+        with:
+          cli: latest
+          bb: latest
+          lein: 2.9.8
+
+      - name: Build uberjar
+        shell: cmd
+        run: |
+          call bb script/compile.clj
+          echo Creating zip archive
+          set /P VERSION=< resources\POD_BABASHKA_SQL_VERSION
+          set zip=pod-babashka-%POD_DB_TYPE%-%VERSION%-windows-amd64.zip
+          jar -cMf %zip% pod-babashka-%POD_DB_TYPE%.exe
+          call bb release-artifact %zip%
