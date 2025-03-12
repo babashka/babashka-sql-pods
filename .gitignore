@@ -9,3 +9,4 @@
 output.calva-repl
 *.duckdb
 .lein-failures
+/pod-babashka-mysql

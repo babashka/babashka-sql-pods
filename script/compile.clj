@@ -19,15 +19,11 @@
   (str/includes? (str/lower-case (System/getProperty "os.name"))
                  "windows"))
 
-(shell (str (fs/file gvm-bin "gu")
-            (when windows?
-              ".cmd")) "install" "native-image")
-
 (def path (str/join fs/path-separator [gvm-bin (System/getenv "PATH")]))
 
 (let [lein-profiles "+uberjar"
       refl-conf (str "reflection-" pod-db-type ".json")
-      lein-profiles (str lein-profiles "," (str "+feature/" pod-db-type))
+      lein-profiles (str lein-profiles "," "+feature/" pod-db-type)
       version (str/trim (slurp "resources/POD_BABASHKA_SQL_VERSION"))]
   (println "Profiles:" lein-profiles)
   (println "Reflection config:" refl-conf)
@@ -44,7 +40,6 @@
               "-J-Dclojure.compiler.direct-linking=true"
               (str "-H:IncludeResources=" version)
               (str "-H:ReflectionConfigurationFiles=" refl-conf)
-              "--initialize-at-build-time"
               "-H:Log=registerResource:"
               "-H:EnableURLProtocols=http,https"
               "--enable-all-security-services"
@@ -57,27 +52,37 @@
               "-H:+AddAllCharsets"
               "-H:IncludeResources=org/hsqldb/.*.properties"
               "-H:IncludeResources=org/hsqldb/.*.sql"
+              "--initialize-at-build-time=com.cognitect.transit"
+              "--initialize-at-build-time=com.fasterxml.jackson"
               "--initialize-at-run-time=com.mysql.cj.jdbc.AbandonedConnectionCleanupThread"
               "--initialize-at-run-time=com.mysql.cj.jdbc.AbandonedConnectionCleanupThread.AbandonedConnectionCleanupThread"
               "--initialize-at-run-time=com.mysql.cj.jdbc.Driver"
               "--initialize-at-run-time=com.mysql.cj.jdbc.NonRegisteringDriver"
+              "--initialize-at-build-time=com.mysql.cj"
               "--initialize-at-run-time=org.postgresql.sspi.SSPIClient"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerColumnEncryptionAzureKeyVaultProvider"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerFMTQuery"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerBouncyCastleLoader"
               "--initialize-at-run-time=com.microsoft.sqlserver.jdbc.SQLServerMSAL4JUtils"
+              #_#_"--initialize-at-build-time=oracle.i18n.text.OraCharsetWithConverter"
+              "--initialize-at-build-time=oracle.i18n.text.OraCharsetAL16UTF16"
+              "--initialize-at-build-time=oracle.i18n.text"
+              "--features=clj_easy.graal_build_time.InitClojureClasses"
+              "-EPOD_DB_TYPE"
+              "-O1"
               xmx]
         args (if (= "mssql" pod-db-type)
                (conj args "-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource")
                args)
         args (if (= "true" (System/getenv "BABASHKA_STATIC"))
-               (let [args (conj args "--static")]
-                 (if (= "true" (System/getenv "BABASHKA_MUSL"))
+               (if (= "true" (System/getenv "BABASHKA_MUSL"))
+                 (let [args (conj args "--static")]
                    (conj args
                          "--libc=musl"
                          ;; see https://github.com/oracle/graal/issues/3398
-                         "-H:CCompilerOption=-Wl,-z,stack-size=2097152")
-                   (conj args "-H:+StaticExecutableWithDynamicLibC")))
+                         "-H:CCompilerOption=-Wl,-z,stack-size=2097152"))
+                 (-> (conj args "-H:+StaticExecutableWithDynamicLibC")
+                     (conj "-H:+UnlockExperimentalVMOptions")))
                args)]
     (apply shell (str (fs/file gvm-bin "native-image")
                       (when windows?

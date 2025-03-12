@@ -2,7 +2,8 @@
         com.github.seancorfield/next.jdbc {:mvn/version "1.3.847"}
         nrepl/bencode {:mvn/version "1.1.0"}
         com.cognitect/transit-clj {:mvn/version "1.0.329"}
-        cheshire/cheshire {:mvn/version "5.11.0"}}
+        cheshire/cheshire {:mvn/version "5.11.0"}
+        com.github.clj-easy/graal-build-time {:mvn/version "1.0.5"}}
  :aliases
  {:test
   {:extra-deps
@@ -12,13 +13,13 @@
     ch.vorburger.mariaDB4j/mariaDB4j {:mvn/version "2.6.0"}
     io.zonky.test/embedded-postgres {:mvn/version "2.0.1"}
     babashka/babashka.pods
-    #_{:local/root "../pods"}
+    #_{:local/root "../babashka/pods"}
     {:git/url "https://github.com/babashka/babashka.pods"
-     :git/sha "75c2216649bf5caf3ae41e7b8fc202e45b090ea9"}}
+     :git/sha "47e55fe5e728578ff4dbf7d2a2caf00efea87b1e"}}
    :extra-paths ["test"]
    :main-opts ["-m" "cognitect.test-runner"]}
-  :mysql {:extra-deps {mysql/mysql-connector-java {:mvn/version "8.0.25"}}}
+  :mysql {:extra-deps {com.mysql/mysql-connector-j {:mvn/version "8.0.31"}}}
   :duckdb {:extra-deps {org.duckdb/duckdb_jdbc {:mvn/version "0.10.0"}}}
-  :postgresql {:extra-deps {org.postgresql/postgresql {:mvn/version "42.2.20"}}}
+  :postgresql {:extra-deps {org.postgresql/postgresql {:mvn/version "42.7.5"}}}
   :oracle {:extra-deps {io.helidon.integrations.db/ojdbc {:mvn/version "2.3.0"}}}
   :mssql {:extra-deps {com.microsoft.sqlserver/mssql-jdbc {:mvn/version "9.2.0.jre11"}}}}}

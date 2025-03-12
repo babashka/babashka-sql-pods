@@ -28,7 +28,7 @@
 (defn read []
   (bencode/read-bencode stdin))
 
-(def debug? false)
+(def debug? true)
 
 (defn debug [& strs]
   (when debug?
@@ -227,8 +227,6 @@
                    :vars [{:name insert-multi!}]}]
      :opts {:shutdown {}}}))
 
-(debug describe-map)
-
 (def ldt-read-handler (transit/read-handler #(java.time.LocalDateTime/parse %)))
 (def java-array-read-handler (transit/read-handler into-array))
 
@@ -348,7 +346,7 @@
                               (throw (ex-info (str "Var not found: " var) {}))))
                           (catch Throwable e
                             (debug e)
-                            (let [reply {"ex-message" (ex-message e)
+                            (let [reply {"ex-message" (or (ex-message e) "")
                                          "ex-data" (write-transit
                                                     (assoc (ex-data e)
                                                            :type (str (class e))))
