@@ -46,7 +46,7 @@ jobs:
         with:
           cli: latest
           bb: latest
-          lein: 2.9.8
+          lein: latest
 
       - name: Build uberjar
         shell: cmd
