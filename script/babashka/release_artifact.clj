@@ -22,6 +22,8 @@
           (ghr/overwrite-asset {:org "babashka"
                                 :repo "babashka-sql-pods"
                                 :file file
-                                :tag (str "v" current-version)}))
+                                :tag (str "v" current-version)
+                                :overwrite (str/ends-with? current-version "SNAPSHOT")
+                                :sha256 true}))
       (println "Skipping release artifact (no GITHUB_TOKEN or not on main branch)"))
     nil))

@@ -4,7 +4,7 @@ For a list of breaking changes, check [here](#breaking-changes)
 
 [babashka-sql-pods](https://github.com/babashka/babashka-sql-pods): Babashka pods for SQL databases
 
-## Unreleased
+## v0.1.4
 
 - [#68](https://github.com/babashka/babashka-sql-pods/issues/68): Upgrade to Oracle GraalVM 23
 
