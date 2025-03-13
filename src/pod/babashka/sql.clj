@@ -181,8 +181,17 @@
     \"%s\"
     (fn [s] (java.time.LocalDateTime/parse s)))
 
+(babashka.pods/add-transit-read-handler!
+    \"%s\"
+    (fn [s] (java.time.LocalDate/parse s)))
+
 (babashka.pods/add-transit-write-handler!
   #{java.time.LocalDateTime}
+  \"%s\"
+  str)
+
+(babashka.pods/add-transit-write-handler!
+  #{java.time.LocalDate}
   \"%s\"
   str)
 
@@ -194,7 +203,7 @@
   (fn [x] (when (.isArray (class x)) \"java.array\"))
   vec)
 "
-          ldt-key ldt-key))
+          ldt-key ldt-key ldt-key ldt-key))
 
 (def json-str
   "(defn write-json [obj]
