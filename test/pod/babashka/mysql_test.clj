@@ -176,4 +176,4 @@
                               (range n))]
             (run! deref futures)
             (let [after-count (:cnt (first (db/execute! db ["select count(*) as cnt from txtest;"])))]
-              (is (= before-count after-count)))))))))
+              (is (= before-count after-count))))))))))
