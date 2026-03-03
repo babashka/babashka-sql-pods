@@ -73,7 +73,8 @@ sudo ./posix-install.sh\n"}})
       (assoc config :resource_class resource-class))))
 
 (defn mac [& {:keys [java] :or {java java-default-version}}]
-  (ordered-map :macos {:xcode "14.0.1"},
+  (ordered-map :macos {:xcode "14.3.1"},
+               :resource_class "m4pro.large"
                :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-{{graalvm-version}}/Contents/Home"),
                                          :MACOSX_DEPLOYMENT_TARGET "10.13" ;; 10.12 is EOL
                                          :BABASHKA_PLATFORM "macos",
