@@ -7,7 +7,6 @@
 .nrepl-port
 .lsp
 output.calva-repl
-*.duckdb
 .lein-failures
 /pod-babashka-mysql
 pod-babashka-oracle

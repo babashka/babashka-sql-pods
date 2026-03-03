@@ -25,7 +25,7 @@
              :feature/hsqldb {:dependencies [[org.hsqldb/hsqldb "2.7.4"]]}
              :feature/mysql {:dependencies [[com.mysql/mysql-connector-j "9.6.0"]]}
              :feature/oracle {:dependencies [[io.helidon.integrations.db/ojdbc "4.3.4"]]}
-             :feature/duckdb {:dependencies [[org.duckdb/duckdb_jdbc "0.10.0"]]}}
+}
   :deploy-repositories [["clojars" {:url "https://clojars.org/repo"
                                     :username :env/clojars_user
                                     :password :env/clojars_pass

@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Babashka pods for SQL database interaction. A single Clojure codebase compiles into separate native binaries for each supported database (PostgreSQL, HSQLDB, MySQL, Oracle, MSSQL, DuckDB) using GraalVM native-image and compile-time feature flags.
+Babashka pods for SQL database interaction. A single Clojure codebase compiles into separate native binaries for each supported database (PostgreSQL, HSQLDB, MySQL, Oracle, MSSQL) using GraalVM native-image and compile-time feature flags.
 
 ## Build Commands
 
-All builds require `POD_DB_TYPE` env var set to one of: `hsqldb`, `postgresql`, `mysql`, `oracle`, `mssql`, `duckdb`.
+All builds require `POD_DB_TYPE` env var set to one of: `hsqldb`, `postgresql`, `mysql`, `oracle`, `mssql`.
 
 **Build native binary:**
 ```bash
@@ -24,7 +24,6 @@ POD_DB_TYPE=postgresql clojure -M:test:postgresql -n pod.babashka.postgresql-tes
 POD_DB_TYPE=mysql clojure -M:test:mysql -n pod.babashka.mysql-test
 POD_DB_TYPE=oracle clojure -M:test:oracle -n pod.babashka.oracle-test
 POD_DB_TYPE=mssql clojure -M:test:mssql -n pod.babashka.mssql-test
-POD_DB_TYPE=duckdb clojure -M:test:duckdb -n pod.babashka.duckdb-test
 ```
 
 Or use the test script: `POD_DB_TYPE=hsqldb script/test`

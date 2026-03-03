@@ -35,8 +35,3 @@ if [ "$POD_DB_TYPE" = "mssql" ]
 then
     clojure -M:test:mssql -n pod.babashka.mssql-test
 fi
-
-if [ "$POD_DB_TYPE" = "duckdb" ]
-then
-    clojure -M:test:duckdb -n pod.babashka.duckdb-test
-fi

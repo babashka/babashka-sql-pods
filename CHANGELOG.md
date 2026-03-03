@@ -13,6 +13,7 @@ For a list of breaking changes, check [here](#breaking-changes)
 - Upgrade MSSQL JDBC driver to 13.2.1
 - Upgrade HSQLDB to 2.7.4
 - Upgrade MySQL Connector/J to 9.6.0
+- Remove DuckDB support
 - Upgrade Oracle JDBC driver (`io.helidon.integrations.db/ojdbc`) to 4.3.4
 - [#51](https://github.com/babashka/babashka-sql-pods/issues/51): Build macOS aarch64 (Apple Silicon) binaries instead of x64 (Intel)
 
