@@ -4,6 +4,12 @@ For a list of breaking changes, check [here](#breaking-changes)
 
 [babashka-sql-pods](https://github.com/babashka/babashka-sql-pods): Babashka pods for SQL databases
 
+## Unreleased
+
+- Upgrade to Oracle GraalVM 25.0.2
+- Upgrade Oracle JDBC driver to 4.3.4
+- [#51](https://github.com/babashka/babashka-sql-pods/issues/51): Build macOS aarch64 (Apple Silicon) binaries instead of x64 (Intel)
+
 ## v0.1.4
 
 - [#68](https://github.com/babashka/babashka-sql-pods/issues/68): Upgrade to Oracle GraalVM 23

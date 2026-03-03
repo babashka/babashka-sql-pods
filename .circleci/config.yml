@@ -7,7 +7,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -76,7 +76,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -140,14 +140,16 @@ jobs:
         destination: release
   hsqldb-mac:
     macos:
-      xcode: 14.0.1
+      xcode: 14.3.1
+    resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: hsqldb
     steps:
     - checkout
@@ -159,9 +161,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
@@ -214,7 +213,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -283,7 +282,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -347,14 +346,16 @@ jobs:
         destination: release
   mysql-mac:
     macos:
-      xcode: 14.0.1
+      xcode: 14.3.1
+    resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: mysql
     steps:
     - checkout
@@ -366,9 +367,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
@@ -421,7 +419,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -490,7 +488,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -554,14 +552,16 @@ jobs:
         destination: release
   postgresql-mac:
     macos:
-      xcode: 14.0.1
+      xcode: 14.3.1
+    resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: postgresql
     steps:
     - checkout
@@ -573,9 +573,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
@@ -628,7 +625,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -697,7 +694,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -761,14 +758,16 @@ jobs:
         destination: release
   oracle-mac:
     macos:
-      xcode: 14.0.1
+      xcode: 14.3.1
+    resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: oracle
     steps:
     - checkout
@@ -780,9 +779,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
@@ -835,7 +831,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -904,7 +900,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -968,14 +964,16 @@ jobs:
         destination: release
   mssql-mac:
     macos:
-      xcode: 14.0.1
+      xcode: 14.3.1
+    resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: mssql
     steps:
     - checkout
@@ -987,9 +985,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
@@ -1043,9 +1038,6 @@ workflows:
     - hsqldb-linux
     - hsqldb-linux-aarch64
     - hsqldb-mac
-    - duckdb-linux
-    - duckdb-linux-aarch64
-    - duckdb-mac
     - mysql-linux
     - mysql-linux-aarch64
     - mysql-mac

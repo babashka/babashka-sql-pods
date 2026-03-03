@@ -6,7 +6,7 @@
 
 (def java-default-version 11)
 
-(def graalvm-version "23")
+(def graalvm-version "25")
 
 (defn with-graalvm-version [s]
   (str/replace s "{{graalvm-version}}" graalvm-version))
@@ -73,19 +73,19 @@ sudo ./posix-install.sh\n"}})
       (assoc config :resource_class resource-class))))
 
 (defn mac [& {:keys [java] :or {java java-default-version}}]
-  (ordered-map :macos {:xcode "14.0.1"},
+  (ordered-map :macos {:xcode "14.3.1"},
+               :resource_class "m4pro.large"
                :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-{{graalvm-version}}/Contents/Home"),
-                                         :MACOSX_DEPLOYMENT_TARGET "10.13" ;; 10.12 is EOL
+                                         :MACOSX_DEPLOYMENT_TARGET "11.0"
                                          :BABASHKA_PLATFORM "macos",
                                          :BABASHKA_TEST_ENV "native",
                                          :BABASHKA_XMX "-J-Xmx7g"
-                                         :POD_TEST_ENV "native"),
+                                         :POD_TEST_ENV "native"
+                                         :BABASHKA_ARCH "aarch64"),
                :steps ["checkout"
                        {:run {:name "Pull Submodules",
                               :command "git submodule init\ngit submodule update\n"}}
                        {:restore_cache {:keys ["mac-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
-                       {:run {:name "Install Rosetta"
-                              :command "sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license"}}
                        install-clojure
                        {:run {:name "Install Leiningen",
                               :command "script/install-leiningen\n"}}
@@ -155,9 +155,6 @@ sudo ./posix-install.sh\n"}})
                :ci {:jobs ["hsqldb-linux"
                            "hsqldb-linux-aarch64"
                            "hsqldb-mac"
-                           "duckdb-linux"
-                           "duckdb-linux-aarch64"
-                           "duckdb-mac"
                            "mysql-linux"
                            "mysql-linux-aarch64"
                            "mysql-mac"
