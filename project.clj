@@ -13,7 +13,7 @@
                  [com.github.seancorfield/next.jdbc "1.3.1093"]
                  [nrepl/bencode "1.1.0"]
                  [com.cognitect/transit-clj "1.0.324"]
-                 [cheshire/cheshire "5.10.1"]
+                 [cheshire/cheshire "6.1.0"]
                  [com.github.clj-easy/graal-build-time "1.0.5"]]
   :profiles {:uberjar {:global-vars {*assert* false}
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"
