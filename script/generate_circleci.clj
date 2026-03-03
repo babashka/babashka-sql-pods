@@ -6,7 +6,7 @@
 
 (def java-default-version 11)
 
-(def graalvm-version "23")
+(def graalvm-version "25")
 
 (defn with-graalvm-version [s]
   (str/replace s "{{graalvm-version}}" graalvm-version))

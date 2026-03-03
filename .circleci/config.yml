@@ -7,7 +7,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -76,7 +76,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -143,7 +143,7 @@ jobs:
       xcode: 14.3.1
     resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -215,7 +215,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -284,7 +284,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -351,7 +351,7 @@ jobs:
       xcode: 14.3.1
     resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -423,7 +423,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -492,7 +492,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -559,7 +559,7 @@ jobs:
       xcode: 14.3.1
     resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -631,7 +631,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -700,7 +700,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -767,7 +767,7 @@ jobs:
       xcode: 14.3.1
     resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
@@ -839,7 +839,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -908,7 +908,7 @@ jobs:
     working_directory: ~/repo
     environment:
       LEIN_ROOT: 'true'
-      GRAALVM_HOME: /home/circleci/graalvm-23
+      GRAALVM_HOME: /home/circleci/graalvm-25
       BABASHKA_PLATFORM: linux
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
@@ -975,7 +975,7 @@ jobs:
       xcode: 14.3.1
     resource_class: m4pro.large
     environment:
-      GRAALVM_HOME: /Users/distiller/graalvm-23/Contents/Home
+      GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
       MACOSX_DEPLOYMENT_TARGET: '10.13'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
