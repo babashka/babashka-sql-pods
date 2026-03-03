@@ -19,7 +19,7 @@ For a list of breaking changes, check [here](#breaking-changes)
 - Upgrade `nrepl/bencode` to 1.2.0
 - Upgrade test deps: `mariaDB4j` to 3.3.0, `embedded-postgres` to 2.2.0
 - Upgrade Oracle JDBC driver (`io.helidon.integrations.db/ojdbc`) to 4.3.4
-- [#51](https://github.com/babashka/babashka-sql-pods/issues/51): Build macOS aarch64 (Apple Silicon) binaries instead of x64 (Intel)
+- [#51](https://github.com/babashka/babashka-sql-pods/issues/51): macOS binaries are now aarch64 (Apple Silicon). Intel (x64) macOS binaries are no longer provided.
 
 ## v0.1.4
 
