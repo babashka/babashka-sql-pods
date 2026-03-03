@@ -11,6 +11,11 @@ fi
 
 set -euo pipefail
 
+if [ -n "${GRAALVM_HOME:-}" ]; then
+    export JAVA_HOME="$GRAALVM_HOME"
+    export PATH="$GRAALVM_HOME/bin:$PATH"
+fi
+
 if [ "$POD_DB_TYPE" = "postgresql" ]
 then
     clojure -M:test:postgresql -n pod.babashka.postgresql-test
