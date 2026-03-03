@@ -27,8 +27,8 @@
       version (str/trim (slurp "resources/POD_BABASHKA_SQL_VERSION"))]
   (println "Profiles:" lein-profiles)
   (println "Reflection config:" refl-conf)
-  (shell "java -version")
-  (shell "lein" "with-profiles"
+  (shell {:extra-env {"PATH" path}} "java -version")
+  (shell {:extra-env {"PATH" path}} "lein" "with-profiles"
          lein-profiles "do" "clean," "uberjar")
   (let [pod-name (str "pod-babashka-" pod-db-type)
         jar (format "target/pod-babashka-sql-%s-standalone.jar" version)
