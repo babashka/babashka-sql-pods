@@ -16,6 +16,8 @@ For a list of breaking changes, check [here](#breaking-changes)
 - Remove DuckDB support
 - Upgrade `transit-clj` to 1.0.333
 - Upgrade Clojure to 1.12.4
+- Upgrade `nrepl/bencode` to 1.2.0
+- Upgrade test deps: `mariaDB4j` to 3.3.0, `embedded-postgres` to 2.2.0
 - Upgrade Oracle JDBC driver (`io.helidon.integrations.db/ojdbc`) to 4.3.4
 - [#51](https://github.com/babashka/babashka-sql-pods/issues/51): Build macOS aarch64 (Apple Silicon) binaries instead of x64 (Intel)
 

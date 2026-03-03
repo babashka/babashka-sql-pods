@@ -11,7 +11,7 @@
   :resource-paths ["resources"]
   :dependencies [[org.clojure/clojure "1.12.4"]
                  [com.github.seancorfield/next.jdbc "1.3.1093"]
-                 [nrepl/bencode "1.1.0"]
+                 [nrepl/bencode "1.2.0"]
                  [com.cognitect/transit-clj "1.0.333"]
                  [cheshire/cheshire "6.1.0"]
                  [com.github.clj-easy/graal-build-time "1.0.5"]]
