@@ -9,7 +9,7 @@
             :url "http://opensource.org/licenses/eclipse-1.0.php"}
   :source-paths ["src"]
   :resource-paths ["resources"]
-  :dependencies [[org.clojure/clojure "1.10.3"]
+  :dependencies [[org.clojure/clojure "1.12.4"]
                  [com.github.seancorfield/next.jdbc "1.3.1093"]
                  [nrepl/bencode "1.1.0"]
                  [com.cognitect/transit-clj "1.0.333"]
