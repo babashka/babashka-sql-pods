@@ -76,17 +76,16 @@ sudo ./posix-install.sh\n"}})
   (ordered-map :macos {:xcode "14.3.1"},
                :resource_class "m4pro.large"
                :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-{{graalvm-version}}/Contents/Home"),
-                                         :MACOSX_DEPLOYMENT_TARGET "10.13" ;; 10.12 is EOL
+                                         :MACOSX_DEPLOYMENT_TARGET "11.0"
                                          :BABASHKA_PLATFORM "macos",
                                          :BABASHKA_TEST_ENV "native",
                                          :BABASHKA_XMX "-J-Xmx7g"
-                                         :POD_TEST_ENV "native"),
+                                         :POD_TEST_ENV "native"
+                                         :BABASHKA_ARCH "aarch64"),
                :steps ["checkout"
                        {:run {:name "Pull Submodules",
                               :command "git submodule init\ngit submodule update\n"}}
                        {:restore_cache {:keys ["mac-{{ checksum \"project.clj\" }}-{{ checksum \".circleci/config.yml\" }}"]}}
-                       {:run {:name "Install Rosetta"
-                              :command "sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license"}}
                        install-clojure
                        {:run {:name "Install Leiningen",
                               :command "script/install-leiningen\n"}}

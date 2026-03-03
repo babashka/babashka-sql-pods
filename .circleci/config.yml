@@ -144,11 +144,12 @@ jobs:
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: hsqldb
     steps:
     - checkout
@@ -160,9 +161,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
@@ -352,11 +350,12 @@ jobs:
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: mysql
     steps:
     - checkout
@@ -368,9 +367,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
@@ -560,11 +556,12 @@ jobs:
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: postgresql
     steps:
     - checkout
@@ -576,9 +573,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
@@ -768,11 +762,12 @@ jobs:
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: oracle
     steps:
     - checkout
@@ -784,9 +779,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
@@ -976,11 +968,12 @@ jobs:
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
-      MACOSX_DEPLOYMENT_TARGET: '10.13'
+      MACOSX_DEPLOYMENT_TARGET: '11.0'
       BABASHKA_PLATFORM: macos
       BABASHKA_TEST_ENV: native
       BABASHKA_XMX: -J-Xmx7g
       POD_TEST_ENV: native
+      BABASHKA_ARCH: aarch64
       POD_DB_TYPE: mssql
     steps:
     - checkout
@@ -992,9 +985,6 @@ jobs:
     - restore_cache:
         keys:
         - mac-{{ checksum "project.clj" }}-{{ checksum ".circleci/config.yml" }}
-    - run:
-        name: Install Rosetta
-        command: sudo /usr/sbin/softwareupdate --install-rosetta --agree-to-license
     - run:
         name: Install Clojure
         command: |2
