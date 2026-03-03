@@ -1043,9 +1043,6 @@ workflows:
     - hsqldb-linux
     - hsqldb-linux-aarch64
     - hsqldb-mac
-    - duckdb-linux
-    - duckdb-linux-aarch64
-    - duckdb-mac
     - mysql-linux
     - mysql-linux-aarch64
     - mysql-mac
