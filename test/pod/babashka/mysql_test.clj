@@ -148,4 +148,32 @@
           (let [result (db/execute! db ["select count(*) as cnt from concurrent_conns;"])]
             (is (= n (:cnt (first result)))))
           (let [futures (mapv (fn [conn] (future (db/close-connection conn))) conns)]
-            (run! deref futures))))))))
+            (run! deref futures)))))
+    (testing "concurrent transactions"
+      (let [n 10]
+        (try (db/execute! db ["drop table txtest;"]) (catch Exception _ nil))
+        (db/execute! db ["create table txtest ( id int, val int );"])
+        (let [futures (mapv (fn [i]
+                              (future
+                                (let [conn (db/get-connection db)]
+                                  (transaction/begin conn)
+                                  (db/execute! conn [(format "insert into txtest values (%d, %d);" i (* i 10))])
+                                  (transaction/commit conn)
+                                  (db/close-connection conn))))
+                            (range n))]
+          (run! deref futures))
+        (let [result (db/execute! db ["select count(*) as cnt from txtest;"])]
+          (is (= n (:cnt (first result)))))
+        (testing "concurrent rollbacks"
+          (let [before-count (:cnt (first (db/execute! db ["select count(*) as cnt from txtest;"])))
+                futures (mapv (fn [i]
+                                (future
+                                  (let [conn (db/get-connection db)]
+                                    (transaction/begin conn)
+                                    (db/execute! conn [(format "insert into txtest values (%d, 999);" (+ n i))])
+                                    (transaction/rollback conn)
+                                    (db/close-connection conn))))
+                              (range n))]
+            (run! deref futures)
+            (let [after-count (:cnt (first (db/execute! db ["select count(*) as cnt from txtest;"])))]
+              (is (= before-count after-count)))))))))

@@ -92,4 +92,33 @@
           (is (= n (:CNT (first result)))))
         (let [futures (mapv (fn [conn] (future (db/close-connection conn))) conns)]
           (run! deref futures)))
+      (db/execute! db ["drop schema public cascade;"])))
+  (testing "concurrent transactions"
+    (let [db "jdbc:hsqldb:mem:concurrenttxdb"
+          n 10]
+      (db/execute! db ["create table concurrent_transaction_test ( id int, val int );"])
+      (let [futures (mapv (fn [i]
+                            (future
+                              (let [conn (db/get-connection db)]
+                                (transaction/begin conn)
+                                (db/execute! conn [(str "insert into concurrent_transaction_test values (" i ", " (* i 10) ");")])
+                                (transaction/commit conn)
+                                (db/close-connection conn))))
+                          (range n))]
+        (run! deref futures))
+      (let [result (db/execute! db ["select count(*) as cnt from concurrent_transaction_test;"])]
+        (is (= n (:CNT (first result)))))
+      (testing "concurrent rollbacks"
+        (let [before-count (:CNT (first (db/execute! db ["select count(*) as cnt from concurrent_transaction_test;"])))
+              futures (mapv (fn [i]
+                              (future
+                                (let [conn (db/get-connection db)]
+                                  (transaction/begin conn)
+                                  (db/execute! conn [(str "insert into concurrent_transaction_test values (" (+ n i) ", 999);")])
+                                  (transaction/rollback conn)
+                                  (db/close-connection conn))))
+                            (range n))]
+          (run! deref futures)
+          (let [after-count (:CNT (first (db/execute! db ["select count(*) as cnt from concurrent_transaction_test;"])))]
+            (is (= before-count after-count)))))
       (db/execute! db ["drop schema public cascade;"]))))
