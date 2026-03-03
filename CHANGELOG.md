@@ -4,11 +4,12 @@ For a list of breaking changes, check [here](#breaking-changes)
 
 [babashka-sql-pods](https://github.com/babashka/babashka-sql-pods): Babashka pods for SQL databases
 
-## Unreleased
+## v0.1.5
 
+- [#72](https://github.com/babashka/babashka-sql-pods/issues/72): Handle concurrent requests
 - Upgrade to Oracle GraalVM 25.0.2
 - Upgrade `next.jdbc` to 1.3.1093
-- Upgrade `cheshire` to 6.1.0 (Jackson 2.12 → 2.20)
+- Upgrade `cheshire` to 6.1.0 (Jackson 2.12 -> 2.20)
 - Upgrade PostgreSQL JDBC driver to 42.7.10
 - Upgrade MSSQL JDBC driver to 13.2.1
 - Upgrade HSQLDB to 2.7.4
