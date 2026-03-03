@@ -11,6 +11,7 @@ For a list of breaking changes, check [here](#breaking-changes)
 - Upgrade `cheshire` to 6.1.0 (Jackson 2.12 → 2.20)
 - Upgrade PostgreSQL JDBC driver to 42.7.10
 - Upgrade MSSQL JDBC driver to 13.2.1
+- Upgrade HSQLDB to 2.7.4
 - Upgrade Oracle JDBC driver (`io.helidon.integrations.db/ojdbc`) to 4.3.4
 - [#51](https://github.com/babashka/babashka-sql-pods/issues/51): Build macOS aarch64 (Apple Silicon) binaries instead of x64 (Intel)
 
