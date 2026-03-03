@@ -336,7 +336,7 @@
                           (recur))
             :invoke (do (-> (Thread/ofVirtual)
                             (.uncaughtExceptionHandler
-                             vthread-error-handler)
+                             ^Thread$UncaughtExceptionHandler vthread-error-handler)
                             (.name (str "pod-worker-" id))
                             (.start
                              (fn []
