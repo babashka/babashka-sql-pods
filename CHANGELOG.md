@@ -6,7 +6,7 @@ For a list of breaking changes, check [here](#breaking-changes)
 
 ## v0.1.5
 
-- [#72](https://github.com/babashka/babashka-sql-pods/issues/72): Handle concurrent requests
+- [#72](https://github.com/babashka/babashka-sql-pods/issues/72): Handle concurrent requests ([@katangafor](https://github.com/katangafor))
 - Upgrade to Oracle GraalVM 25.0.2
 - Upgrade `next.jdbc` to 1.3.1093
 - Upgrade `cheshire` to 6.1.0 (Jackson 2.12 -> 2.20)
