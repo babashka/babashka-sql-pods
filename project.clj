@@ -21,7 +21,7 @@
                        :aot :all
                        :main pod.babashka.sql}
              :feature/postgresql {:dependencies [[org.postgresql/postgresql "42.7.10"]]}
-             :feature/mssql {:dependencies [[com.microsoft.sqlserver/mssql-jdbc "9.2.0.jre11"]]}
+             :feature/mssql {:dependencies [[com.microsoft.sqlserver/mssql-jdbc "13.2.1.jre11"]]}
              :feature/hsqldb {:dependencies [[org.hsqldb/hsqldb "2.6.0"]]}
              :feature/mysql {:dependencies [[com.mysql/mysql-connector-j "8.0.31"]]}
              :feature/oracle {:dependencies [[io.helidon.integrations.db/ojdbc "4.3.4"]]}
