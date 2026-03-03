@@ -7,7 +7,8 @@ For a list of breaking changes, check [here](#breaking-changes)
 ## Unreleased
 
 - Upgrade to Oracle GraalVM 25.0.2
-- Upgrade Oracle JDBC driver to 4.3.4
+- Upgrade `next.jdbc` to 1.3.1093
+- Upgrade Oracle JDBC driver (`io.helidon.integrations.db/ojdbc`) to 4.3.4
 - [#51](https://github.com/babashka/babashka-sql-pods/issues/51): Build macOS aarch64 (Apple Silicon) binaries instead of x64 (Intel)
 
 ## v0.1.4
