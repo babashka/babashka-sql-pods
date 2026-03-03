@@ -156,15 +156,15 @@
         (let [result (db/execute! db ["select count(*) as cnt from concurrent_transaction_test;"])]
           (is (= n (:cnt (first result)))))
         (testing "concurrent rollbacks"
-          (let [before-count (:cnt (first (db/execute! db ["select count(*) as cnt from concurrent_transaction_rollback_test;"])))
+          (let [before-count (:cnt (first (db/execute! db ["select count(*) as cnt from concurrent_transaction_test;"])))
                 futures (mapv (fn [i]
                                 (future
                                   (let [conn (db/get-connection db)]
                                     (transaction/begin conn)
-                                    (db/execute! conn [(format "insert into concurrent_transaction_rollback_test values (%d, 999);" (+ n i))])
+                                    (db/execute! conn [(format "insert into concurrent_transaction_test values (%d, 999);" (+ n i))])
                                     (transaction/rollback conn)
                                     (db/close-connection conn))))
                               (range n))]
             (run! deref futures)
-            (let [after-count (:cnt (first (db/execute! db ["select count(*) as cnt from concurrent_transaction_rollback_test;"])))]
+            (let [after-count (:cnt (first (db/execute! db ["select count(*) as cnt from concurrent_transaction_test;"])))]
               (is (= before-count after-count)))))))))
