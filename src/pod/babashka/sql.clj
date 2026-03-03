@@ -18,9 +18,12 @@
 
 (def stdin (PushbackInputStream. System/in))
 
+(def write-lock (Object.))
+
 (defn write [v]
-  (bencode/write-bencode System/out v)
-  (.flush System/out))
+  (locking write-lock
+    (bencode/write-bencode System/out v)
+    (.flush System/out)))
 
 (defn read-string [^"[B" v]
   (String. v))
@@ -326,33 +329,35 @@
           (case op
             :describe (do (write describe-map)
                           (recur))
-            :invoke (do (try
-                          (let [var (-> (get message "var")
-                                        read-string
-                                        symbol)
-                                args (get message "args")
-                                args (read-string args)
-                                args (read-transit args)]
-                            (if-let [f (lookup var)]
-                              (let [read-opt (let [v (last args)]
-                                               (when (map? v)
-                                                 (:pod.babashka.sql/read v)))
-                                    value (binding [*read-opt* read-opt]
-                                            (write-transit (apply f args)))
-                                    reply {"value" value
-                                           "id" id
-                                           "status" ["done"]}]
-                                (write reply))
-                              (throw (ex-info (str "Var not found: " var) {}))))
-                          (catch Throwable e
-                            (debug e)
-                            (let [reply {"ex-message" (or (ex-message e) "")
-                                         "ex-data" (write-transit
-                                                    (assoc (ex-data e)
-                                                           :type (str (class e))))
-                                         "id" id
-                                         "status" ["done" "error"]}]
-                              (write reply))))
+            :invoke (do (Thread/startVirtualThread
+                          (fn []
+                            (try
+                              (let [var (-> (get message "var")
+                                           read-string
+                                           symbol)
+                                    args (get message "args")
+                                    args (read-string args)
+                                    args (read-transit args)]
+                                (if-let [f (lookup var)]
+                                  (let [read-opt (let [v (last args)]
+                                                   (when (map? v)
+                                                     (:pod.babashka.sql/read v)))
+                                        value (binding [*read-opt* read-opt]
+                                                (write-transit (apply f args)))
+                                        reply {"value" value
+                                               "id" id
+                                               "status" ["done"]}]
+                                    (write reply))
+                                  (throw (ex-info (str "Var not found: " var) {}))))
+                              (catch Throwable e
+                                (debug e)
+                                (let [reply {"ex-message" (or (ex-message e) "")
+                                             "ex-data" (write-transit
+                                                        (assoc (ex-data e)
+                                                               :type (str (class e))))
+                                             "id" id
+                                             "status" ["done" "error"]}]
+                                  (write reply))))))
                         (recur))
             :shutdown (System/exit 0)
             (do
