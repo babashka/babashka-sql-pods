@@ -6,6 +6,7 @@ databases.
 Supported databases:
 
 - [HSQLDB](http://www.hsqldb.org/)
+- [IBM DB2](https://www.ibm.com/db2)
 - [Microsoft SQL Server](https://www.microsoft.com/nl-nl/sql-server)
 - [MySQL](https://www.mysql.com)
 - [Oracle](https://www.oracle.com/database/)
@@ -40,7 +41,7 @@ Pods from this repo require babashka v0.4.3 or later.
 ## Available vars
 
 The pods expose these namespaces with vars, where `<db>` must be substituted with
-the database type, either `hsqldb`, `postgresql`, or `oracle`:
+the database type, either `db2`, `hsqldb`, `mssql`, `mysql`, `oracle`, or `postgresql`:
 
 - `pod.babashka.<db>`:
   - `execute!`: similar to `next.jdbc/execute!`
@@ -116,6 +117,31 @@ An example using `pod-babashka-hsqldb`:
 
 A more elaborate example can be found
 [here](https://github.com/borkdude/babashka/blob/2d12c954a1ef25e6ed83cde3db57be69dbb0c906/examples/hsqldb_unused_vars.clj).
+
+An example using `pod-babashka-db2`:
+
+``` clojure
+(require '[babashka.pods :as pods])
+
+;; load from system path:
+(pods/load-pod "./pod-babashka-db2")
+
+(require '[pod.babashka.db2 :as db])
+
+;; Use a plain JDBC URL — no extra options needed.
+(def db "jdbc:db2://your-db2-host:50000/your-db:user=your-user;password=your-password;")
+
+(db/execute! db ["select current date from sysibm.sysdummy1"])
+;;=> [{:1 #inst "2024-01-01"}]
+```
+
+> **Note:** If you prefer a map-based db-spec, DB2 requires an explicit `:classname`
+> because next.jdbc has no built-in `"db2"` dbtype alias:
+> ```clojure
+> {:dbtype "db2" :classname "com.ibm.db2.jcc.DB2Driver"
+>  :host "your-db2-host" :port 50000 :dbname "your-db"
+>  :user "your-user" :password "your-password"}
+> ```
 
 ### Arrays
 

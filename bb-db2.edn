@@ -1,0 +1,71 @@
+;; Demo babashka config for the DB2 pod.
+;; Connection is read from test/pod/babashka/db2_config.edn — edit that file first.
+;;
+;; Usage:
+;;   bb --config bb-db2.edn list <TABLE>          -- select all rows
+;;   bb --config bb-db2.edn list <TABLE> <limit>  -- select first N rows
+;;   bb --config bb-db2.edn describe <TABLE>       -- show column names
+
+{:paths ["test"]
+
+ :tasks
+ {:requires ([clojure.edn :as edn]
+             [clojure.java.io :as io]
+             [clojure.pprint :as pp])
+
+  :init
+  (do
+    (require '[babashka.pods :as pods])
+    (pods/load-pod (if (.exists (io/file "./pod-babashka-db2"))
+                     "./pod-babashka-db2"
+                     ["env" "POD_DB_TYPE=db2"
+                      "lein" "with-profiles" "+feature/db2"
+                      "run" "-m" "pod.babashka.sql"]))
+    (require '[pod.babashka.db2 :as db])
+    (def db-spec
+      (-> (io/file "test/pod/babashka/db2_config.edn")
+          slurp
+          edn/read-string
+          :db))
+    (defn valid-identifier? [s]
+      (boolean (re-matches (re-pattern "[A-Za-z_][A-Za-z0-9_]*") s))))
+
+  list
+  {:doc "Select rows from TABLE: bb --config bb-db2.edn list <TABLE> [limit]"
+   :task
+   (let [[table limit-str] *command-line-args*
+         _ (when-not table
+             (println "Usage: bb --config bb-db2.edn list <TABLE> [limit]")
+             (System/exit 1))
+         _ (when-not (valid-identifier? table)
+             (println "Invalid table name:" table)
+             (System/exit 1))
+         limit (when limit-str (parse-long limit-str))
+         sql   (if limit
+                 [(str "SELECT * FROM " (clojure.string/upper-case table)
+                       " FETCH FIRST ? ROWS ONLY")
+                  limit]
+                 [(str "SELECT * FROM " (clojure.string/upper-case table))])
+         rows  (db/execute! db-spec sql)]
+     (println (str (count rows) " row(s) from " (clojure.string/upper-case table) ":"))
+     (pp/print-table rows))}
+
+  describe
+  {:doc "Show columns of TABLE: bb --config bb-db2.edn describe <TABLE>"
+   :override-builtin true
+   :task
+   (let [[table] *command-line-args*
+         _ (when-not table
+             (println "Usage: bb --config bb-db2.edn describe <TABLE>")
+             (System/exit 1))
+         _ (when-not (valid-identifier? table)
+             (println "Invalid table name:" table)
+             (System/exit 1))
+         row (db/execute-one! db-spec [(str "SELECT * FROM "
+                                            (clojure.string/upper-case table)
+                                            " FETCH FIRST 1 ROWS ONLY")])]
+     (if row
+       (do (println (str "Columns in " (clojure.string/upper-case table) ":"))
+           (doseq [k (keys row)]
+             (println " " k)))
+       (println "No rows found (table may be empty).")))}}}
