@@ -10,4 +10,7 @@ output.calva-repl
 .lein-failures
 /pod-babashka-mysql
 pod-babashka-oracle
+pod-babashka-db2
 .claude
+# DB2 connection config (contains credentials - do not commit)
+test/pod/babashka/db2_config.edn
