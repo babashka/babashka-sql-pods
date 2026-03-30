@@ -143,7 +143,12 @@ sudo ./posix-install.sh\n"}})
                                         [:environment :POD_DB_TYPE] "mssql")
           :mssql-linux-aarch64 (assoc-in (linux :arch "aarch64" :static true)
                                                 [:environment :POD_DB_TYPE] "mssql")
-          :mssql-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "mssql")),
+          :mssql-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "mssql")
+          :db2-linux (assoc-in (linux :static true)
+                                      [:environment :POD_DB_TYPE] "db2")
+          :db2-linux-aarch64 (assoc-in (linux :arch "aarch64" :static true)
+                                              [:environment :POD_DB_TYPE] "db2")
+          :db2-mac (assoc-in (mac) [:environment :POD_DB_TYPE] "db2")),
    :workflows (ordered-map
                :version 2
                :ci {:jobs ["hsqldb-linux"
@@ -160,7 +165,10 @@ sudo ./posix-install.sh\n"}})
                            "oracle-mac"
                            "mssql-linux"
                            "mssql-linux-aarch64"
-                           "mssql-mac"]})))
+                           "mssql-mac"
+                           "db2-linux"
+                           "db2-linux-aarch64"
+                           "db2-mac"]})))
 
 (require '[clj-yaml.core :as yaml])
 (spit ".circleci/config.yml"
