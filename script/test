@@ -40,3 +40,8 @@ if [ "$POD_DB_TYPE" = "mssql" ]
 then
     clojure -M:test:mssql -n pod.babashka.mssql-test
 fi
+
+if [ "$POD_DB_TYPE" = "db2" ]
+then
+    clojure -M:test:db2 -n pod.babashka.db2-test
+fi

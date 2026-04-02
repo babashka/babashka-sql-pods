@@ -6,3 +6,4 @@
 (def mysql? (= (System/getenv "POD_DB_TYPE") "mysql"))
 (def oracle? (= (System/getenv "POD_DB_TYPE") "oracle"))
 (def mssql? (= (System/getenv "POD_DB_TYPE") "mssql"))
+(def db2? (= (System/getenv "POD_DB_TYPE") "db2"))

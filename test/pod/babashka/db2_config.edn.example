@@ -1,0 +1,3 @@
+;; Copy this file to db2_config.edn and fill in your connection details.
+;; db2_config.edn is in .gitignore — never commit it.
+{:db "jdbc:db2://YOUR_DB2_HOST:50000/YOUR_DATABASE:user=YOUR_USER;password=YOUR_PASSWORD;"}

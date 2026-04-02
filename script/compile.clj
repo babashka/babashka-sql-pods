@@ -67,6 +67,13 @@
               #_#_"--initialize-at-build-time=oracle.i18n.text.OraCharsetWithConverter"
               "--initialize-at-build-time=oracle.i18n.text.OraCharsetAL16UTF16"
               "--initialize-at-build-time=oracle.i18n.text"
+              "--initialize-at-run-time=com.ibm.db2.jcc.DB2Driver"
+              "--initialize-at-run-time=com.ibm.db2.jcc.am.SqlException"
+              "--initialize-at-run-time=com.ibm.db2.jcc"
+              "--initialize-at-run-time=com.ibm.db2.jcc.t2zos"
+              "--initialize-at-run-time=com.ibm.db2.jcc.DB2BaseDataSource"
+              "-H:IncludeResources=com/ibm/db2/jcc/.*\\.properties"
+              "-H:IncludeResources=com/ibm/.*\\.properties"
               "--features=clj_easy.graal_build_time.InitClojureClasses"
               "-EPOD_DB_TYPE"
               "-march=compatibility"
@@ -74,6 +81,9 @@
               #_xmx]
         args (if (= "mssql" pod-db-type)
                (conj args "-H:IncludeResourceBundles=com.microsoft.sqlserver.jdbc.SQLServerResource")
+               args)
+        args (if (= "db2" pod-db-type)
+               (conj args "-H:IncludeResourceBundles=com.ibm.db2.jcc.t2zos.ac")
                args)
         args (if (= "true" (System/getenv "BABASHKA_STATIC"))
                (if (= "true" (System/getenv "BABASHKA_MUSL"))

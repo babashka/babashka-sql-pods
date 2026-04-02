@@ -142,6 +142,7 @@
                   features/mysql? "pod.babashka.mysql"
                   features/oracle? "pod.babashka.oracle"
                   features/mssql? "pod.babashka.mssql"
+                  features/db2? "pod.babashka.db2"
                   :else (throw (Exception. "Feature flag expected."))))
 
 (def sql-sql-ns (cond features/postgresql? "pod.babashka.postgresql.sql"
@@ -149,6 +150,7 @@
                       features/mysql? "pod.babashka.mysql.sql"
                       features/oracle? "pod.babashka.oracle.sql"
                       features/mssql? "pod.babashka.mssql.sql"
+                      features/db2? "pod.babashka.db2.sql"
                       :else (throw (Exception. "Feature flag expected."))))
 
 (def lookup
