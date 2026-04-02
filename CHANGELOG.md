@@ -4,6 +4,10 @@ For a list of breaking changes, check [here](#breaking-changes)
 
 [babashka-sql-pods](https://github.com/babashka/babashka-sql-pods): Babashka pods for SQL databases
 
+## v0.1.6
+
+- [#74](https://github.com/babashka/babashka-sql-pods/issues/74): Add DB2 support
+
 ## v0.1.5
 
 - [#72](https://github.com/babashka/babashka-sql-pods/issues/72): Handle concurrent requests ([@katangafor](https://github.com/katangafor))
