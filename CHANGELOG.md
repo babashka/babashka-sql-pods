@@ -6,7 +6,7 @@ For a list of breaking changes, check [here](#breaking-changes)
 
 ## v0.1.6
 
-- [#74](https://github.com/babashka/babashka-sql-pods/issues/74): Add DB2 support
+- [#74](https://github.com/babashka/babashka-sql-pods/issues/74): Add DB2 support ([@janezj](https://github.com/janezj))
 
 ## v0.1.5
 
