@@ -74,18 +74,26 @@
 (defn execute!
   ([db-spec sql-params]
    (execute! db-spec sql-params nil))
-  ([db-spec sql-params opts]
+  ([db-spec-or-stmt sql-params opts]
    ;; (.println System/err (str sql-params))
-   (let [conn (->connectable db-spec)
-         res (jdbc/execute! conn sql-params opts)]
+   (let [conn (->connectable db-spec-or-stmt)
+         res (if (some? conn)
+               (jdbc/execute! conn sql-params opts)
+               ;; a statement is provide
+               (let [stmt db-spec-or-stmt]
+                 (jdbc/execute! stmt sql-params opts)))]
      res)))
 
 (defn execute-one!
   ([db-spec sql-params]
    (execute-one! db-spec sql-params nil))
-  ([db-spec sql-params opts]
-   (let [conn (->connectable db-spec)
-         res (jdbc/execute-one! conn sql-params opts)]
+  ([db-spec-or-stmt sql-params opts]
+   (let [conn (->connectable db-spec-or-stmt)
+         res (if (some? conn)
+               (jdbc/execute-one! conn sql-params opts)
+               ;; a statement is provide
+               (let [stmt db-spec-or-stmt]
+                 (jdbc/execute-one! stmt sql-params opts)))]
      res)))
 
 (defn insert-multi!
@@ -100,6 +108,12 @@
   (let [[old _new] (swap-vals! conns dissoc connection)]
     (when-let [conn (get old connection)]
       (.close ^java.lang.AutoCloseable conn))))
+
+(defn prepare
+  ([conn-map statement] (prepare conn-map statement nil))
+  ([conn-map statement opts]
+   (let [conn (->connectable conn-map)]
+     (jdbc/prepare conn statement opts))))
 
 (def transact @#'t/transact*)
 
@@ -158,6 +172,7 @@
            'execute-one! execute-one!
            'get-connection get-connection
            'close-connection close-connection
+           'prepare prepare
            'transaction/begin transaction-begin
            'transaction/rollback transaction-rollback
            'transaction/commit transaction-commit
@@ -220,6 +235,7 @@
                           {:name execute-one!}
                           {:name get-connection}
                           {:name close-connection}
+                          {:name prepare}
                           {:name with-transaction
                            :code ~with-transaction}]}
                   {:name ~(symbol (str sql-ns ".transaction"))
