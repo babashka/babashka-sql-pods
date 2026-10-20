@@ -104,7 +104,24 @@
                           {:pod.babashka.sql/read {:json :parse}})))
       (is (= [#:json_table{:json_col "{\"a\":1}"}]
              (db/execute! db ["select * from json_table values;"]
-                          {:pod.babashka.sql/read {:json :string}}))))
+                          {:pod.babashka.sql/read {:json :string}})))
+      (testing "json with builder-fn"
+        (is (= [{:json_col {:a 1}}]
+               (db/execute! db ["select * from json_table;"]
+                            {:builder-fn :as-unqualified-lower-maps
+                             :pod.babashka.sql/read {:json :parse+keywordize}})))
+        (is (= [{:json-col {:a 1}}]
+               (db/execute! db ["select * from json_table;"]
+                            {:builder-fn :as-unqualified-kebab-maps
+                             :pod.babashka.sql/read {:json :parse+keywordize}})))
+        (is (= {:json-col {:a 1}}
+               (db/execute-one! db ["select * from json_table;"]
+                                {:builder-fn 'next.jdbc.result-set/as-unqualified-kebab-maps
+                                 :pod.babashka.sql/read {:json :parse+keywordize}})))
+        (is (= [[:json_col] [{:a 1}]]
+               (db/execute! db ["select * from json_table;"]
+                            {:builder-fn :as-unqualified-arrays
+                             :pod.babashka.sql/read {:json :parse+keywordize}})))))
     (testing "jsonb"
       (is (db/execute! db ["create table jsonb_table ( jsonb_col jsonb );"]))
       (is (db/execute! db ["insert into jsonb_table values (?);" (db/write-jsonb {:a 1})]))
@@ -117,7 +134,72 @@
                           {:pod.babashka.sql/read {:jsonb :parse}})))
       (is (= [#:jsonb_table{:jsonb_col "{\"a\": 1}"}]
              (db/execute! db ["select * from jsonb_table values;"]
-                          {:pod.babashka.sql/read {:jsonb :string}}))))
+                          {:pod.babashka.sql/read {:jsonb :string}})))
+      (testing "jsonb with builder-fn"
+        (is (= [{:jsonb-col {:a 1}}]
+               (db/execute! db ["select * from jsonb_table;"]
+                            {:builder-fn :as-unqualified-kebab-maps
+                             :pod.babashka.sql/read {:jsonb :parse+keywordize}})))
+        (is (= {:jsonb-col {:a 1}}
+               (db/execute-one! db ["select * from jsonb_table;"]
+                                {:builder-fn 'as-unqualified-kebab-maps
+                                 :pod.babashka.sql/read {:jsonb :parse+keywordize}})))))
+    (testing "builder-fn options in postgresql"
+      (is (db/execute! db ["create table pg_people ( id int, first_name text, last_name text );"]))
+      (is (db/execute! db ["insert into pg_people values (1, 'Alice', 'Smith'), (2, 'Bob', 'Jones');"]))
+      (testing "default and nil builder-fn"
+        (is (= [#:pg_people{:id 1, :first_name "Alice", :last_name "Smith"}
+                #:pg_people{:id 2, :first_name "Bob", :last_name "Jones"}]
+               (db/execute! db ["select * from pg_people order by id;"])))
+        (is (= [#:pg_people{:id 1, :first_name "Alice", :last_name "Smith"}
+                #:pg_people{:id 2, :first_name "Bob", :last_name "Jones"}]
+               (db/execute! db ["select * from pg_people order by id;"] {:builder-fn nil})))
+        (is (= #:pg_people{:id 1, :first_name "Alice", :last_name "Smith"}
+               (db/execute-one! db ["select * from pg_people where id = 1;"])))
+        (is (= #:pg_people{:id 1, :first_name "Alice", :last_name "Smith"}
+               (db/execute-one! db ["select * from pg_people where id = 1;"] {:builder-fn nil}))))
+      (testing "kebab and lower map builders"
+        (is (= [#:pg-people{:id 1, :first-name "Alice", :last-name "Smith"}
+                #:pg-people{:id 2, :first-name "Bob", :last-name "Jones"}]
+               (db/execute! db ["select * from pg_people order by id;"] {:builder-fn :as-kebab-maps})))
+        (is (= [{:id 1, :first-name "Alice", :last-name "Smith"}
+                {:id 2, :first-name "Bob", :last-name "Jones"}]
+               (db/execute! db ["select * from pg_people order by id;"] {:builder-fn :as-unqualified-kebab-maps})
+               (db/execute! db ["select * from pg_people order by id;"] {:builder-fn 'next.jdbc.result-set/as-unqualified-kebab-maps})))
+        (is (= {:id 1, :first-name "Alice", :last-name "Smith"}
+               (db/execute-one! db ["select * from pg_people where id = 1;"] {:builder-fn 'as-unqualified-kebab-maps})))
+        (is (= [{:id 1, :first_name "Alice", :last_name "Smith"}
+                {:id 2, :first_name "Bob", :last_name "Jones"}]
+               (db/execute! db ["select * from pg_people order by id;"] {:builder-fn 'next.jdbc.result-set/as-unqualified-lower-maps}))))
+      (testing "array builders"
+        (is (= [[:pg_people/id :pg_people/first_name :pg_people/last_name]
+                [1 "Alice" "Smith"]
+                [2 "Bob" "Jones"]]
+               (db/execute! db ["select * from pg_people order by id;"] {:builder-fn :as-arrays})))
+        (is (= [[:id :first_name :last_name]
+                [1 "Alice" "Smith"]
+                [2 "Bob" "Jones"]]
+               (db/execute! db ["select * from pg_people order by id;"] {:builder-fn :as-unqualified-arrays})
+               (db/execute! db ["select * from pg_people order by id;"] {:builder-fn 'next.jdbc.result-set/as-unqualified-arrays})))
+        (is (= [1 "Alice" "Smith"]
+               (db/execute-one! db ["select * from pg_people where id = 1;"] {:builder-fn :as-unqualified-arrays})))
+        (is (= [[:id :first_name :last_name]]
+               (db/execute! db ["select * from pg_people where id = 999;"] {:builder-fn :as-unqualified-arrays})))
+        (is (= nil
+               (db/execute-one! db ["select * from pg_people where id = 999;"] {:builder-fn :as-unqualified-arrays}))))
+      (testing "invalid builder error handling"
+        (doseq [bad-builder [:invalid-builder 'custom.ns/my-builder "bad-builder"]]
+          (try
+            (db/execute! db ["select * from pg_people;"] {:builder-fn bad-builder})
+            (is false "Expected exception to be thrown")
+            (catch Exception e
+              (let [msg (ex-message e)
+                    d (ex-data e)]
+                (is (re-find #"Unknown :builder-fn" msg))
+                (is (re-find #"as-unqualified-arrays" msg))
+                (is (= bad-builder (:builder-fn d)))
+                (is (= 30 (count (:allowed-builders d))))
+                (is (contains? (set (:allowed-builders d)) :as-unqualified-arrays))))))))
     (testing "concurrent requests"
       (let [n 20]
         (db/execute! db ["create table concurrent_test ( id int, val int );"])

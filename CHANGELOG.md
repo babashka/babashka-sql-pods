@@ -4,6 +4,10 @@ For a list of breaking changes, check [here](#breaking-changes)
 
 [babashka-sql-pods](https://github.com/babashka/babashka-sql-pods): Babashka pods for SQL databases
 
+## Unreleased
+
+- [#29](https://github.com/babashka/babashka-sql-pods/issues/29): Support `:builder-fn` option in `execute!` and `execute-one!` with standard `next.jdbc.result-set` builders (`as-maps`, `as-unqualified-maps`, `as-lower-maps`, `as-unqualified-lower-maps`, `as-kebab-maps`, `as-unqualified-kebab-maps`, `as-arrays`, `as-unqualified-arrays`, `as-lower-arrays`, `as-unqualified-lower-arrays`)
+
 ## v0.1.6
 
 - [#74](https://github.com/babashka/babashka-sql-pods/issues/74): Add DB2 support ([@janezj](https://github.com/janezj))

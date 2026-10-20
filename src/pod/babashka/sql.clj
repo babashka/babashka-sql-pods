@@ -8,6 +8,7 @@
             [cognitect.transit :as transit]
             [next.jdbc :as jdbc]
             [next.jdbc.date-time]
+            [next.jdbc.result-set :as rs]
             [next.jdbc.sql :as sql]
             [next.jdbc.transaction :as t]
             [pod.babashka.sql.features :as features])
@@ -71,12 +72,44 @@
 (defmacro when-pg [& body]
   `(if-pg (do ~@body) nil))
 
+(def builder-fn-map
+  (into {}
+        (mapcat (fn [[sym f]]
+                  [[(keyword sym) f]
+                   [sym f]
+                   [(symbol "next.jdbc.result-set" (name sym)) f]]))
+        [['as-maps rs/as-maps]
+         ['as-unqualified-maps rs/as-unqualified-maps]
+         ['as-lower-maps rs/as-lower-maps]
+         ['as-unqualified-lower-maps rs/as-unqualified-lower-maps]
+         ['as-kebab-maps rs/as-kebab-maps]
+         ['as-unqualified-kebab-maps rs/as-unqualified-kebab-maps]
+         ['as-arrays rs/as-arrays]
+         ['as-unqualified-arrays rs/as-unqualified-arrays]
+         ['as-lower-arrays rs/as-lower-arrays]
+         ['as-unqualified-lower-arrays rs/as-unqualified-lower-arrays]]))
+
+(defn resolve-builder-fn [bf]
+  (if (contains? builder-fn-map bf)
+    (get builder-fn-map bf)
+    (throw (ex-info (str "Unknown :builder-fn " (pr-str bf)
+                         ". Allowed options: " (str/join ", " (sort (map str (keys builder-fn-map)))))
+                    {:builder-fn bf
+                     :allowed-builders (vec (sort-by str (keys builder-fn-map)))}))))
+
+(defn- transform-opts [opts]
+  (cond
+    (not (contains? opts :builder-fn)) opts
+    (nil? (:builder-fn opts)) (dissoc opts :builder-fn)
+    :else (update opts :builder-fn resolve-builder-fn)))
+
 (defn execute!
   ([db-spec sql-params]
    (execute! db-spec sql-params nil))
   ([db-spec sql-params opts]
    ;; (.println System/err (str sql-params))
    (let [conn (->connectable db-spec)
+         opts (transform-opts opts)
          res (jdbc/execute! conn sql-params opts)]
      res)))
 
@@ -85,6 +118,7 @@
    (execute-one! db-spec sql-params nil))
   ([db-spec sql-params opts]
    (let [conn (->connectable db-spec)
+         opts (transform-opts opts)
          res (jdbc/execute-one! conn sql-params opts)]
      res)))
 
