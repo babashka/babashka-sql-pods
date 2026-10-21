@@ -47,10 +47,14 @@ sudo ./posix-install.sh\n"}})
                                       {:run {:name "Install lsof",
                                              :command "sudo apt-get install lsof\n"}}
                                       {:run {:name "Install native dev tools",
-                                             :command (str/join "\n" ["sudo apt-get update"
-                                                                      "sudo apt-get -y install gcc g++ zlib1g-dev make"
-                                                                      (when (not= "aarch64" arch)
-                                                                        "sudo -E script/setup-musl")])}}
+                                             :command (str/join "\n" (if (= "aarch64" arch)
+                                                                       ["sudo apt-get update"
+                                                                        "sudo apt-get -y install gcc g++ zlib1g-dev make"]
+                                                                       ;; bullseye is EOL, its security repo is dead
+                                                                       ["sudo sed -i '/bullseye-security/d' /etc/apt/sources.list"
+                                                                        "sudo apt-get -o Acquire::Check-Valid-Until=false update"
+                                                                        "sudo apt-get -y install gcc g++ zlib1g-dev make"
+                                                                        "sudo -E script/setup-musl"]))}}
                                       {:run {:name    "Download GraalVM",
                                              :command "script/install-graalvm"}}
                                       {:run {:name "Install bb"
@@ -73,7 +77,7 @@ sudo ./posix-install.sh\n"}})
       (assoc config :resource_class resource-class))))
 
 (defn mac [& {:keys [java] :or {java java-default-version}}]
-  (ordered-map :macos {:xcode "14.3.1"},
+  (ordered-map :macos {:xcode "16.4.0"},
                :resource_class "m4pro.large"
                :environment (ordered-map :GRAALVM_HOME (format "/Users/distiller/graalvm-{{graalvm-version}}/Contents/Home"),
                                          :MACOSX_DEPLOYMENT_TARGET "11.0"

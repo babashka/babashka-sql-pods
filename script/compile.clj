@@ -85,6 +85,10 @@
         args (if (= "db2" pod-db-type)
                (conj args "-H:IncludeResourceBundles=com.ibm.db2.jcc.t2zos.ac")
                args)
+        ;; pass the macOS deployment target through to the image builder
+        args (if (System/getenv "MACOSX_DEPLOYMENT_TARGET")
+               (conj args "-EMACOSX_DEPLOYMENT_TARGET")
+               args)
         args (if (= "true" (System/getenv "BABASHKA_STATIC"))
                (if (= "true" (System/getenv "BABASHKA_MUSL"))
                  (let [args (conj args "--static")]
