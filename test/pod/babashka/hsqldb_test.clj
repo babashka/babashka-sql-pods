@@ -210,6 +210,45 @@
               (is (= 30 (count (:allowed-builders d))))
               (is (contains? (set (:allowed-builders d)) :as-unqualified-arrays))))))
 
+      (testing "connection-time builder-fn"
+        (let [spec {:jdbcUrl db :builder-fn :as-unqualified-kebab-maps}
+              kebab [{:id 1, :first-name "Alice", :last-name "Smith"}
+                     {:id 2, :first-name "Bob", :last-name "Jones"}]
+              default [#:PEOPLE{:ID 1, :FIRST_NAME "Alice", :LAST_NAME "Smith"}
+                       #:PEOPLE{:ID 2, :FIRST_NAME "Bob", :LAST_NAME "Jones"}]
+              conn (db/get-connection spec)]
+          (testing "applies to execute! and execute-one! on the connection"
+            (is (= kebab (db/execute! conn ["select * from people order by id;"])))
+            (is (= (first kebab) (db/execute-one! conn ["select * from people where id = 1;"]))))
+          (testing "query-level builder-fn overrides the connection default"
+            (is (= [[:ID :FIRST_NAME :LAST_NAME] [1 "Alice" "Smith"] [2 "Bob" "Jones"]]
+                   (db/execute! conn ["select * from people order by id;"]
+                                {:builder-fn :as-unqualified-arrays}))))
+          (testing "query-level nil restores the next.jdbc default"
+            (is (= default (db/execute! conn ["select * from people order by id;"] {:builder-fn nil}))))
+          (testing "applies within a transaction"
+            (transaction/begin conn)
+            (is (= kebab (db/execute! conn ["select * from people order by id;"])))
+            (transaction/rollback conn))
+          (db/close-connection conn)
+          (testing "connection without builder-fn keeps the default"
+            (let [plain (db/get-connection db)]
+              (is (= default (db/execute! plain ["select * from people order by id;"])))
+              (db/close-connection plain)))
+          (testing "db-spec map passed directly to execute!"
+            (is (= kebab (db/execute! spec ["select * from people order by id;"])))
+            (is (= (first kebab) (db/execute-one! spec ["select * from people where id = 1;"])))
+            (is (= default (db/execute! spec ["select * from people order by id;"] {:builder-fn nil}))))
+          (testing "with-transaction on a db-spec map"
+            (is (= kebab (db/with-transaction [x spec]
+                           (db/execute! x ["select * from people order by id;"])))))
+          (testing "invalid connection-time builder-fn"
+            (is (thrown-with-msg? Exception #"Unknown :builder-fn"
+                                  (db/get-connection {:jdbcUrl db :builder-fn :unknown-builder})))
+            (is (thrown-with-msg? Exception #"Unknown :builder-fn"
+                                  (db/execute! {:jdbcUrl db :builder-fn :unknown-builder}
+                                               ["select * from people;"]))))))
+
       (db/execute! db ["drop schema public cascade;"])))
   (let [db "jdbc:hsqldb:mem:testdb;sql.syntax_mys=true"]
     (is (db/execute! db ["create table foo ( foo integer array );"]))

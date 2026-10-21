@@ -187,6 +187,25 @@
                (db/execute! db ["select * from pg_people where id = 999;"] {:builder-fn :as-unqualified-arrays})))
         (is (= nil
                (db/execute-one! db ["select * from pg_people where id = 999;"] {:builder-fn :as-unqualified-arrays}))))
+      (testing "connection-time builder-fn"
+        (let [spec (assoc db :builder-fn :as-unqualified-kebab-maps)
+              kebab [{:id 1, :first-name "Alice", :last-name "Smith"}
+                     {:id 2, :first-name "Bob", :last-name "Jones"}]
+              conn (db/get-connection spec)]
+          (is (= kebab (db/execute! conn ["select * from pg_people order by id;"])))
+          (is (= (first kebab) (db/execute-one! conn ["select * from pg_people where id = 1;"])))
+          (is (= [[:id :first_name :last_name] [1 "Alice" "Smith"] [2 "Bob" "Jones"]]
+                 (db/execute! conn ["select * from pg_people order by id;"]
+                              {:builder-fn :as-unqualified-arrays})))
+          (is (= [#:pg_people{:id 1, :first_name "Alice", :last_name "Smith"}
+                  #:pg_people{:id 2, :first_name "Bob", :last_name "Jones"}]
+                 (db/execute! conn ["select * from pg_people order by id;"] {:builder-fn nil})))
+          (db/close-connection conn)
+          (is (= kebab (db/execute! spec ["select * from pg_people order by id;"])))
+          (is (= kebab (db/with-transaction [x spec]
+                         (db/execute! x ["select * from pg_people order by id;"]))))
+          (is (thrown-with-msg? Exception #"Unknown :builder-fn"
+                                (db/get-connection (assoc db :builder-fn :unknown-builder))))))
       (testing "invalid builder error handling"
         (doseq [bad-builder [:invalid-builder 'custom.ns/my-builder "bad-builder"]]
           (try

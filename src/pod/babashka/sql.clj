@@ -42,19 +42,29 @@
 (def conns (atom {}))
 (def transactions (atom {}))
 
+(declare resolve-builder-fn)
+
+(defn- without-builder-fn
+  "next.jdbc would pass an unknown :builder-fn key on to the driver as a property."
+  [db-spec]
+  (cond-> db-spec (map? db-spec) (dissoc :builder-fn)))
+
 (defn get-connection [db-spec]
   (if (and (map? db-spec) (::connection db-spec))
     db-spec
-    (let [conn (jdbc/get-connection db-spec)
+    (let [builder-fn (:builder-fn db-spec)
+          _ (when builder-fn (resolve-builder-fn builder-fn))
+          conn (jdbc/get-connection (without-builder-fn db-spec))
           conn-id (str (java.util.UUID/randomUUID))]
       (swap! conns assoc conn-id conn)
-      {::connection conn-id})))
+      (cond-> {::connection conn-id}
+        builder-fn (assoc :builder-fn builder-fn)))))
 
 (defn ->connectable [db-spec]
   (if-let [conn-id (and (map? db-spec)
                         (::connection db-spec))]
     (get @conns conn-id)
-    db-spec))
+    (without-builder-fn db-spec)))
 
 (defmacro if-mysql [then else]
   (if features/mysql?
@@ -97,11 +107,14 @@
                     {:builder-fn bf
                      :allowed-builders (vec (sort-by str (keys builder-fn-map)))}))))
 
-(defn- transform-opts [opts]
-  (cond
-    (not (contains? opts :builder-fn)) opts
-    (nil? (:builder-fn opts)) (dissoc opts :builder-fn)
-    :else (update opts :builder-fn resolve-builder-fn)))
+(defn- transform-opts
+  "Query-level :builder-fn wins over the one given when connecting."
+  [db-spec opts]
+  (let [opts (cond-> opts
+               (not (contains? opts :builder-fn)) (assoc :builder-fn (:builder-fn db-spec)))]
+    (if (nil? (:builder-fn opts))
+      (dissoc opts :builder-fn)
+      (update opts :builder-fn resolve-builder-fn))))
 
 (defn execute!
   ([db-spec sql-params]
@@ -109,7 +122,7 @@
   ([db-spec sql-params opts]
    ;; (.println System/err (str sql-params))
    (let [conn (->connectable db-spec)
-         opts (transform-opts opts)
+         opts (transform-opts db-spec opts)
          res (jdbc/execute! conn sql-params opts)]
      res)))
 
@@ -118,7 +131,7 @@
    (execute-one! db-spec sql-params nil))
   ([db-spec sql-params opts]
    (let [conn (->connectable db-spec)
-         opts (transform-opts opts)
+         opts (transform-opts db-spec opts)
          res (jdbc/execute-one! conn sql-params opts)]
      res)))
 
