@@ -59,6 +59,197 @@
                     #:FOO{:FOO 7}]
                    (db/execute! db  ["select * from foo;"]))))))
       (db/execute! db ["drop schema public cascade;"]))
+  (testing "builder-fn options"
+    (let [db "jdbc:hsqldb:mem:builderdb;sql.syntax_mys=true"]
+      (db/execute! db ["create table people ( id int, first_name varchar(32), last_name varchar(32) );"])
+      (db/execute! db ["insert into people values (1, 'Alice', 'Smith'), (2, 'Bob', 'Jones');"])
+
+      (testing "default / omitted builder-fn and nil builder-fn"
+        (is (= [#:PEOPLE{:ID 1, :FIRST_NAME "Alice", :LAST_NAME "Smith"}
+                #:PEOPLE{:ID 2, :FIRST_NAME "Bob", :LAST_NAME "Jones"}]
+               (db/execute! db ["select * from people order by id;"])))
+        (is (= [#:PEOPLE{:ID 1, :FIRST_NAME "Alice", :LAST_NAME "Smith"}
+                #:PEOPLE{:ID 2, :FIRST_NAME "Bob", :LAST_NAME "Jones"}]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn nil})))
+        (is (= #:PEOPLE{:ID 1, :FIRST_NAME "Alice", :LAST_NAME "Smith"}
+               (db/execute-one! db ["select * from people where id = 1;"])))
+        (is (= #:PEOPLE{:ID 1, :FIRST_NAME "Alice", :LAST_NAME "Smith"}
+               (db/execute-one! db ["select * from people where id = 1;"] {:builder-fn nil}))))
+
+      (testing "map builders with symbols and keywords"
+        ;; qualified maps
+        (is (= [#:PEOPLE{:ID 1, :FIRST_NAME "Alice", :LAST_NAME "Smith"}
+                #:PEOPLE{:ID 2, :FIRST_NAME "Bob", :LAST_NAME "Jones"}]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-maps})))
+
+        ;; unqualified maps
+        (is (= [{:ID 1, :FIRST_NAME "Alice", :LAST_NAME "Smith"}
+                {:ID 2, :FIRST_NAME "Bob", :LAST_NAME "Jones"}]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-unqualified-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-unqualified-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-unqualified-maps})))
+
+        ;; lower maps
+        (is (= [#:people{:id 1, :first_name "Alice", :last_name "Smith"}
+                #:people{:id 2, :first_name "Bob", :last_name "Jones"}]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-lower-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-lower-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-lower-maps})))
+
+        ;; unqualified lower maps
+        (is (= [{:id 1, :first_name "Alice", :last_name "Smith"}
+                {:id 2, :first_name "Bob", :last_name "Jones"}]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-unqualified-lower-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-unqualified-lower-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-unqualified-lower-maps})))
+
+        ;; kebab maps
+        (is (= [#:people{:id 1, :first-name "Alice", :last-name "Smith"}
+                #:people{:id 2, :first-name "Bob", :last-name "Jones"}]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-kebab-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-kebab-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-kebab-maps})))
+
+        ;; unqualified kebab maps
+        (is (= [{:id 1, :first-name "Alice", :last-name "Smith"}
+                {:id 2, :first-name "Bob", :last-name "Jones"}]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-unqualified-kebab-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-unqualified-kebab-maps})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-unqualified-kebab-maps})))
+
+        ;; execute-one! with map builders
+        (is (= {:id 1, :first-name "Alice", :last-name "Smith"}
+               (db/execute-one! db ["select * from people where id = 1;"] {:builder-fn :as-unqualified-kebab-maps})))
+        (is (= #:people{:id 1, :first-name "Alice", :last-name "Smith"}
+               (db/execute-one! db ["select * from people where id = 1;"] {:builder-fn 'next.jdbc.result-set/as-kebab-maps}))))
+
+      (testing "array builders with symbols and keywords"
+        ;; qualified arrays
+        (is (= [[:PEOPLE/ID :PEOPLE/FIRST_NAME :PEOPLE/LAST_NAME]
+                [1 "Alice" "Smith"]
+                [2 "Bob" "Jones"]]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-arrays})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-arrays})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-arrays})))
+
+        ;; unqualified arrays
+        (is (= [[:ID :FIRST_NAME :LAST_NAME]
+                [1 "Alice" "Smith"]
+                [2 "Bob" "Jones"]]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-unqualified-arrays})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-unqualified-arrays})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-unqualified-arrays})))
+
+        ;; lower arrays
+        (is (= [[:people/id :people/first_name :people/last_name]
+                [1 "Alice" "Smith"]
+                [2 "Bob" "Jones"]]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-lower-arrays})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-lower-arrays})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-lower-arrays})))
+
+        ;; unqualified lower arrays
+        (is (= [[:id :first_name :last_name]
+                [1 "Alice" "Smith"]
+                [2 "Bob" "Jones"]]
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'next.jdbc.result-set/as-unqualified-lower-arrays})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn 'as-unqualified-lower-arrays})
+               (db/execute! db ["select * from people order by id;"] {:builder-fn :as-unqualified-lower-arrays})))
+
+        ;; empty result with array builders
+        (is (= [[:ID :FIRST_NAME :LAST_NAME]]
+               (db/execute! db ["select * from people where id = 999;"] {:builder-fn :as-unqualified-arrays})))
+        (is (= nil
+               (db/execute-one! db ["select * from people where id = 999;"] {:builder-fn :as-unqualified-arrays})))
+
+        ;; execute-one! with array builders returns single row vector
+        (is (= [1 "Alice" "Smith"]
+               (db/execute-one! db ["select * from people where id = 1;"] {:builder-fn :as-unqualified-arrays})))
+        (is (= [1 "Alice" "Smith"]
+               (db/execute-one! db ["select * from people where id = 1;"] {:builder-fn 'next.jdbc.result-set/as-unqualified-lower-arrays}))))
+
+      (testing "wide SELECT (>8 columns) array column order preservation"
+        (db/execute! db ["create table wide_table (c1 int, c2 int, c3 int, c4 int, c5 int, c6 int, c7 int, c8 int, c9 int, c10 int);"])
+        (db/execute! db ["insert into wide_table values (1, 2, 3, 4, 5, 6, 7, 8, 9, 10);"])
+        (is (= [[:C1 :C2 :C3 :C4 :C5 :C6 :C7 :C8 :C9 :C10]
+                [1 2 3 4 5 6 7 8 9 10]]
+               (db/execute! db ["select c1, c2, c3, c4, c5, c6, c7, c8, c9, c10 from wide_table;"]
+                            {:builder-fn :as-unqualified-arrays})))
+        (is (= [[:C10 :C9 :C8 :C7 :C6 :C5 :C4 :C3 :C2 :C1]
+                [10 9 8 7 6 5 4 3 2 1]]
+               (db/execute! db ["select c10, c9, c8, c7, c6, c5, c4, c3, c2, c1 from wide_table;"]
+                            {:builder-fn 'next.jdbc.result-set/as-unqualified-arrays})))
+        (is (= [1 2 3 4 5 6 7 8 9 10]
+               (db/execute-one! db ["select c1, c2, c3, c4, c5, c6, c7, c8, c9, c10 from wide_table;"]
+                                {:builder-fn :as-unqualified-arrays}))))
+
+      (testing "invalid or unknown builder-fn error handling"
+        (doseq [bad-builder [:unknown-builder 'custom.ns/my-builder "invalid-string"]]
+          (try
+            (db/execute! db ["select * from people;"] {:builder-fn bad-builder})
+            (is false "Expected exception to be thrown")
+            (catch Exception e
+              (let [msg (ex-message e)
+                    d (ex-data e)]
+                (is (re-find #"Unknown :builder-fn" msg))
+                (is (re-find #"as-unqualified-arrays" msg))
+                (is (= bad-builder (:builder-fn d)))
+                (is (= 30 (count (:allowed-builders d))))
+                (is (contains? (set (:allowed-builders d)) :as-unqualified-arrays))))))
+        (try
+          (db/execute-one! db ["select * from people;"] {:builder-fn :invalid})
+          (is false "Expected exception to be thrown")
+          (catch Exception e
+            (let [msg (ex-message e)
+                  d (ex-data e)]
+              (is (re-find #"Unknown :builder-fn" msg))
+              (is (re-find #"as-unqualified-arrays" msg))
+              (is (= :invalid (:builder-fn d)))
+              (is (= 30 (count (:allowed-builders d))))
+              (is (contains? (set (:allowed-builders d)) :as-unqualified-arrays))))))
+
+      (testing "connection-time builder-fn"
+        (let [spec {:jdbcUrl db :builder-fn :as-unqualified-kebab-maps}
+              kebab [{:id 1, :first-name "Alice", :last-name "Smith"}
+                     {:id 2, :first-name "Bob", :last-name "Jones"}]
+              default [#:PEOPLE{:ID 1, :FIRST_NAME "Alice", :LAST_NAME "Smith"}
+                       #:PEOPLE{:ID 2, :FIRST_NAME "Bob", :LAST_NAME "Jones"}]
+              conn (db/get-connection spec)]
+          (testing "applies to execute! and execute-one! on the connection"
+            (is (= kebab (db/execute! conn ["select * from people order by id;"])))
+            (is (= (first kebab) (db/execute-one! conn ["select * from people where id = 1;"]))))
+          (testing "query-level builder-fn overrides the connection default"
+            (is (= [[:ID :FIRST_NAME :LAST_NAME] [1 "Alice" "Smith"] [2 "Bob" "Jones"]]
+                   (db/execute! conn ["select * from people order by id;"]
+                                {:builder-fn :as-unqualified-arrays}))))
+          (testing "query-level nil restores the next.jdbc default"
+            (is (= default (db/execute! conn ["select * from people order by id;"] {:builder-fn nil}))))
+          (testing "applies within a transaction"
+            (transaction/begin conn)
+            (is (= kebab (db/execute! conn ["select * from people order by id;"])))
+            (transaction/rollback conn))
+          (db/close-connection conn)
+          (testing "connection without builder-fn keeps the default"
+            (let [plain (db/get-connection db)]
+              (is (= default (db/execute! plain ["select * from people order by id;"])))
+              (db/close-connection plain)))
+          (testing "db-spec map passed directly to execute!"
+            (is (= kebab (db/execute! spec ["select * from people order by id;"])))
+            (is (= (first kebab) (db/execute-one! spec ["select * from people where id = 1;"])))
+            (is (= default (db/execute! spec ["select * from people order by id;"] {:builder-fn nil}))))
+          (testing "with-transaction on a db-spec map"
+            (is (= kebab (db/with-transaction [x spec]
+                           (db/execute! x ["select * from people order by id;"])))))
+          (testing "invalid connection-time builder-fn"
+            (is (thrown-with-msg? Exception #"Unknown :builder-fn"
+                                  (db/get-connection {:jdbcUrl db :builder-fn :unknown-builder})))
+            (is (thrown-with-msg? Exception #"Unknown :builder-fn"
+                                  (db/execute! {:jdbcUrl db :builder-fn :unknown-builder}
+                                               ["select * from people;"]))))))
+
+      (db/execute! db ["drop schema public cascade;"])))
   (let [db "jdbc:hsqldb:mem:testdb;sql.syntax_mys=true"]
     (is (db/execute! db ["create table foo ( foo integer array );"]))
     (is (db/execute! db ["insert into foo (foo) values (?);" (into-array [1 2 3])]))
