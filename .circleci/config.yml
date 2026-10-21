@@ -42,7 +42,8 @@ jobs:
     - run:
         name: Install native dev tools
         command: |-
-          sudo apt-get update
+          sudo sed -i '/bullseye-security/d' /etc/apt/sources.list
+          sudo apt-get -o Acquire::Check-Valid-Until=false update
           sudo apt-get -y install gcc g++ zlib1g-dev make
           sudo -E script/setup-musl
     - run:
@@ -111,7 +112,7 @@ jobs:
           sudo apt-get install lsof
     - run:
         name: Install native dev tools
-        command: |
+        command: |-
           sudo apt-get update
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
@@ -140,7 +141,7 @@ jobs:
         destination: release
   hsqldb-mac:
     macos:
-      xcode: 14.3.1
+      xcode: 16.4.0
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
@@ -248,7 +249,8 @@ jobs:
     - run:
         name: Install native dev tools
         command: |-
-          sudo apt-get update
+          sudo sed -i '/bullseye-security/d' /etc/apt/sources.list
+          sudo apt-get -o Acquire::Check-Valid-Until=false update
           sudo apt-get -y install gcc g++ zlib1g-dev make
           sudo -E script/setup-musl
     - run:
@@ -317,7 +319,7 @@ jobs:
           sudo apt-get install lsof
     - run:
         name: Install native dev tools
-        command: |
+        command: |-
           sudo apt-get update
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
@@ -346,7 +348,7 @@ jobs:
         destination: release
   mysql-mac:
     macos:
-      xcode: 14.3.1
+      xcode: 16.4.0
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
@@ -454,7 +456,8 @@ jobs:
     - run:
         name: Install native dev tools
         command: |-
-          sudo apt-get update
+          sudo sed -i '/bullseye-security/d' /etc/apt/sources.list
+          sudo apt-get -o Acquire::Check-Valid-Until=false update
           sudo apt-get -y install gcc g++ zlib1g-dev make
           sudo -E script/setup-musl
     - run:
@@ -523,7 +526,7 @@ jobs:
           sudo apt-get install lsof
     - run:
         name: Install native dev tools
-        command: |
+        command: |-
           sudo apt-get update
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
@@ -552,7 +555,7 @@ jobs:
         destination: release
   postgresql-mac:
     macos:
-      xcode: 14.3.1
+      xcode: 16.4.0
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
@@ -660,7 +663,8 @@ jobs:
     - run:
         name: Install native dev tools
         command: |-
-          sudo apt-get update
+          sudo sed -i '/bullseye-security/d' /etc/apt/sources.list
+          sudo apt-get -o Acquire::Check-Valid-Until=false update
           sudo apt-get -y install gcc g++ zlib1g-dev make
           sudo -E script/setup-musl
     - run:
@@ -729,7 +733,7 @@ jobs:
           sudo apt-get install lsof
     - run:
         name: Install native dev tools
-        command: |
+        command: |-
           sudo apt-get update
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
@@ -758,7 +762,7 @@ jobs:
         destination: release
   oracle-mac:
     macos:
-      xcode: 14.3.1
+      xcode: 16.4.0
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
@@ -866,7 +870,8 @@ jobs:
     - run:
         name: Install native dev tools
         command: |-
-          sudo apt-get update
+          sudo sed -i '/bullseye-security/d' /etc/apt/sources.list
+          sudo apt-get -o Acquire::Check-Valid-Until=false update
           sudo apt-get -y install gcc g++ zlib1g-dev make
           sudo -E script/setup-musl
     - run:
@@ -935,7 +940,7 @@ jobs:
           sudo apt-get install lsof
     - run:
         name: Install native dev tools
-        command: |
+        command: |-
           sudo apt-get update
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
@@ -964,7 +969,7 @@ jobs:
         destination: release
   mssql-mac:
     macos:
-      xcode: 14.3.1
+      xcode: 16.4.0
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
@@ -1072,7 +1077,8 @@ jobs:
     - run:
         name: Install native dev tools
         command: |-
-          sudo apt-get update
+          sudo sed -i '/bullseye-security/d' /etc/apt/sources.list
+          sudo apt-get -o Acquire::Check-Valid-Until=false update
           sudo apt-get -y install gcc g++ zlib1g-dev make
           sudo -E script/setup-musl
     - run:
@@ -1141,7 +1147,7 @@ jobs:
           sudo apt-get install lsof
     - run:
         name: Install native dev tools
-        command: |
+        command: |-
           sudo apt-get update
           sudo apt-get -y install gcc g++ zlib1g-dev make
     - run:
@@ -1170,7 +1176,7 @@ jobs:
         destination: release
   db2-mac:
     macos:
-      xcode: 14.3.1
+      xcode: 16.4.0
     resource_class: m4pro.large
     environment:
       GRAALVM_HOME: /Users/distiller/graalvm-25/Contents/Home
